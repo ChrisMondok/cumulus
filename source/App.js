@@ -2,16 +2,27 @@ enyo.kind({
 	name: "App",
 	kind: "FittableRows",
 	fit: true,
+	published:{
+		api:null
+	},
+
 	components:[
-		{kind: "onyx.Toolbar", content: "Hello World"},
-		{kind: "enyo.Scroller", fit: true, components: [
-			{name: "main", classes: "nice-padding", allowHtml: true}
+		{kind:"Panels", fit:true, components:[
+			{
+				name:"outlook",
+				kind:"Weather.Outlook",
+				place:{lat:40.208567, lon:-74.050383}
+			},
+			{kind:"Weather.Settings"}
 		]},
-		{kind: "onyx.Toolbar", components: [
-			{kind: "onyx.Button", content: "Tap me", ontap: "helloWorldTap"}
-		]}
 	],
-	helloWorldTap: function(inSender, inEvent) {
-		this.$.main.addContent("The button was tapped.<br/>");
+
+	create:function() {
+		this.inherited(arguments);
+		this.setApi(new Weather.API);
+	},
+
+	apiChanged:function() {
+		this.waterfall("onApiCreated",{api:this.getApi()},this);
 	}
 });
