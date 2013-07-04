@@ -60,6 +60,10 @@
 	color:#F79A42;
 }
 
+.forecast.hourly .label {
+	color:#999;
+}
+
 .forecast.hourly .icon-container {
 	background-color:rgba(255,255,255,0.5);
 }
