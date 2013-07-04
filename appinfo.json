@@ -1,6 +1,6 @@
 {
 	"id":"com.chrismondok.weather",
-	"version":"0.8.0",
+	"version":"0.8.1",
 	"vendor":"Chris Mondok",
 	"type":"web",
 	"main":"index.html",

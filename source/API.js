@@ -17,7 +17,7 @@ enyo.kind({
 	makeRequest:function(endpoint,query) {
 		var ajax = new enyo.Ajax({
 			url:this.getApiUrl()+endpoint,
-			cachebust:false
+			cacheBust:false
 		});
 
 		ajax.go(
@@ -29,22 +29,39 @@ enyo.kind({
 
 		return ajax;
 	},
-	getObservations:function(loc) {
-		if(typeof loc == "string")
-			return this.makeRequest('observations/'+loc, this.getFilter);
+	endpointAndLoc:function(endpoint, loc, query) {
+		if(typeof loc == "object")
+			rv = [endpoint,enyo.mixin({p:loc.lat+","+loc.lon},query)];
 		else
-			return this.makeRequest('observations/closest',{p:loc.lat+","+loc.lon});
+			rv = [endpoint+loc, query];
+		return rv;
+	},
+	getObservations:function(loc) {
+		return this.makeRequest.apply(this,this.endpointAndLoc('observations',loc));
 	},
 	getForecast:function(loc) {
-		if(typeof loc == "string")
-			return this.makeRequest('forecasts/'+loc, this.getFilter);
-		else
-			return this.makeRequest('forecasts/closest',{p:loc.lat+","+loc.lon});
+		return this.makeRequest.apply(this,this.endpointAndLoc('forecasts',loc));
 	},
-	getHourlyForecast:function() {
-		if(typeof loc == "string")
-			return this.makeRequest('forecasts/'+loc, this.getFilter);
-		else
-			return this.makeRequest('forecasts/closest',{p:loc.lat+","+loc.lon,filter:"1hr"});
+	getHourlyForecast:function(loc, day) {
+		var limit = 24;
+
+		var from = new Date(day), today = new Date();
+		from.setHours(0,0,0,0);
+		today.setHours(0,0,0,0);
+
+		if(today == from)
+			limit = 24 - new Date().getHours()
+
+		return this.makeRequest.apply(this,this.endpointAndLoc('forecasts',loc,
+			{
+				filter:"1hr",
+				from:Math.floor(from.getTime()/1000),
+				limit:limit
+			}
+		));
+	},
+	getSunMoon:function(loc) {
+		return this.makeRequest.apply(this,this.endpointAndLoc('sunmoon',loc));
+
 	},
 });

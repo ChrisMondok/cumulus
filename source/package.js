@@ -9,5 +9,7 @@ enyo.depends(
 	"Settings.js",
 	"API.js",
 	"Forecast.js",
+	"Detail.js",
+	"Normals.js",
 	"HAMWeatherKeys.js"
 );

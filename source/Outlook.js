@@ -1,13 +1,17 @@
 enyo.kind({
 	name:"Weather.Outlook",
 	kind:"FittableRows",
-	classes:"forecast",
+	classes:"outlook",
 
 	published:{
 		api:undefined,
 		observations:undefined,
 		periods:undefined,
 		place:undefined
+	},
+
+	events:{
+		onDayPicked:""
 	},
 
 	handlers:{
@@ -25,22 +29,19 @@ enyo.kind({
 	},
 
 	components:[
-		{kind:"Scroller", touch:true, fit:true, components:[
-			{name:"observations", classes:"primary", kind:"Weather.Forecast"},
+		{name:"scroller", kind:"Scroller", touch:true, fit:true, components:[
+			{name:"observations", classes:"primary", now:true, ontap:"pickToday", kind:"Weather.Forecast"},
 			{name:"periodRepeater", kind:"Repeater", onSetupItem:"renderPeriod", components:[
-				{tag:"hr", classes:"divider"},
-				{name:"period", kind:"Weather.Forecast"}
+				{name:"period", kind:"Weather.Forecast", ontap:"pickPeriod"}
 			]},
 		]},
 	],
 
 	apiChanged:function() {
-		window.FC = this;
 		this.refresh();
 	},
 
 	refresh:function() {
-		console.log("Refreshing");
 		var api = this.getApi();
 		api.getObservations(this.getPlace())
 			.response(enyo.bind(this,"gotObservations"))
@@ -55,15 +56,18 @@ enyo.kind({
 	},
 
 	gotObservations:function(ajax,response) {
-		window.RESPONSE = response;
-		if(!response.error)
-			this.setObservations(response.response[0].ob);
+		if(!response.error) {
+			if(response.response instanceof Array)
+				this.setObservations(response.response[0].ob);
+			else
+				this.setObservations(response.response.ob);
+		}
 		else
 			ajax.fail(response.error);
 	},
 
 	observationsChanged:function() {
-		this.$.observations.setObservations(this.getObservations());
+		this.$.observations.setData(this.getObservations());
 	},
 
 	gotForecast:function(ajax,response) {
@@ -79,6 +83,22 @@ enyo.kind({
 
 	renderPeriod:function(sender,event) {
 		var item = event.item, period = this.getPeriods()[event.index];
-		item.$.period.setObservations(period)
-	}
+		item.$.period.setData(period)
+	},
+
+	pickToday:function(sender,event) {
+		this.doDayPicked({data:this.getObservations()});
+	},
+
+	pickPeriod:function(sender,event) {
+		var top = this.$.periodRepeater.getControls()[event.index].getControls()[0].getBounds().top // get the item from the Owner Proxy 
+
+		top -= this.$.scroller.getScrollTop();
+		var message = {
+			data:this.getPeriods()[event.index],
+			top:top
+		};
+
+		this.doDayPicked(message);
+	},
 });
