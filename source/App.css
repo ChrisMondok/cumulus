@@ -10,7 +10,7 @@
 	margin:15px;
 }
 
-.forecast, .outlook {
+.forecast, .light {
 	background-color:#DFDFDF;
 }
 
@@ -45,9 +45,12 @@
 	height:100px;
 }
 
+.outlook, .dark {
+	background-color:#555;
+}
+
 .dark {
 	color:#DFDFDF;
-	background-color:#555;
 }
 
 .forecast.dark {

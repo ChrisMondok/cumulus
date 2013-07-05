@@ -31,7 +31,7 @@ enyo.kind({
 	},
 	endpointAndLoc:function(endpoint, loc, query) {
 		if(typeof loc == "object")
-			rv = [endpoint,enyo.mixin({p:loc.lat+","+loc.lon},query)];
+			rv = [endpoint,enyo.mixin({p:loc.latitude+","+loc.longitude},query)];
 		else
 			rv = [endpoint+'/'+loc, query];
 		return rv;

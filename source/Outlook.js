@@ -31,43 +31,57 @@ enyo.kind({
 	components:[
 		{name:"scroller", kind:"Scroller", touch:true, horizontal:"hidden", fit:true, components:[
 			{name:"observations", kind:"Weather.Forecast", classes:"primary dark", now:true, showHumidity:true, ontap:"pickToday"},
-			{name:"periodRepeater", kind:"Repeater", onSetupItem:"renderPeriod", components:[
+			{name:"periodRepeater", kind:"Repeater", classes:"light", onSetupItem:"renderPeriod", components:[
 				{name:"period", kind:"Weather.Forecast", ontap:"pickPeriod"}
 			]},
+			{name:"placeName", classes:"label dark", style:"text-align:center"},
 		]},
 	],
 
 	apiChanged:function() {
-		this.refresh();
+		if(this.getPlace())
+			this.refresh();
+	},
+
+	placeChanged:function() {
+		if(this.getApi())
+			this.refresh();
 	},
 
 	refresh:function() {
-		var api = this.getApi();
-		api.getObservations(this.getPlace())
-			.response(enyo.bind(this,"gotObservations"))
-			.error(function(ajax,error) {
-				alert(JSON.stringify(error));
-			});
-		api.getForecast(this.getPlace())
-			.response(enyo.bind(this,"gotForecast"))
-			.error(function(ajax,error) {
-				alert(JSON.stringify(error));
-			});
+		enyo.job('refresh', enyo.bind(this,function() {
+			var api = this.getApi();
+			api.getObservations(this.getPlace())
+				.response(enyo.bind(this,"gotObservations"))
+				.error(function(ajax,error) {
+					alert(JSON.stringify(error));
+				});
+			api.getForecast(this.getPlace())
+				.response(enyo.bind(this,"gotForecast"))
+				.error(function(ajax,error) {
+					alert(JSON.stringify(error));
+				});
+		}),250);
 	},
 
 	gotObservations:function(ajax,response) {
+		var actualResponse;
 		if(!response.error) {
 			if(response.response instanceof Array)
-				this.setObservations(response.response[0].ob);
+				actualResponse = response.response[0];
 			else
-				this.setObservations(response.response.ob);
+				actualResponse = response.response;
+
+			this.setObservations(actualResponse.ob);
+			this.$.placeName.setContent(actualResponse.place.name);
 		}
 		else
 			ajax.fail(response.error);
 	},
 
 	observationsChanged:function() {
-		this.$.observations.setData(this.getObservations());
+		var observations = this.getObservations();
+		this.$.observations.setData(observations);
 	},
 
 	gotForecast:function(ajax,response) {

@@ -17,14 +17,24 @@ enyo.kind({
 			{
 				name:"outlook",
 				kind:"Weather.Outlook",
-				place:{lat:40.208567, lon:-74.050383}
 			},
 			{
 				name:"detail",
 				kind:"Weather.Detail",
-				place:{lat:40.208567, lon:-74.050383}
-			},
-			{kind:"Weather.Settings"}
+			}
+		]},
+		{name:"locatingPopup", kind:"onyx.Popup", centered:true, modal:true, floating:true, scrim:true, autoDismiss:false, scrimWhenModal:true, components:[
+			{content:"Getting your current location"}
+		]},
+		{name:"getPlacePopup", kind:"onyx.Popup", centered:true, modal:true, floating:true, scrim:true, autoDismiss:false, scrimWhenModal:true, components:[
+			{kind:"FittableRows", components:[
+				{content:"Please enter your zip code"},
+				{name:"gpsFailureReason", style:"color:#AAA"},
+				{kind:"onyx.InputDecorator", alwaysLooksFocused:true, components:[
+					{name:"placeInput", kind:"onyx.Input"}
+				]},
+				{kind:"onyx.Button", content:"Submit", classes:"onyx-dark", style:"display:block; width:100%;", ontap:"submitPlace"}
+			]}
 		]},
 	],
 
@@ -44,13 +54,54 @@ enyo.kind({
 	create:function() {
 		this.inherited(arguments);
 		this.setApi(new Weather.API);
+
+		enyo.dispatcher.listen(document, 'keyup', function(event) {
+			if(event.keyCode == 27)
+				enyo.Signals.send('onBackButton',event);
+		});
+
 		window.addEventListener('popstate',enyo.bind(this,'stateChanged'));
 		window.INSTANCE = this;
+	},
+
+	submitPlace:function() {
+		this.$.getPlacePopup.hide();
+		var place = this.$.placeInput.getValue();
+		this.$.outlook.setPlace(place);
+		this.$.detail.setPlace(place);
 	},
 
 	rendered:function() {
 		this.inherited(arguments);
 		this.stateChanged();
+		if (window.PalmSystem)
+			PalmSystem.stageReady();
+
+		this.$.locatingPopup.show();
+		Weather.Geolocation.getLocation()
+			.response(enyo.bind(this, function(sender,response) {
+				this.$.locatingPopup.hide();
+				this.$.outlook.setPlace(response);
+				this.$.detail.setPlace(response);
+			}))
+			.error(enyo.bind(this, function(sender,error) {
+				this.$.locatingPopup.hide();
+				switch(error.code) {
+					case error.PERMISSION_DENIED:
+						this.$.gpsFailureReason.setContent("GPS permission denied");
+						break;
+					case error.POSITION_UNAVAILABLE:
+						this.$.gpsFailureReason.setContent("GPS position unavailable");
+						break;
+					case error.TIMEOUT:
+						this.$.gpsFailureReason.setContent("GPS timed out");
+						break;
+					default:
+						this.$.gpsFailureReason.setContent("Unknown geolocation error");
+				}
+				this.$.getPlacePopup.show();
+				this.$.placeInput.focus();
+			}));
 	},
 
 	apiChanged:function() {
@@ -79,7 +130,7 @@ enyo.kind({
 			if(history.popState)
 				history.popState();
 			else
-				this.$.panels.previous();
+				this.showOverview();
 	},
 
 	stateChanged:function() {
@@ -91,10 +142,12 @@ enyo.kind({
 			}
 		}
 		else
-		{
-			this.$.detail.setData(null);
-			this.$.panels.setIndex(0);
-		}
+			this.showOverview();
+	},
+
+	showOverview:function() {
+		this.$.detail.setData(null);
+		this.$.panels.setIndex(0);
 	},
 
 	showDetail:function(sender,event) {

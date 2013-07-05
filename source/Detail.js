@@ -19,15 +19,14 @@ enyo.kind({
 	
 	components:[
 		{name:"today", classes:"today", kind:"Weather.Forecast", showHumidity:true},
-		{kind:"Scroller", touch:true, horizontal:"hidden", classes:"scroller dark", fit:true, components:[
+		{name:"scroller", kind:"Scroller", touch:true, horizontal:"hidden", classes:"scroller dark", fit:true, components:[
 			{kind:"Weather.Divider", content:"Temperature"},
 			{
 				name:"tempGraph",
 				kind:"Weather.TemperatureGraph",
 				key:"tempF",
 				fillColor:"rgba(255,0,0,0.25)",
-				strokeColor:"rgba(255,0,0,1)",
-				showLabels:true
+				strokeColor:"rgba(255,0,0,1)"
 			},
 			{kind:"Weather.Divider", content:"Chance of precipitation"},
 			{
@@ -53,10 +52,22 @@ enyo.kind({
 		var data = this.getData();
 		this.$.today.setData(data);
 		this.$.normals.setData(data);
-		if(data)
-			this.refresh();
+		if(data && this.getApi() && this.getPlace())
+			enyo.job('refresh',enyo.bind(this,"refresh"),500);
 		else
 			this.setPeriods([]);
+
+		this.$.scroller.scrollToTop();
+	},
+
+	apiChanged:function() {
+		if(this.getData() && this.getPlace())
+			enyo.job('refresh',enyo.bind(this,"refresh"),500);
+	},
+
+	placeChanged:function() {
+		if(this.getApi() && this.getData())
+			enyo.job('refresh',enyo.bind(this,"refresh"),500);
 	},
 
 	refresh:function() {
@@ -74,10 +85,15 @@ enyo.kind({
 	},
 
 	gotTides:function(ajax,response) {
-		if(response.response instanceof Array)
-			this.setTides(response.response[0].periods);
+		if(response.error)
+			ajax.fail(response.error);
 		else
-			this.setTides(response.response.periods);
+		{
+			if(response.response instanceof Array)
+				this.setTides(response.response[0].periods);
+			else
+				this.setTides(response.response.periods);
+		}
 	},
 
 	periodsChanged:function() {
