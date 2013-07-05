@@ -11,6 +11,8 @@ enyo.kind({
 
 		imperial:true,
 		metric:false,
+		showHumidity:false,
+		showRange:true,
 
 		icon:"na.png",
 		weather:"Loading",
@@ -75,16 +77,16 @@ enyo.kind({
 							{tag:"span", name:"feelsLikeF"},
 							{tag:"span", classes:"label", content:" °F)"},
 						]},
-						{name:"tempRangeF", showing:false, components:[
-							{tag:"span", name:"minTempF"},
-							{tag:"span", classes:"label", content:"°F low"},
-							{tag:"span", classes:"label", content:" / "},
+						{name:"tempRangeF", classes:"temp-range", showing:false, components:[
+							{kind:"Image", src:"assets/icons/temp-max.png"},
 							{tag:"span", name:"maxTempF"},
-							{tag:"span", classes:"label", content:"°F high"}
+							{tag:"br"},
+							{kind:"Image", src:"assets/icons/temp-min.png"},
+							{tag:"span", name:"minTempF"},
 						]}
 					]},
 					{name:"celcius", showing:false, components:[
-						{name:"tempNowC", components:[
+						{name:"tempNowC", classes:"temp-range", components:[
 							{tag:"span", name:"tempC"},
 							{tag:"span", name:"avgTempC"},
 							{tag:"span", classes:"label", content:"°C"},
@@ -93,11 +95,11 @@ enyo.kind({
 							{tag:"span", classes:"label", content:" °C)"},
 						]},
 						{name:"tempRangeC", showing:false, components:[
-							{tag:"span", name:"minTempC"},
-							{tag:"span", classes:"label", content:"°C low"},
-							{tag:"span", classes:"label", content:" / "},
+							{kind:"Image", src:"assets/icons/temp-max.png"},
 							{tag:"span", name:"maxTempC"},
-							{tag:"span", classes:"label", content:"°C high"}
+							{tag:"br"},
+							{kind:"Image", src:"assets/icons/temp-min.png"},
+							{tag:"span", name:"minTempC"},
 						]}
 					]}
 				]},
@@ -123,6 +125,9 @@ enyo.kind({
 			if(this.published.hasOwnProperty(key))
 				this.set(key,data[key]);
 
+		if(!(data && data.icon))
+			this.setIcon("na.png");
+
 		this.updateShowing();
 
 		this.reflow();
@@ -131,15 +136,21 @@ enyo.kind({
 	updateShowing:function() {
 		var data = this.getData();
 
-		this.$.fahrenheit.setShowing(this.getImperial() && (data.hasOwnProperty('tempF')));
-		this.$.celcius.setShowing(this.getMetric() && (data.hasOwnProperty('tempC')));
+		this.$.day.setShowing(data && data.hasOwnProperty('dateTimeISO'));
+		this.$.weather.setShowing(data && data.hasOwnProperty('weather'));
 
-		this.$.tempRangeF.setShowing(this.getImperial() && (data.hasOwnProperty('maxTempF')));
-		this.$.tempRangeC.setShowing(this.getMetric() && (data.hasOwnProperty('maxTempC')));
+		this.$.fahrenheit.setShowing(data && this.getImperial() && (data.hasOwnProperty('tempF')));
+		this.$.celcius.setShowing(data && this.getMetric() && (data.hasOwnProperty('tempC')));
 
-		this.$.popRow.setShowing(data.hasOwnProperty('pop'));
+		this.$.tempRangeF.setShowing(data && this.getShowRange() && this.getImperial() && (data.hasOwnProperty('maxTempF')));
+		this.$.tempRangeC.setShowing(data && this.getShowRange() && this.getMetric() && (data.hasOwnProperty('maxTempC')));
 
-		this.$.humidityRow.setShowing(data.hasOwnProperty('humidity'));
+		this.$.avgTempF.setShowing(data && !(data.hasOwnProperty('tempF') && data.tempF !== null));
+		this.$.avgTempC.setShowing(data && !(data.hasOwnProperty('tempC') && data.tempC !== null));
+
+		this.$.popRow.setShowing(data && data.hasOwnProperty('pop'));
+
+		this.$.humidityRow.setShowing(data && this.getShowHumidity() && data.hasOwnProperty('humidity'));
 	},
 
 	transformIcon:function(value) {
@@ -158,7 +169,7 @@ enyo.kind({
 				date.setMinutes(0);
 				date.setSeconds(0);
 				date.setMilliseconds(0);
-				return date.toLocaleTimeString();
+				return App.formatTime(date);
 			}
 			else {
 				date.setHours(0,0,0,0);

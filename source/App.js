@@ -28,12 +28,30 @@ enyo.kind({
 		]},
 	],
 
+	statics:{
+		formatTime:function(date) {
+			var hour = date.getHours() % 12;
+			if(!hour)
+				hour = 12;
+			var minutes = date.getMinutes();
+			if(minutes < 10)
+				minutes = "0"+minutes;
+			var ampm = ["AM","PM"][Math.floor(date.getHours()/12)]
+			return hour+":"+minutes+" "+ampm;
+		},
+	},
+
 	create:function() {
 		this.inherited(arguments);
 		this.setApi(new Weather.API);
 		window.addEventListener('popstate',enyo.bind(this,'stateChanged'));
+		window.INSTANCE = this;
 	},
 
+	rendered:function() {
+		this.inherited(arguments);
+		this.stateChanged();
+	},
 
 	apiChanged:function() {
 		this.waterfall("onApiCreated",{api:this.getApi()},this);
@@ -41,7 +59,7 @@ enyo.kind({
 
 	pushDayPickedState:function(sender,event) {
 		if(history.pushState) {
-			history.pushState({data:event.data, top:event.top, index:1}, "Details", "#details");
+			history.pushState({data:event.data, top:event.top, index:1}, "Hourly Forecast");
 			this.stateChanged();
 		}
 		else
@@ -73,17 +91,19 @@ enyo.kind({
 			}
 		}
 		else
+		{
+			this.$.detail.setData(null);
 			this.$.panels.setIndex(0);
+		}
 	},
 
 	showDetail:function(sender,event) {
-		this.$.panels.setIndex(1);
-		this.$.detail.setData(event.data);
-		if(event.top) {
-			this.$.detailForecastAnimator.setDuration(this.$.panels.getAnimator().getDuration());
+		if(!this.$.panels.getIndex() && event.top) {
 			this.$.detailForecastAnimator.play({startValue:event.top, endValue:0});
 			this.$.detail.$.today.applyStyle('position','relative');
 		}
+		this.$.panels.setIndex(1);
+		this.$.detail.setData(event.data);
 	},
 
 	animateDetailForecast:function(animator,event) {
@@ -96,6 +116,10 @@ enyo.kind({
 	},
 
 	repositionDetailForecast:function(animator,event) {
-		this.$.detail.$.today.applyStyle('position','')
+		this.$.detail.$.today.applyStyle('position','');
+		this.$.detail.$.today.setBounds({
+			top:"0",
+			left:"0"
+		});
 	}
 });

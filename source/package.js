@@ -11,5 +11,8 @@ enyo.depends(
 	"Forecast.js",
 	"Detail.js",
 	"Normals.js",
+	"Graph.js",
+	"TemperatureGraph.js",
+	"Divider.js",
 	"HAMWeatherKeys.js"
 );

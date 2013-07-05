@@ -14,7 +14,7 @@
 	background-color:#DFDFDF;
 }
 
-.outlook .forecast, .details .row {
+.outlook .forecast{
 	border-bottom:1px solid rgba(0,0,0,0.75);
 	border-top:1px solid rgba(255,255,255,1);
 }
@@ -45,31 +45,35 @@
 	height:100px;
 }
 
-.forecast.hourly {
+.dark {
+	color:#DFDFDF;
+	background-color:#555;
+}
+
+.forecast.dark {
+	border-bottom:2px solid rgba(0,0,0,0.75);
+	border-top:2px solid rgba(255,255,255,0.25);
+}
+
+.forecast.dark {
 	background-color:#3A3A3A;
 	color:#DFDFDF;
-	border-bottom:2px solid rgba(0,0,0,1);
-	border-top:2px solid rgba(255,255,255,0.25);
 }
 
 .forecast.hourly .body {
 	text-align:right;
 }
 
-.forecast.hourly .day {
+.forecast.dark .day {
 	color:#F79A42;
 }
 
-.forecast.hourly .label {
+.forecast.dark .label {
 	color:#999;
 }
 
-.forecast.hourly .icon-container {
+.forecast.dark .icon-container {
 	background-color:rgba(255,255,255,0.5);
-}
-
-.detail {
-	background-color:#555;
 }
 
 .detail .today {
@@ -84,10 +88,12 @@
 
 .detail .row {
 	background-color:#7A7A7A;
+	border-bottom:1px solid rgba(0,0,0,0.75);
+	border-top:1px solid rgba(255,255,255,0.25);
 }
 
-.detail .row img {
-	margin-right:1em;
+.sunmoon img {
+	margin:0em 1em;
 	vertical-align:middle;
 }
 
@@ -99,9 +105,53 @@
 }
 
 .halfwidth:first-child {
-	border-right:1px solid rgba(0,0,0,0.75);
+	border-right:1px solid rgba(255,255,255,0.25);
 }
 
 .halfwidth:last-child {
-	border-left:1px solid rgba(255,255,255,0.25);
+	border-left:1px solid rgba(0,0,0,0.75);
+}
+
+.divider {
+	margin-top:1em;
+}
+
+.divider-label {
+	margin:0 0.5em;
+}
+
+.divider-line {
+	background-color:#F79A42;
+	height:0.4em;
+	box-shadow: inset 0px 2px 3px rgba(0,0,0,0.5);
+	vertical-align:middle;
+}
+
+.divider-line.right {
+	border-radius:0.2em 0 0 0.2em;
+}
+
+.divider-line.left {
+	width:1em;
+	border-radius:0 0.2em 0.2em 0;
+}
+
+.temp-range img {
+	height:1em;
+	vertical-align:middle;
+	margin-right:1ex;
+}
+
+.tide-table {
+	width:100%;
+	table-layout:fixed;
+	text-align:center;
+}
+
+.forecast:first-of-type {
+	border-top:none;
+}
+
+.forecast:last-of-type {
+	border-bottom:none;
 }

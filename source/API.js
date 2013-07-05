@@ -33,8 +33,20 @@ enyo.kind({
 		if(typeof loc == "object")
 			rv = [endpoint,enyo.mixin({p:loc.lat+","+loc.lon},query)];
 		else
-			rv = [endpoint+loc, query];
+			rv = [endpoint+'/'+loc, query];
 		return rv;
+	},
+	filterForDay:function(day) {
+		var filter = {};
+
+		var from = new Date(day);
+		from.setHours(0,0,0,0);
+		var to = new Date(from.getTime() + 1000*60*60*24 - 1);
+
+		return {
+			from:Math.floor(from.getTime() / 1000),
+			to:Math.floor(to.getTime() / 1000)
+		};
 	},
 	getObservations:function(loc) {
 		return this.makeRequest.apply(this,this.endpointAndLoc('observations',loc));
@@ -43,25 +55,18 @@ enyo.kind({
 		return this.makeRequest.apply(this,this.endpointAndLoc('forecasts',loc));
 	},
 	getHourlyForecast:function(loc, day) {
-		var limit = 24;
 
-		var from = new Date(day), today = new Date();
-		from.setHours(0,0,0,0);
-		today.setHours(0,0,0,0);
-
-		if(today == from)
-			limit = 24 - new Date().getHours()
-
-		return this.makeRequest.apply(this,this.endpointAndLoc('forecasts',loc,
-			{
-				filter:"1hr",
-				from:Math.floor(from.getTime()/1000),
-				limit:limit
-			}
+		return this.makeRequest.apply(this,this.endpointAndLoc(
+			'forecasts',
+			loc,
+			enyo.mixin({filter:"1hr"},this.filterForDay(day))
 		));
 	},
 	getSunMoon:function(loc) {
 		return this.makeRequest.apply(this,this.endpointAndLoc('sunmoon',loc));
 
 	},
+	getTides:function(loc, day) {
+		return this.makeRequest.apply(this,this.endpointAndLoc('tides/closest',loc,this.filterForDay(day)));
+	}
 });

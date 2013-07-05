@@ -9,6 +9,7 @@ enyo.kind({
 		sunMoon:null,
 		place:null,
 		periods:null,
+		tides:null,
 		data:null
 	},
 
@@ -17,11 +18,29 @@ enyo.kind({
 	},
 	
 	components:[
-		{name:"today", classes:"today", kind:"Weather.Forecast"},
-		{kind:"Scroller", classes:"scroller", fit:true, components:[
-			{kind:"Weather.Normals"},
-			{name:"periodRepeater", kind:"Repeater", onSetupItem:"rp", components:[
-				{name:"forecast", kind:"Weather.Forecast", classes:"hourly", hourly:true}
+		{name:"today", classes:"today", kind:"Weather.Forecast", showHumidity:true},
+		{kind:"Scroller", touch:true, horizontal:"hidden", classes:"scroller dark", fit:true, components:[
+			{kind:"Weather.Divider", content:"Temperature"},
+			{
+				name:"tempGraph",
+				kind:"Weather.TemperatureGraph",
+				key:"tempF",
+				fillColor:"rgba(255,0,0,0.25)",
+				strokeColor:"rgba(255,0,0,1)",
+				showLabels:true
+			},
+			{kind:"Weather.Divider", content:"Chance of precipitation"},
+			{
+				name:"popGraph",
+				kind:"Weather.Graph",
+				key:"pop",
+				fillColor:"rgba(132,167,193,0.5)",
+				strokeColor:"rgba(132,167,193,1)"
+			},
+			{name:"normals", kind:"Weather.Normals"},
+			{kind:"Weather.Divider", content:"Hourly Forecast"},
+			{name:"periodRepeater", kind:"Repeater", count:24, onSetupItem:"renderPeriod", components:[
+				{name:"forecast", kind:"Weather.Forecast", classes:"dark hourly", hourly:true, showRange:false}
 			]}
 		]},
 	],
@@ -34,12 +53,17 @@ enyo.kind({
 		var data = this.getData();
 		this.$.today.setData(data);
 		this.$.normals.setData(data);
-		this.refresh();
+		if(data)
+			this.refresh();
+		else
+			this.setPeriods([]);
 	},
 
 	refresh:function() {
 		this.getApi().getHourlyForecast(this.getPlace(),new Date(this.getData().dateTimeISO))
 			.response(enyo.bind(this,"gotHourlyForecast"));
+		this.getApi().getTides(this.getPlace(), new Date(this.getData().dateTimeISO))
+			.response(enyo.bind(this,"gotTides"));
 	},
 
 	gotHourlyForecast:function(ajax,response) {
@@ -49,22 +73,48 @@ enyo.kind({
 			this.setPeriods(response.response.periods);
 	},
 
-	periodsChanged:function() {
-		var periods = this.getPeriods();
-		this.$.periodRepeater.setCount(this.getPeriods().length);
-		console.log("got "+periods.length+" periods");
+	gotTides:function(ajax,response) {
+		if(response.response instanceof Array)
+			this.setTides(response.response[0].periods);
+		else
+			this.setTides(response.response.periods);
 	},
 
-	rp:function(sender,event) {
-		var item = event.item || this, period = this.getPeriods()[event.index];
-		item.$.forecast.setData(period);
-		console.log("render item "+event.index);
+	periodsChanged:function() {
+		var periods = this.getPeriods();
+
+		for(var i = 0; i < 24; i++)
+			this.$.periodRepeater.renderRow(i);
+
+		this.$.periodRepeater.resized();
+		this.reflow();
+
+		this.$.tempGraph.setData(periods);
+		this.$.popGraph.setData(periods);
+	},
+
+	tidesChanged:function() {
+		this.$.normals.setTides(this.getTides());
+	},
+
+	renderPeriod:function(sender,event) {
+		var item = event.item || this;
+		var periods = this.getPeriods();
+
+		if(periods && periods[event.index]) {
+			item.$.forecast.show();
+			item.$.forecast.setData(periods[event.index]);
+		}
+		else 
+			item.$.forecast.hide();
+		
 
 		return true;
 	},
 
 	create:function() {
 		this.inherited(arguments);
-		window.fc = this.$.today;
+		window.graph = this.$.popGraph;
+		window.detail = this;
 	}
 });
