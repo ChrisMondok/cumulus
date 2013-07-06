@@ -55,7 +55,10 @@ enyo.kind({
 		if(data && this.getApi() && this.getPlace())
 			enyo.job('refresh',enyo.bind(this,"refresh"),500);
 		else
+		{
+			this.$.normals.setTides(null);
 			this.setPeriods([]);
+		}
 
 		this.$.scroller.scrollToTop();
 	},

@@ -11,7 +11,8 @@ enyo.kind({
 	},
 
 	events:{
-		onDayPicked:""
+		onDayPicked:"",
+		onSizeChanged:""
 	},
 
 	handlers:{
@@ -92,12 +93,15 @@ enyo.kind({
 	},
 
 	periodsChanged:function() {
-		this.$.periodRepeater.setCount(this.getPeriods().length);
+		var periods = this.getPeriods();
+		this.$.periodRepeater.setCount(periods.length);
+		this.doSizeChanged();
 	},
 
 	renderPeriod:function(sender,event) {
 		var item = event.item, period = this.getPeriods()[event.index];
-		item.$.period.setData(period)
+		item.$.period.setData(period);
+		this.doSizeChanged();
 	},
 
 	pickToday:function(sender,event) {

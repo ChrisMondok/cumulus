@@ -7,7 +7,8 @@ enyo.kind({
 	},
 
 	handlers:{
-		onDayPicked:"pushDayPickedState"
+		onDayPicked:"pushDayPickedState",
+		onSizeChanged:"sizeChanged"
 	},
 
 	components:[
@@ -172,5 +173,9 @@ enyo.kind({
 			top:"0",
 			left:"0"
 		});
+	},
+
+	sizeChanged:function() {
+		enyo.job('adjustSize',enyo.bind(this,"resized"),100);
 	}
 });
