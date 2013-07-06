@@ -11,9 +11,9 @@ enyo.kind({
 	},
 
 	components:[
-		{name:"detailForecastAnimator", kind:"Animator", onStep:"animateDetailForecast", onEnd:"repositionDetailForecast"},
+		{name:"detailForecastAnimator", kind:"Animator", duration:250, onStep:"animateDetailForecast", onEnd:"repositionDetailForecast"},
 		{kind:"Signals", onBackButton:"onBackGesture"},
-		{name:"panels", kind:"Panels", arrangerKind:"CardSlideInArranger", fit:true, draggable:false, components:[
+		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", fit:true, draggable:false, components:[
 			{
 				name:"outlook",
 				kind:"Weather.Outlook",
@@ -152,20 +152,18 @@ enyo.kind({
 
 	showDetail:function(sender,event) {
 		if(!this.$.panels.getIndex() && event.top) {
-			this.$.detailForecastAnimator.play({startValue:event.top, endValue:0});
+			enyo.job('slideUp', enyo.bind(this, function() {
+					this.$.detailForecastAnimator.play({startValue:event.top, endValue:0});
+				}), this.$.panels.getAnimator().getDuration());
 			this.$.detail.$.today.applyStyle('position','relative');
+			this.$.detail.$.today.setBounds({ top:event.top+"px"});
 		}
 		this.$.panels.setIndex(1);
 		this.$.detail.setData(event.data);
 	},
 
 	animateDetailForecast:function(animator,event) {
-		var slideValue = 1-this.$.panels.getAnimator().value;
-		var left = -this.$.outlook.getBounds().width*(slideValue)+"px";
-		this.$.detail.$.today.setBounds({
-			top:animator.value+"px",
-			left:left
-		});
+		this.$.detail.$.today.setBounds({ top:animator.value+"px" });
 	},
 
 	repositionDetailForecast:function(animator,event) {
