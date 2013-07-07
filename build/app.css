@@ -1615,7 +1615,7 @@
 	height:100px;
 }
 
-.outlook, .dark {
+.outlook, .dark, .detail {
 	background-color:#555;
 }
 
@@ -1727,5 +1727,25 @@
 
 .forecast:last-of-type {
 	border-bottom:none;
+}
+
+
+.command-menu, .command-menu-placeholder {
+	display:none;
+}
+
+.show-command-menu .command-menu, .show-command-menu .command-menu-placeholder {
+	display:block;
+}
+
+.command-menu {
+	position:absolute;
+	z-index:100;
+	bottom:0;
+	width:100%;
+}
+
+.command-menu, .command-menu-placeholder {
+	height:40px
 }
 
