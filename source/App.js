@@ -11,6 +11,7 @@ enyo.kind({
 	components:[
 		{name:"detailForecastAnimator", kind:"Animator", duration:250, onStep:"animateDetailForecast", onEnd:"repositionDetailForecast"},
 		{kind:"Signals", onBackButton:"onBackGesture"},
+		{content:"Beta", classes:"sash"},
 		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", classes:"enyo-fit", draggable:false, onTransitionFinish:"panelIndexChanged", components:[
 			{
 				name:"outlook",
