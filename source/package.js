@@ -12,6 +12,7 @@ enyo.depends(
 	"Normals.js",
 	"Graph.js",
 	"TemperatureGraph.js",
+	"LoadingPopup.js",
 	"Divider.js",
 	"Geolocation.js",
 	"HAMWeatherKeys.js"

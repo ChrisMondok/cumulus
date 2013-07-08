@@ -11,8 +11,7 @@ enyo.kind({
 	},
 
 	events:{
-		onDayPicked:"",
-		onSizeChanged:""
+		onDayPicked:""
 	},
 
 	handlers:{
@@ -36,7 +35,9 @@ enyo.kind({
 				{name:"period", kind:"Weather.Forecast", ontap:"pickPeriod"}
 			]},
 			{name:"placeName", classes:"label dark", style:"text-align:center"},
+			{classes:"command-menu-placeholder"}
 		]},
+		{name:"loadingPopup", kind:"Weather.LoadingPopup"}
 	],
 
 	apiChanged:function() {
@@ -51,6 +52,7 @@ enyo.kind({
 
 	refresh:function() {
 		enyo.job('refresh', enyo.bind(this,function() {
+			this.$.loadingPopup.show();
 			var api = this.getApi();
 			api.getObservations(this.getPlace())
 				.response(enyo.bind(this,"gotObservations"))
@@ -86,6 +88,7 @@ enyo.kind({
 	},
 
 	gotForecast:function(ajax,response) {
+		this.$.loadingPopup.hide();
 		if(!response.error)
 			this.setPeriods(response.response[0].periods)
 		else
@@ -95,13 +98,11 @@ enyo.kind({
 	periodsChanged:function() {
 		var periods = this.getPeriods();
 		this.$.periodRepeater.setCount(periods.length);
-		this.doSizeChanged();
 	},
 
 	renderPeriod:function(sender,event) {
 		var item = event.item, period = this.getPeriods()[event.index];
 		item.$.period.setData(period);
-		this.doSizeChanged();
 	},
 
 	pickToday:function(sender,event) {

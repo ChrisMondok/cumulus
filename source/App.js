@@ -1,20 +1,17 @@
 enyo.kind({
 	name: "App",
-	kind: "FittableRows",
-	fit: true,
 	published:{
 		api:null
 	},
 
 	handlers:{
-		onDayPicked:"pushDayPickedState",
-		onSizeChanged:"sizeChanged"
+		onDayPicked:"pushDayPickedState"
 	},
 
 	components:[
 		{name:"detailForecastAnimator", kind:"Animator", duration:250, onStep:"animateDetailForecast", onEnd:"repositionDetailForecast"},
 		{kind:"Signals", onBackButton:"onBackGesture"},
-		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", fit:true, draggable:false, components:[
+		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", classes:"enyo-fit", draggable:false, onTransitionFinish:"panelIndexChanged", components:[
 			{
 				name:"outlook",
 				kind:"Weather.Outlook",
@@ -23,6 +20,9 @@ enyo.kind({
 				name:"detail",
 				kind:"Weather.Detail",
 			}
+		]},
+		{name:"commandMenu", classes:"command-menu onyx-toolbar-inline", components:[
+			{name:"backButton", kind:"onyx.IconButton", src:"assets/icons/back.png", ontap:"back"}
 		]},
 		{name:"locatingPopup", kind:"onyx.Popup", centered:true, modal:true, floating:true, scrim:true, autoDismiss:false, scrimWhenModal:true, components:[
 			{content:"Getting your current location"}
@@ -60,6 +60,8 @@ enyo.kind({
 			if(event.keyCode == 27)
 				enyo.Signals.send('onBackButton',event);
 		});
+
+		this.calculateCommandMenu();
 
 		window.addEventListener('popstate',enyo.bind(this,'stateChanged'));
 		window.INSTANCE = this;
@@ -114,7 +116,7 @@ enyo.kind({
 			history.pushState({data:event.data, top:event.top, index:1}, "Hourly Forecast");
 			this.stateChanged();
 		}
-		else
+		else 
 			this.showDetail(sender,event);
 	},
 
@@ -128,10 +130,10 @@ enyo.kind({
 	},
 
 	back:function(sender,event) {
-			if(history.popState)
-				history.popState();
-			else
-				this.showOverview();
+		if(history.pushState)
+			history.back();
+		else
+			this.$.panels.previous();
 	},
 
 	stateChanged:function() {
@@ -143,12 +145,7 @@ enyo.kind({
 			}
 		}
 		else
-			this.showOverview();
-	},
-
-	showOverview:function() {
-		this.$.detail.setData(null);
-		this.$.panels.setIndex(0);
+			this.$.panels.setIndex(0);
 	},
 
 	showDetail:function(sender,event) {
@@ -175,7 +172,18 @@ enyo.kind({
 		});
 	},
 
-	sizeChanged:function() {
-		enyo.job('adjustSize',enyo.bind(this,"resized"),100);
+	panelIndexChanged:function() {
+		if(this.$.panels.getIndex() != 1)
+			this.$.detail.setData();
+		this.$.backButton.setDisabled(this.$.panels.getIndex() == 0);
+	},
+
+	calculateCommandMenu:function() {
+		var needsBackButton = true;
+
+		if(window.PalmSystem)
+			needsBackButton = !JSON.parse(window.PalmSystem.deviceInfo).keyboardAvailable;
+
+		this.addRemoveClass("show-command-menu",needsBackButton); //hide this when there's a native back button
 	}
 });

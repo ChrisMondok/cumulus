@@ -19,28 +19,32 @@ enyo.kind({
 	
 	components:[
 		{name:"today", classes:"today", kind:"Weather.Forecast", showHumidity:true},
-		{name:"scroller", kind:"Scroller", touch:true, horizontal:"hidden", classes:"scroller dark", fit:true, components:[
-			{kind:"Weather.Divider", content:"Temperature"},
-			{
-				name:"tempGraph",
-				kind:"Weather.TemperatureGraph",
-				key:"tempF",
-				fillColor:"rgba(255,0,0,0.25)",
-				strokeColor:"rgba(255,0,0,1)"
-			},
-			{kind:"Weather.Divider", content:"Chance of precipitation"},
-			{
-				name:"popGraph",
-				kind:"Weather.Graph",
-				key:"pop",
-				fillColor:"rgba(132,167,193,0.5)",
-				strokeColor:"rgba(132,167,193,1)"
-			},
-			{name:"normals", kind:"Weather.Normals"},
-			{kind:"Weather.Divider", content:"Hourly Forecast"},
-			{name:"periodRepeater", kind:"Repeater", count:24, onSetupItem:"renderPeriod", components:[
-				{name:"forecast", kind:"Weather.Forecast", classes:"dark hourly", hourly:true, showRange:false}
-			]}
+		{fit:true, style:"position:relative", components:[
+			{name:"loadingPopup", kind:"Weather.LoadingPopup"},
+			{name:"scroller", kind:"Scroller", touch:true, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
+				{kind:"Weather.Divider", content:"Temperature"},
+				{
+					name:"tempGraph",
+					kind:"Weather.TemperatureGraph",
+					key:"tempF",
+					fillColor:"rgba(255,0,0,0.25)",
+					strokeColor:"rgba(255,0,0,1)"
+				},
+				{kind:"Weather.Divider", content:"Chance of precipitation"},
+				{
+					name:"popGraph",
+					kind:"Weather.Graph",
+					key:"pop",
+					fillColor:"rgba(132,167,193,0.5)",
+					strokeColor:"rgba(132,167,193,1)"
+				},
+				{name:"normals", kind:"Weather.Normals"},
+				{kind:"Weather.Divider", content:"Hourly Forecast"},
+				{name:"periodRepeater", kind:"Repeater", count:24, onSetupItem:"renderPeriod", components:[
+					{name:"forecast", kind:"Weather.Forecast", classes:"dark hourly", hourly:true, showRange:false}
+				]},
+				{classes:"command-menu-placeholder"}
+			]},
 		]},
 	],
 
@@ -53,7 +57,7 @@ enyo.kind({
 		this.$.today.setData(data);
 		this.$.normals.setData(data);
 		if(data && this.getApi() && this.getPlace())
-			enyo.job('refresh',enyo.bind(this,"refresh"),500);
+			enyo.job('refresh',enyo.bind(this,"refresh"),100);
 		else
 		{
 			this.$.normals.setTides(null);
@@ -65,15 +69,16 @@ enyo.kind({
 
 	apiChanged:function() {
 		if(this.getData() && this.getPlace())
-			enyo.job('refresh',enyo.bind(this,"refresh"),500);
+			enyo.job('refresh',enyo.bind(this,"refresh"),100);
 	},
 
 	placeChanged:function() {
 		if(this.getApi() && this.getData())
-			enyo.job('refresh',enyo.bind(this,"refresh"),500);
+			enyo.job('refresh',enyo.bind(this,"refresh"),100);
 	},
 
 	refresh:function() {
+		this.$.loadingPopup.show();
 		this.getApi().getHourlyForecast(this.getPlace(),new Date(this.getData().dateTimeISO))
 			.response(enyo.bind(this,"gotHourlyForecast"));
 		this.getApi().getTides(this.getPlace(), new Date(this.getData().dateTimeISO))
@@ -81,6 +86,7 @@ enyo.kind({
 	},
 
 	gotHourlyForecast:function(ajax,response) {
+		this.$.loadingPopup.hide();
 		if(response.response instanceof Array)
 			this.setPeriods(response.response[0].periods);
 		else

@@ -42,8 +42,7 @@ enyo.kind({
 
 	resizeHandler:function() {
 		this.inherited(arguments);
-		if(this._ctx)
-			this.drawGraph();
+		this.drawGraph();
 	},
 
 	sizeCanvas:function() {
@@ -91,6 +90,9 @@ enyo.kind({
 	},
 
 	drawGraph:function() {
+		if(!this._ctx)
+			return;
+
 		this.sizeCanvas();
 
 		var bounds = this.$.canvas.getBounds(), data = this.getData(), ctx = this._ctx;
