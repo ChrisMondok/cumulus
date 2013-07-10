@@ -60,12 +60,12 @@ enyo.kind({
 	],
 
 	components:[
-		{name:"day", classes:"day"},
 		{kind:"FittableColumns", components:[
 			{name:"iconContainerL", classes:"icon-container", components:[
 				{name:"iconL", kind:"Image"},
 			]},
 			{fit:true, kind:"FittableRows", classes:"body", components:[
+				{name:"day", classes:"day"},
 				{name:"weather"},
 				{components:[
 					{name:"fahrenheit", showing:false, components:[
