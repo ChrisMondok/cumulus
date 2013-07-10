@@ -1,0 +1,46 @@
+.appmenu {
+	margin-top:0;
+	border-style:solid;
+
+	font-size:18px;
+
+	border-width: 30px 28px 35px 28px;
+
+	background:none;
+	box-shadow:none;
+
+	-moz-border-image: url(../assets/appmenu.png) 30 28 35 28 stretch stretch;
+	-o-border-image: url(../assets/appmenu.png) 30 28 35 28 stretch stretch;
+	-webkit-border-image: url(../assets/appmenu.png) 30 28 35 28 stretch stretch;
+	border-image: url(../assets/appmenu.png) 30 28 35 28 stretch stretch;
+}
+
+.appmenu > * {
+	margin: -30px -21px -27px;
+}
+
+.appmenu .onyx-menu-item {
+	-moz-border-image: url(../assets/appmenu-divider.png) 1 0 1 0 stretch;
+	-webkit-border-image: url(../assets/appmenu-divider.png) 1 0 1 0 stretch;
+	-o-border-image: url(../assets/appmenu-divider.png) 1 0 1 0 stretch;
+	border-image: url(../assets/appmenu-divider.png) 1 0 1 0 stretch;
+	border-width:0px 0px 1px 0px;
+}
+
+.appmenu .onyx-menu-item:hover {
+	background:none;
+}
+
+.appmenu .onyx-menu-item:first-of-type {
+	border-radius:20px 20px 0px 0px;
+}
+
+.appmenu .onyx-menu-item:last-of-type {
+	border-width:0px;
+	border-radius:0px 0px 20px 20px;
+}
+
+.appmenu .onyx-menu-item:active {
+	background:rgba(0,0,0,0.5);
+}
+

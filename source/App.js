@@ -10,8 +10,12 @@ enyo.kind({
 
 	components:[
 		{name:"detailForecastAnimator", kind:"Animator", duration:250, onStep:"animateDetailForecast", onEnd:"repositionDetailForecast"},
-		{kind:"Signals", onBackButton:"onBackGesture"},
+		{kind:"Signals", onBackButton:"onBackGesture", onToggleAppMenu:"toggleAppMenu"},
 		{content:"Beta", classes:"sash"},
+		{name:"appmenu", kind:"AppMenu", components:[
+			{content:"Preferences"},
+			{content:"About"}
+		]},
 		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", classes:"enyo-fit", draggable:false, onTransitionFinish:"panelIndexChanged", components:[
 			{
 				name:"outlook",
@@ -57,15 +61,17 @@ enyo.kind({
 		this.inherited(arguments);
 		this.setApi(new Weather.API);
 
-		enyo.dispatcher.listen(document, 'keyup', function(event) {
-			if(event.keyCode == 27)
-				enyo.Signals.send('onBackButton',event);
-		});
-
 		this.calculateCommandMenu();
 
 		window.addEventListener('popstate',enyo.bind(this,'stateChanged'));
 		window.INSTANCE = this;
+	},
+
+	toggleAppMenu:function() {
+		if(this.$.appmenu.getShowing())
+			this.$.appmenu.hide()
+		else
+			this.$.appmenu.showAtPosition({top:0, left:0});
 	},
 
 	submitPlace:function() {
@@ -78,8 +84,6 @@ enyo.kind({
 	rendered:function() {
 		this.inherited(arguments);
 		this.stateChanged();
-		if (window.PalmSystem)
-			PalmSystem.stageReady();
 
 		this.$.locatingPopup.show();
 		Weather.Geolocation.getLocation()
@@ -106,6 +110,8 @@ enyo.kind({
 				this.$.getPlacePopup.show();
 				this.$.placeInput.focus();
 			}));
+
+		enyo.Signals.send("onStageReady");
 	},
 
 	apiChanged:function() {
