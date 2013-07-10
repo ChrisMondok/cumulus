@@ -18,7 +18,7 @@ enyo.kind({
 	},
 	
 	components:[
-		{name:"today", classes:"today", kind:"Cumulus.Forecast", showHumidity:true},
+		{name:"today", classes:"today", kind:"Cumulus.Forecast", showWeather:false, showRange:false, showHumidity:true},
 		{fit:true, style:"position:relative", components:[
 			{name:"loadingPopup", kind:"LoadingPopup"},
 			{name:"scroller", kind:"Scroller", touch:true, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[

@@ -13,6 +13,7 @@ enyo.kind({
 		metric:false,
 		showHumidity:false,
 		showRange:true,
+		showWeather:true,
 
 		icon:"na.png",
 		weather:"Loading",
@@ -137,7 +138,7 @@ enyo.kind({
 		var data = this.getData();
 
 		this.$.day.setShowing(data && data.hasOwnProperty('dateTimeISO'));
-		this.$.weather.setShowing(data && data.hasOwnProperty('weather'));
+		this.$.weather.setShowing(data && this.getShowWeather() && data.hasOwnProperty('weather'));
 
 		this.$.fahrenheit.setShowing(data && this.getImperial() && (data.hasOwnProperty('tempF')));
 		this.$.celcius.setShowing(data && this.getMetric() && (data.hasOwnProperty('tempC')));
