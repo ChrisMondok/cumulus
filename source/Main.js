@@ -1,5 +1,7 @@
 enyo.kind({
 	name: "Cumulus.Main",
+	classes:"onyx",
+
 	published:{
 		api:null
 	},
