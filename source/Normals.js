@@ -16,14 +16,8 @@ enyo.kind({
 	components:[
 		{kind:"Divider", content:"Sun"},
 		{kind:"FittableColumns", controlClasses:"halfwidth", classes:"sunmoon", components:[
-			{components:[
-				{kind:"Image", src:"assets/icons/sunrise.png"},
-				{name:"sunrise", tag:"span"}
-			]},
-			{components:[
-				{kind:"Image", src:"assets/icons/sunset.png"},
-				{name:"sunset", tag:"span"}
-			]}
+			{name:"sunrise", classes:"sunrise"},
+			{name:"sunset", classes:"sunset"}
 		]},
 		{name:"tideDrawer", kind:"Drawer", open:false, components:[
 			{kind:"Divider", content:"Tides"},

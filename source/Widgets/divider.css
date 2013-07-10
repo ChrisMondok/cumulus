@@ -1,0 +1,25 @@
+.divider {
+	margin-top:1em;
+}
+
+.divider-label {
+	margin:0 0.5em;
+}
+
+.divider-line {
+	background-color:#F79A42;
+	height:0.4em;
+	box-shadow: inset 0px 2px 3px rgba(0,0,0,0.5);
+	vertical-align:middle;
+}
+
+.divider-line.right {
+	border-radius:0.2em 0 0 0.2em;
+}
+
+.divider-line.left {
+	width:1em;
+	border-radius:0 0.2em 0.2em 0;
+}
+
+

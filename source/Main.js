@@ -28,7 +28,7 @@ enyo.kind({
 				kind:"Cumulus.Detail",
 			}
 		]},
-		{name:"commandMenu", classes:"command-menu onyx-toolbar-inline", components:[
+		{name:"commandMenu", kind:"CommandMenu", components:[
 			{name:"backButton", kind:"onyx.IconButton", src:"assets/icons/back.png", ontap:"back"}
 		]},
 		{name:"locatingPopup", kind:"onyx.Popup", centered:true, modal:true, floating:true, scrim:true, autoDismiss:false, scrimWhenModal:true, components:[

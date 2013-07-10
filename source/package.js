@@ -14,5 +14,9 @@ enyo.depends(
 	"Detail.js",
 	"Normals.js",
 	"TemperatureGraph.js",
-	"Cumulus.css"
+	
+	"Cumulus.css",
+	"detail.css",
+	"forecast.css",
+	"outlook.css"
 );

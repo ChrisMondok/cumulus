@@ -1,0 +1,12 @@
+.outlook, .dark, .detail {
+	background-color:#555;
+}
+
+.outlook .forecast {
+	border-bottom:1px solid rgba(0,0,0,0.75);
+	border-top:1px solid rgba(255,255,255,1);
+}
+
+.outlook .forecast.primary {
+	border-top:none;
+}

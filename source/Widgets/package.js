@@ -1,7 +1,11 @@
 enyo.depends(
 	"Appmenu.js",
-	"appmenu.css",
 	"Divider.js",
 	"Graph.js",
-	"LoadingPopup.js"
+	"LoadingPopup.js",
+	"CommandMenu.js",
+
+	"appmenu.css",
+	"divider.css",
+	"commandmenu.css"
 );
