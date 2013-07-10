@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Weather.API",
+	name:"Cumulus.API",
 	published:{
 		consumerSecret:"",
 		consumerId:"",

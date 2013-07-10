@@ -1,4 +1,4 @@
 enyo.kind({
-	name:"Weather.Settings",
+	name:"Cumulus.Settings",
 	content:"Settings"
 });

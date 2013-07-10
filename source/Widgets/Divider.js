@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Weather.Divider",
+	name:"Divider",
 	kind:"FittableColumns",
 	noStretch:true,
 

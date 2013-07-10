@@ -1,5 +1,5 @@
 enyo.kind({
-	name: "App",
+	name: "Cumulus.Main",
 	published:{
 		api:null
 	},
@@ -12,18 +12,18 @@ enyo.kind({
 		{name:"detailForecastAnimator", kind:"Animator", duration:250, onStep:"animateDetailForecast", onEnd:"repositionDetailForecast"},
 		{kind:"Signals", onBackButton:"onBackGesture", onToggleAppMenu:"toggleAppMenu"},
 		{content:"Beta", classes:"sash"},
-		{name:"appmenu", kind:"AppMenu", components:[
+		{name:"appmenu", kind:"Appmenu", components:[
 			{content:"Preferences"},
 			{content:"About"}
 		]},
 		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", classes:"enyo-fit", draggable:false, onTransitionFinish:"panelIndexChanged", components:[
 			{
 				name:"outlook",
-				kind:"Weather.Outlook",
+				kind:"Cumulus.Outlook",
 			},
 			{
 				name:"detail",
-				kind:"Weather.Detail",
+				kind:"Cumulus.Detail",
 			}
 		]},
 		{name:"commandMenu", classes:"command-menu onyx-toolbar-inline", components:[
@@ -59,7 +59,7 @@ enyo.kind({
 
 	create:function() {
 		this.inherited(arguments);
-		this.setApi(new Weather.API);
+		this.setApi(new Cumulus.API);
 
 		this.calculateCommandMenu();
 
@@ -86,7 +86,7 @@ enyo.kind({
 		this.stateChanged();
 
 		this.$.locatingPopup.show();
-		Weather.Geolocation.getLocation()
+		Service.Geolocation.getLocation()
 			.response(enyo.bind(this, function(sender,response) {
 				this.$.locatingPopup.hide();
 				this.$.outlook.setPlace(response);

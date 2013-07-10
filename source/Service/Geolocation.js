@@ -1,5 +1,5 @@
 enyo.singleton({
-	name:"Weather.Geolocation",
+	name:"Service.Geolocation",
 
 	getLocation:function() {
 		var async = new enyo.Async();

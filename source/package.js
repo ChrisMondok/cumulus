@@ -3,20 +3,16 @@ enyo.depends(
 	"$lib/onyx",	// To theme Onyx using Theme.less, change this line to $lib/onyx/source,
 	//"Theme.less",	// uncomment this line, and follow the steps described in Theme.less
 	"OS",
-	"App.css",
-	"App.js",
+	"Service",
+	"Widgets",
+	"API",
+
+	"Main.js",
 	"Outlook.js",
 	"Settings.js",
-	"API.js",
 	"Forecast.js",
 	"Detail.js",
 	"Normals.js",
-	"Graph.js",
 	"TemperatureGraph.js",
-	"LoadingPopup.js",
-	"Divider.js",
-	"Geolocation.js",
-	"HAMWeatherKeys.js",
-	"AppMenu.js",
-	"appmenu.css"
+	"Cumulus.css"
 );

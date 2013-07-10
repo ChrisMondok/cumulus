@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Weather.Normals",
+	name:"Cumulus.Normals",
 	kind:"FittableRows",
 
 	published:{
@@ -14,7 +14,7 @@ enyo.kind({
 	],
 
 	components:[
-		{kind:"Weather.Divider", content:"Sun"},
+		{kind:"Divider", content:"Sun"},
 		{kind:"FittableColumns", controlClasses:"halfwidth", classes:"sunmoon", components:[
 			{components:[
 				{kind:"Image", src:"assets/icons/sunrise.png"},
@@ -26,7 +26,7 @@ enyo.kind({
 			]}
 		]},
 		{name:"tideDrawer", kind:"Drawer", open:false, components:[
-			{kind:"Weather.Divider", content:"Tides"},
+			{kind:"Divider", content:"Tides"},
 			{name:"tideRepeater", kind:"Repeater", tag:"table", classes:"tide-table", onSetupItem:"renderTide", components:[
 				{tag:"tr", components:[
 					{name:"type", tag:"td"},

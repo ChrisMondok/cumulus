@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Weather.Outlook",
+	name:"Cumulus.Outlook",
 	kind:"FittableRows",
 	classes:"outlook",
 
@@ -30,14 +30,14 @@ enyo.kind({
 
 	components:[
 		{name:"scroller", kind:"Scroller", touch:true, horizontal:"hidden", fit:true, components:[
-			{name:"observations", kind:"Weather.Forecast", classes:"primary dark", now:true, showHumidity:true, ontap:"pickToday"},
+			{name:"observations", kind:"Cumulus.Forecast", classes:"primary dark", now:true, showHumidity:true, ontap:"pickToday"},
 			{name:"periodRepeater", kind:"Repeater", classes:"light", onSetupItem:"renderPeriod", components:[
-				{name:"period", kind:"Weather.Forecast", ontap:"pickPeriod"}
+				{name:"period", kind:"Cumulus.Forecast", ontap:"pickPeriod"}
 			]},
 			{name:"placeName", classes:"label dark", style:"text-align:center"},
 			{classes:"command-menu-placeholder"}
 		]},
-		{name:"loadingPopup", kind:"Weather.LoadingPopup"}
+		{name:"loadingPopup", kind:"LoadingPopup"}
 	],
 
 	apiChanged:function() {

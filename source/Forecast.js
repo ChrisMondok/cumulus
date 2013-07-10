@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Weather.Forecast",
+	name:"Cumulus.Forecast",
 
 	classes:"forecast nice-padding",
 

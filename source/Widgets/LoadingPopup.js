@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Weather.LoadingPopup",
+	name:"LoadingPopup",
 	kind:"Popup",
 	
 	published:{

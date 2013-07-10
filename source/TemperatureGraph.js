@@ -1,6 +1,6 @@
 enyo.kind({
-	name:"Weather.TemperatureGraph",
-	kind:"Weather.Graph",
+	name:"Cumulus.TemperatureGraph",
+	kind:"Graph",
 
 	published:{
 		step:10,

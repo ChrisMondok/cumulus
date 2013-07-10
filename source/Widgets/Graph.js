@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Weather.Graph",
+	name:"Graph",
 
 	style:"position:relative; height:4em;",
 

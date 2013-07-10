@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Weather.Detail",
+	name:"Cumulus.Detail",
 	kind:"FittableRows",
 
 	classes:"detail",
@@ -18,30 +18,30 @@ enyo.kind({
 	},
 	
 	components:[
-		{name:"today", classes:"today", kind:"Weather.Forecast", showHumidity:true},
+		{name:"today", classes:"today", kind:"Cumulus.Forecast", showHumidity:true},
 		{fit:true, style:"position:relative", components:[
-			{name:"loadingPopup", kind:"Weather.LoadingPopup"},
+			{name:"loadingPopup", kind:"LoadingPopup"},
 			{name:"scroller", kind:"Scroller", touch:true, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
-				{kind:"Weather.Divider", content:"Temperature"},
+				{kind:"Divider", content:"Temperature"},
 				{
 					name:"tempGraph",
-					kind:"Weather.TemperatureGraph",
+					kind:"Cumulus.TemperatureGraph",
 					key:"tempF",
 					fillColor:"rgba(255,0,0,0.25)",
 					strokeColor:"rgba(255,0,0,1)"
 				},
-				{kind:"Weather.Divider", content:"Chance of precipitation"},
+				{kind:"Divider", content:"Chance of precipitation"},
 				{
 					name:"popGraph",
-					kind:"Weather.Graph",
+					kind:"Graph",
 					key:"pop",
 					fillColor:"rgba(132,167,193,0.5)",
 					strokeColor:"rgba(132,167,193,1)"
 				},
-				{name:"normals", kind:"Weather.Normals"},
-				{kind:"Weather.Divider", content:"Hourly Forecast"},
+				{name:"normals", kind:"Cumulus.Normals"},
+				{kind:"Divider", content:"Hourly Forecast"},
 				{name:"periodRepeater", kind:"Repeater", count:24, onSetupItem:"renderPeriod", components:[
-					{name:"forecast", kind:"Weather.Forecast", classes:"dark hourly", hourly:true, showRange:false}
+					{name:"forecast", kind:"Cumulus.Forecast", classes:"dark hourly", hourly:true, showRange:false}
 				]},
 				{classes:"command-menu-placeholder"}
 			]},
