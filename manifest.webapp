@@ -3,7 +3,7 @@
 	"description":"Cumulus weather app",
 	"launch_path":"index.html",
 	"developer": {
-		"name": "Chris Mondok"
+		"name": "Chris Mondok",
 		"url": "http://github.com/ChrisMondok"
 	},
 	"icons": {
