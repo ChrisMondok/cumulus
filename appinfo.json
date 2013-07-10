@@ -1,6 +1,6 @@
 {
 	"id":"com.chrismondok.cumulus",
-	"version":"0.8.1",
+	"version":"{VERSION}",
 	"vendor":"Chris Mondok",
 	"type":"web",
 	"main":"index.html",
