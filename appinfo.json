@@ -1,9 +1,9 @@
 {
-	"id":"com.chrismondok.weather",
+	"id":"com.chrismondok.cumulus",
 	"version":"0.8.1",
 	"vendor":"Chris Mondok",
 	"type":"web",
 	"main":"index.html",
-	"title":"Weather",
+	"title":"Cumulus",
 	"uiRevision":2
 }

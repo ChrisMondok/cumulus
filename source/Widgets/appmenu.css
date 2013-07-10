@@ -9,10 +9,10 @@
 	background:none;
 	box-shadow:none;
 
-	-moz-border-image: url(../assets/appmenu.png) 30 28 35 28 stretch stretch;
-	-o-border-image: url(../assets/appmenu.png) 30 28 35 28 stretch stretch;
-	-webkit-border-image: url(../assets/appmenu.png) 30 28 35 28 stretch stretch;
-	border-image: url(../assets/appmenu.png) 30 28 35 28 stretch stretch;
+	-moz-border-image: url(../../assets/appmenu.png) 30 28 35 28 stretch stretch;
+	-o-border-image: url(../../assets/appmenu.png) 30 28 35 28 stretch stretch;
+	-webkit-border-image: url(../../assets/appmenu.png) 30 28 35 28 stretch stretch;
+	border-image: url(../../assets/appmenu.png) 30 28 35 28 stretch stretch;
 }
 
 .appmenu > * {
@@ -20,10 +20,10 @@
 }
 
 .appmenu .onyx-menu-item {
-	-moz-border-image: url(../assets/appmenu-divider.png) 1 0 1 0 stretch;
-	-webkit-border-image: url(../assets/appmenu-divider.png) 1 0 1 0 stretch;
-	-o-border-image: url(../assets/appmenu-divider.png) 1 0 1 0 stretch;
-	border-image: url(../assets/appmenu-divider.png) 1 0 1 0 stretch;
+	-moz-border-image: url(../../assets/appmenu-divider.png) 1 0 1 0 stretch;
+	-webkit-border-image: url(../../assets/appmenu-divider.png) 1 0 1 0 stretch;
+	-o-border-image: url(../../assets/appmenu-divider.png) 1 0 1 0 stretch;
+	border-image: url(../../assets/appmenu-divider.png) 1 0 1 0 stretch;
 	border-width:0px 0px 1px 0px;
 }
 

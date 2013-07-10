@@ -1,8 +1,8 @@
 #!/bin/bash
 tools/deploy.sh
-cp appinfo.json deploy/weather/
+cp appinfo.json deploy/cumulus/
 cd deploy
-palm-package weather
-palm-install com.chrismondok.weather_*
-palm-launch com.chrismondok.weather
+palm-package cumulus
+palm-install com.chrismondok.cumulus_*
+palm-launch com.chrismondok.cumulus
 cd ..

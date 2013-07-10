@@ -49,7 +49,7 @@ enyo.kind({
 	
 	timeFromDateString:function(dateString) {
 		if(dateString)
-			return App.formatTime(new Date(dateString));
+			return Cumulus.Main.formatTime(new Date(dateString));
 		else
 			return "";
 	},
