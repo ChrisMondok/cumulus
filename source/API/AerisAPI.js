@@ -1,11 +1,9 @@
 enyo.kind({
-	name:"Cumulus.API",
+	name:"Cumulus.AerisAPI",
 	published:{
 		consumerSecret:"",
 		consumerId:"",
-		apiUrl:"http://api.aerisapi.com/",
-		imperial:true,
-		metric:false
+		apiUrl:"http://api.aerisapi.com/"
 	},
 	create:function() {
 		this.inherited(arguments);

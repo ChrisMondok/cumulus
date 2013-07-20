@@ -1,4 +1,4 @@
 enyo.depends(
-	"API.js",
-	"HAMWeatherKeys.js"
+	"AerisAPI.js",
+	"AerisKeys.js"
 );

@@ -61,7 +61,7 @@ enyo.kind({
 
 	create:function() {
 		this.inherited(arguments);
-		this.setApi(new Cumulus.API);
+		this.setApi(new Cumulus.AerisAPI);
 
 		this.calculateCommandMenu();
 
