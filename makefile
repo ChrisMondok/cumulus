@@ -2,11 +2,6 @@ APPID	:= com.chrismondok.cumulus
 VERSION	:= 0.1.$(shell git log --pretty=format:'' | wc -l )
 IPK		:= $(APPID)_$(VERSION)_all.ipk
 
-clean:
-	rm -rf deploy/* build/*
-
-all: deploy/cumulus
-
 deploy/cumulus:
 	./tools/deploy.sh
 
@@ -20,3 +15,6 @@ webos: deploy/$(IPK)
 
 install-webos: deploy/$(IPK)
 	palm-install deploy/$(IPK)
+
+clean:
+	rm -rf deploy/* build/*
