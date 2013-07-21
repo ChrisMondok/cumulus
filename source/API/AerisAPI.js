@@ -49,6 +49,9 @@ enyo.kind({
 	getObservations:function(loc) {
 		return this.makeRequest.apply(this,this.endpointAndLoc('observations',loc));
 	},
+	getNearbyObservations:function(loc) {
+		return this.makeRequest.apply(this,this.endpointAndLoc('observations',loc,{limit:5}));
+	},
 	getForecast:function(loc) {
 		return this.makeRequest.apply(this,this.endpointAndLoc('forecasts',loc));
 	},

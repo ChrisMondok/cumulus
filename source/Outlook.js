@@ -7,11 +7,12 @@ enyo.kind({
 		api:undefined,
 		observations:undefined,
 		periods:undefined,
-		place:undefined
+		place:undefined,
 	},
 
 	events:{
-		onDayPicked:""
+		onDayPicked:"",
+		onShowMap:""
 	},
 
 	handlers:{
@@ -30,7 +31,7 @@ enyo.kind({
 
 	components:[
 		{name:"scroller", kind:"Scroller", thumb:false, touch:true, horizontal:"hidden", fit:true, components:[
-			{name:"observations", kind:"Cumulus.Forecast", classes:"primary dark", now:true, showHumidity:true, ontap:"pickToday"},
+			{name:"observations", kind:"Cumulus.Forecast", classes:"primary dark", now:true, showHumidity:true, ontap:"showMap"},
 			{name:"periodRepeater", kind:"Repeater", classes:"light", onSetupItem:"renderPeriod", components:[
 				{name:"period", kind:"Cumulus.Forecast", ontap:"pickPeriod"}
 			]},
@@ -105,8 +106,9 @@ enyo.kind({
 		item.$.period.setData(period);
 	},
 
-	pickToday:function(sender,event) {
-		this.doDayPicked({data:this.getObservations()});
+	showMap:function(sender,event) {
+		this.doShowMap();
+		//this.doDayPicked({data:this.getObservations()});
 	},
 
 	pickPeriod:function(sender,event) {

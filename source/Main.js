@@ -7,7 +7,8 @@ enyo.kind({
 	},
 
 	handlers:{
-		onDayPicked:"pushDayPickedState"
+		onDayPicked:"pushDayPickedState",
+		onShowMap:"pushShowMapState"
 	},
 
 	components:[
@@ -19,14 +20,9 @@ enyo.kind({
 			{content:"About"}
 		]},
 		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", classes:"enyo-fit", draggable:false, onTransitionFinish:"panelIndexChanged", components:[
-			{
-				name:"outlook",
-				kind:"Cumulus.Outlook",
-			},
-			{
-				name:"detail",
-				kind:"Cumulus.Detail",
-			}
+			{ name:"outlook", kind:"Cumulus.Outlook" },
+			{ name:"detail", kind:"Cumulus.Detail" },
+			{ name:"map", kind:"Cumulus.Map" }
 		]},
 		{name:"commandMenu", kind:"CommandMenu", components:[
 			{name:"backButton", kind:"onyx.IconButton", src:"assets/icons/back.png", ontap:"back"}
@@ -82,6 +78,7 @@ enyo.kind({
 		var place = this.$.placeInput.getValue();
 		this.$.outlook.setPlace(place);
 		this.$.detail.setPlace(place);
+		this.$.map.setPlace(place);
 	},
 
 	rendered:function() {
@@ -94,6 +91,7 @@ enyo.kind({
 				this.$.locatingPopup.hide();
 				this.$.outlook.setPlace(response);
 				this.$.detail.setPlace(response);
+				this.$.map.setPlace(response);
 			}))
 			.error(enyo.bind(this, function(sender,error) {
 				this.$.locatingPopup.hide();
@@ -129,6 +127,15 @@ enyo.kind({
 		else 
 			this.showDetail(sender,event);
 	},
+	pushShowMapState:function(sender,event) {
+		if(history.pushState) {
+			history.pushState({data:event.data, index:2}, "Local map");
+			this.stateChanged();
+		}
+		else
+			this.showMap(sender,event);
+
+	},
 
 	onBackGesture:function(sender,event) {
 		if(this.$.panels.getIndex()) {
@@ -152,6 +159,9 @@ enyo.kind({
 				case 1:
 					this.showDetail(this,history.state);
 					break;
+				case 2:
+					this.showMap(this,history.state);
+					break;
 			}
 		}
 		else
@@ -168,6 +178,10 @@ enyo.kind({
 		}
 		this.$.panels.setIndex(1);
 		this.$.detail.setData(event.data);
+	},
+
+	showMap:function(sender,event) {
+		this.$.panels.setIndex(2);
 	},
 
 	animateDetailForecast:function(animator,event) {
