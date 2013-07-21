@@ -29,7 +29,7 @@ enyo.kind({
 	},
 
 	components:[
-		{name:"scroller", kind:"Scroller", touch:true, horizontal:"hidden", fit:true, components:[
+		{name:"scroller", kind:"Scroller", thumb:false, touch:true, horizontal:"hidden", fit:true, components:[
 			{name:"observations", kind:"Cumulus.Forecast", classes:"primary dark", now:true, showHumidity:true, ontap:"pickToday"},
 			{name:"periodRepeater", kind:"Repeater", classes:"light", onSetupItem:"renderPeriod", components:[
 				{name:"period", kind:"Cumulus.Forecast", ontap:"pickPeriod"}
