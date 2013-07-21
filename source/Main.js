@@ -143,7 +143,7 @@ enyo.kind({
 		if(history.pushState)
 			history.back();
 		else
-			this.$.panels.previous();
+			this.$.panels.setIndex(0);
 	},
 
 	stateChanged:function() {
