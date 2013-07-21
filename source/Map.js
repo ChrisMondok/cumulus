@@ -70,9 +70,11 @@ enyo.kind({
 
 	resizeHandler:function() {
 		this.inherited(arguments);
-		this.draw();
 
 		this.sizeCanvas();
+		this.updateScale();
+
+		this.draw();
 	},
 
 	sizeCanvas:function() {
@@ -142,7 +144,7 @@ enyo.kind({
 	updateScale:function() {
 		var maxX = 0, maxY = 0;
 		var here = this.getPlace();
-		this.getNearbyObservations().map(function(o) {
+		(this.getNearbyObservations() || []).map(function(o) {
 			maxX = Math.max(maxX, Math.abs(here.longitude - o.loc.long));
 			maxY = Math.max(maxY, Math.abs(here.latitude - o.loc.lat));
 		});
