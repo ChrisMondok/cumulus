@@ -61,7 +61,8 @@ enyo.kind({
 
 	create:function() {
 		this.inherited(arguments);
-		this.setApi(new Cumulus.AerisAPI);
+
+		this.setApi(enyo.create({ kind:"Cumulus.Cache", source:new Cumulus.AerisAPI() }));
 
 		this.calculateCommandMenu();
 

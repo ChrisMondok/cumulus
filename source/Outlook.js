@@ -54,12 +54,12 @@ enyo.kind({
 		enyo.job('refresh', enyo.bind(this,function() {
 			this.$.loadingPopup.show();
 			var api = this.getApi();
-			api.getObservations(this.getPlace())
+			api.getAsync('observations',this.getPlace())
 				.response(enyo.bind(this,"gotObservations"))
 				.error(function(ajax,error) {
 					alert(JSON.stringify(error));
 				});
-			api.getForecast(this.getPlace())
+			api.getAsync('forecast',this.getPlace())
 				.response(enyo.bind(this,"gotForecast"))
 				.error(function(ajax,error) {
 					alert(JSON.stringify(error));

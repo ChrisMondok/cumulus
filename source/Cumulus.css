@@ -44,3 +44,8 @@
 	-webkit-transform:rotate(45deg);
 	transform:rotate(45deg);
 }
+
+.main-panel
+{
+	width:320px;
+}

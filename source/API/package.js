@@ -1,4 +1,5 @@
 enyo.depends(
 	"AerisAPI.js",
-	"AerisKeys.js"
+	"AerisKeys.js",
+	"Cache.js"
 );
