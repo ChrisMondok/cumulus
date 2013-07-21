@@ -80,6 +80,13 @@ enyo.kind({
 		var bounds = this.$.canvas.getBounds();
 		this.$.canvas.setAttribute('height',bounds.height);
 		this.$.canvas.setAttribute('width',bounds.width);
+
+		if(this.getShowing())
+		{
+			this.draw();
+			for(var i = 0; i < this.$.placeRepeater.getCount(); i++)
+				this.$.placeRepeater.renderRow(i);
+		}
 	},
 
 	draw:function() {
