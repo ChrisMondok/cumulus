@@ -150,8 +150,8 @@ enyo.kind({
 
 		var bounds = this.$.canvas.getBounds();
 		this.setScale(Math.min(
-			(bounds.width-128) / (2*maxX),
-			(bounds.height-128) / (2*maxY)
+			(bounds.width-32) / (2*maxX),
+			(bounds.height-32) / (2*maxY)
 		));
 	},
 
