@@ -2,8 +2,12 @@
 	"id":"com.chrismondok.cumulus",
 	"version":"{VERSION}",
 	"vendor":"Chris Mondok",
+	"vendorurl":"http://github.com/ChrisMondok",
 	"type":"web",
 	"main":"index.html",
 	"title":"Cumulus",
-	"uiRevision":2
+	"uiRevision":2,
+	"keywords": ["weather"],
+	"noDeprecatedStyles": true,
+	"theme": "light"
 }
