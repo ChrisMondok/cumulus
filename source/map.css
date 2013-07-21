@@ -7,6 +7,8 @@
 	box-shadow:0px 2px 6px rgba(0,0,0,0.5);
 	padding-right:8px;
 
+	-webkit-animation: fadein 0.5s;
+	-moz-animation: fadein 0.5s;
 	animation: fadein 0.5s;
 }
 
@@ -22,6 +24,24 @@
 	width:4em;
 }
 
+@-webkit-keyframes fadein {
+	from {
+		opacity:0
+	}
+
+	to {
+		opacity:1
+	}
+}
+@-moz-keyframes fadein {
+	from {
+		opacity:0
+	}
+
+	to {
+		opacity:1
+	}
+}
 @keyframes fadein {
 	from {
 		opacity:0
