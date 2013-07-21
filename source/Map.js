@@ -102,11 +102,6 @@ enyo.kind({
 		ctx.strokeStyle = this.getStrokeStyle();
 		ctx.fillStyle = this.getFillStyle();
 
-		ctx.beginPath();
-		ctx.arc(bounds.width/2,bounds.height/2,8,0,2*Math.PI,false);
-		ctx.stroke();
-		ctx.fill();
-
 		var nearby = this.getNearbyObservations(), here = this.getPlace();
 		for(var i in nearby){
 			var n = nearby[i],
@@ -119,15 +114,12 @@ enyo.kind({
 			ctx.lineTo.apply(ctx,Cumulus.Map.lerp(animator.value,[bounds.width/2,bounds.height/2],coords));
 			ctx.stroke();
 			ctx.closePath()
-
-			ctx.beginPath();
-			ctx.arc(coords[0],coords[1],4, 0, 2*Math.PI, false)
-			ctx.stroke();
-			ctx.fill();
-
-			//ctx.fillStyle = this.getTextStyle();
-			//ctx.fillText(n.id,x,y);
 		}
+
+		ctx.beginPath();
+		ctx.arc(bounds.width/2,bounds.height/2,8,0,2*Math.PI,false);
+		ctx.stroke();
+		ctx.fill();
 	},
 
 	getCoords:function(place) {
@@ -195,8 +187,8 @@ enyo.kind({
 
 		item.$.icon.setSrc("assets/weathericons/"+place.ob.icon);
 
-		item.$.container.applyStyle("left",(coords[0]+6)+"px");
-		item.$.container.applyStyle("top",(coords[1]+6)+"px");
+		item.$.container.applyStyle("left",(coords[0]-16)+"px");
+		item.$.container.applyStyle("top",(coords[1]-16)+"px");
 
 		return true;
 	},
