@@ -60,7 +60,7 @@ enyo.kind({
 			enyo.job('refresh',enyo.bind(this,"refresh"),100);
 		else
 		{
-			this.$.normals.setTides(null);
+			this.setTides(null);
 			this.setPeriods([]);
 		}
 
