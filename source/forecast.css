@@ -67,3 +67,7 @@
 	vertical-align:middle;
 	margin-right:1ex;
 }
+
+.onyx-popup .forecast {
+	background-color:transparent;
+}

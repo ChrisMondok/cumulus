@@ -11,6 +11,7 @@ enyo.kind({
 
 		imperial:true,
 		metric:false,
+		showDay:true,
 		showHumidity:false,
 		showRange:true,
 		showWeather:true,
@@ -137,7 +138,7 @@ enyo.kind({
 	updateShowing:function() {
 		var data = this.getData();
 
-		this.$.day.setShowing(data && data.hasOwnProperty('dateTimeISO'));
+		this.$.day.setShowing(data && this.getShowDay() && data.hasOwnProperty('dateTimeISO'));
 		this.$.weather.setShowing(data && this.getShowWeather() && data.hasOwnProperty('weather'));
 
 		this.$.fahrenheit.setShowing(data && this.getImperial() && (data.hasOwnProperty('tempF')));
