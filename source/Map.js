@@ -1,6 +1,6 @@
 enyo.kind({
 	name:"Cumulus.Map",
-	style:"position:relative",
+	classes:"map",
 
 	published:{
 		api:null,
@@ -48,7 +48,8 @@ enyo.kind({
 					{name:"id"},
 					{name:"temperature"}
 				]},
-			]}
+			]},
+			{name:"distanceLabel", classes:"distance-label"}
 		]},
 	],
 
@@ -177,21 +178,28 @@ enyo.kind({
 	setupPlace:function(sender,event) {
 		var place = this.getNearbyObservations()[event.index],
 			coords = this.getCoords(place),
-			item = event.item;
+			item = event.item,
+			bounds = this.$.canvas.getBounds(),
+			halfCoords = Cumulus.Map.lerp(0.5,[bounds.width/2,bounds.height/2],coords);
 		
 		if(!window.ITEMS)
 			window.ITEMS = [];
 
 		window.ITEMS[event.index] = item;
 
-		item.$.id.setContent(place.id);
-		item.$.temperature.setContent(place.ob.tempF+"°F");
+		//item.$.id.setContent(place.id);
+
+		if(place.ob.tempF)
+			item.$.temperature.setContent(place.ob.tempF+"°F");
 
 		item.$.icon.setSrc("assets/weathericons/"+place.ob.icon);
 
-		item.$.container.applyStyle("left",(coords[0]-16)+"px");
-		item.$.container.applyStyle("top",(coords[1]-16)+"px");
+		item.$.container.applyStyle("left",(coords[0]-10)+"px");
+		item.$.container.applyStyle("top",(coords[1]-10)+"px");
 
+		item.$.distanceLabel.setContent(Math.round(10*place.relativeTo.distanceMI)/10+"Mi");
+		item.$.distanceLabel.applyStyle("left",(halfCoords[0]-24)+"px");
+		item.$.distanceLabel.applyStyle("top",(halfCoords[1]-8)+"px");
 		return true;
 	},
 

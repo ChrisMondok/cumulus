@@ -1,14 +1,24 @@
-.place-label
+.map
+{
+	position:relative;
+}
+
+.place-label, .distance-label
 {
 	position:absolute;
 	font-size:0.5em;
 	vertical-align:middle;
-	background-color:rgba(255,255,255,0.5);
-	padding-right:8px;
 
 	-webkit-animation: fadein 0.5s;
 	-moz-animation: fadein 0.5s;
 	animation: fadein 0.5s;
+
+}
+
+.place-label
+{
+	background-color:rgba(255,255,255,0.5);
+	padding-right:8px;
 }
 
 .place-label > *
@@ -21,33 +31,48 @@
 {
 	height:32px;
 	width:32px;
+	margin:-6px;
+}
+
+.distance-label
+{
+	color:rgba(132,167,193,1);
+	width:48px;
+	height:16px;
+	line-height:16px;
+	text-align:center;
 }
 
 @-webkit-keyframes fadein {
 	from {
-		opacity:0
+		opacity:0;
+		-webkit-transform:translate(0px,-200px);
 	}
 
 	to {
-		opacity:1
+		opacity:1;
+		-webkit-transform:translate(0px,0px);
 	}
 }
 @-moz-keyframes fadein {
 	from {
-		opacity:0
+		opacity:0;
+		-moz-transform:translate(0px,-200px);
 	}
 
 	to {
-		opacity:1
+		opacity:1;
+		-moz-transform:translate(0px,0px);
 	}
 }
 @keyframes fadein {
 	from {
-		opacity:0
+		opacity:0;
+		transform:translate(0px,-200px);
 	}
 
 	to {
-		opacity:1
+		opacity:1;
+		transform:translate(0px,0px);
 	}
 }
-
