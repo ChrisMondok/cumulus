@@ -26,6 +26,7 @@
 
 .detail .sunmoon .sunrise, .detail .sunmoon .sunset {
 	line-height:48px;
+	padding-left:48px;
 	background-position:16px center;
 	background-repeat:no-repeat;
 }
