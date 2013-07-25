@@ -23,7 +23,8 @@ enyo.kind({
 			{fit:true},
 			{name:"min"}
 		]},
-		{name:"canvas", style:"width:100%; height:100%", tag:"canvas"}
+		{name:"canvas", style:"width:100%; height:100%", tag:"canvas"},
+		{name:"animator", kind:"Animator", onStep:"drawGraph", start:0, end:1, duration:1000}
 	],
 
 	create:function() {
@@ -59,7 +60,7 @@ enyo.kind({
 	},
 
 	dataChanged:function() {
-		this.drawGraph();
+		this.$.animator.play();
 	},
 
 	getX:function(i) {
@@ -79,7 +80,9 @@ enyo.kind({
 		this._ctx.strokeStyle = this.getGraphColor();
 		var data = this.getData();
 
-		for(var i = 0; i < data.length-1; i++) {
+		var amount = (data.length-1) * this.$.animator.value;
+
+		for(var i = 0; i < amount; i++) {
 			var x = this.getX(i);
 			this._ctx.beginPath();
 			this._ctx.moveTo(x,0);
@@ -93,9 +96,13 @@ enyo.kind({
 		if(!this._ctx)
 			return;
 
+		var bounds = this.$.canvas.getBounds(),
+			data = this.getData(),
+			ctx = this._ctx,
+			animStep = Math.max(0,this.$.animator.value*2-1); 
+
 		this.sizeCanvas();
 
-		var bounds = this.$.canvas.getBounds(), data = this.getData(), ctx = this._ctx;
 		ctx.clearRect(0,0,bounds.width,bounds.height);
 
 
@@ -108,7 +115,7 @@ enyo.kind({
 			ctx.strokeStyle = this.getStrokeColor();
 			ctx.beginPath();
 			for(var i in data) {
-				ctx.lineTo(this.getX(i),this.getY(i)); 
+				ctx.lineTo(this.getX(i),animStep*this.getY(i)+(1-animStep)*bounds.height); 
 			}
 			ctx.stroke();
 			ctx.lineTo(bounds.width,bounds.height);

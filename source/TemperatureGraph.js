@@ -35,11 +35,13 @@ enyo.kind({
 		var bottom = Math.floor(this.getMin()/step)*step;
 		var top = Math.ceil(this.getMax()/step)*step;
 
+		var amount = this.$.animator.value;
+
 		for(var i = bottom; i < top; i+=step) {
 			var y = this.valueToY(i);
 			this._ctx.beginPath();
 			this._ctx.moveTo(0,this.valueToY(i));
-			this._ctx.lineTo(this.$.canvas.getBounds().width,this.valueToY(i));
+			this._ctx.lineTo(this.$.canvas.getBounds().width * amount,this.valueToY(i));
 			this._ctx.stroke();
 			this._ctx.closePath();
 		}
