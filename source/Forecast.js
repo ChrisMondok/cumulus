@@ -13,6 +13,7 @@ enyo.kind({
 		metric:false,
 		showDay:true,
 		showHumidity:false,
+		showTemp:true,
 		showRange:true,
 		showWeather:true,
 		showPop:true,
@@ -137,13 +138,14 @@ enyo.kind({
 	},
 
 	updateShowing:function() {
+		//man, this thing is a mess.
 		var data = this.getData();
 
 		this.$.day.setShowing(data && this.getShowDay() && data.hasOwnProperty('dateTimeISO'));
 		this.$.weather.setShowing(data && this.getShowWeather() && data.hasOwnProperty('weather'));
 
-		this.$.fahrenheit.setShowing(data && this.getImperial() && (data.hasOwnProperty('tempF')));
-		this.$.celcius.setShowing(data && this.getMetric() && (data.hasOwnProperty('tempC')));
+		this.$.fahrenheit.setShowing(data && this.getShowTemp() && this.getImperial() && (data.hasOwnProperty('tempF')));
+		this.$.celcius.setShowing(data && this.getShowTemp() && this.getMetric() && (data.hasOwnProperty('tempC')));
 
 		this.$.tempRangeF.setShowing(data && this.getShowRange() && this.getImperial() && (data.hasOwnProperty('maxTempF')));
 		this.$.tempRangeC.setShowing(data && this.getShowRange() && this.getMetric() && (data.hasOwnProperty('maxTempC')));
