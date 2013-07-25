@@ -41,7 +41,7 @@ enyo.kind({
 				{name:"normals", kind:"Cumulus.Normals"},
 				{kind:"Divider", content:"Hourly Forecast"},
 				{name:"periodRepeater", kind:"Repeater", count:24, onSetupItem:"renderPeriod", components:[
-					{name:"forecast", kind:"Cumulus.Forecast", classes:"dark hourly", hourly:true, showRange:false}
+					{name:"forecast", kind:"Cumulus.Forecast", classes:"dark hourly", hourly:true, showTemp:false, showRange:false}
 				]},
 				{classes:"command-menu-placeholder"}
 			]},
