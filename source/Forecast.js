@@ -15,6 +15,7 @@ enyo.kind({
 		showHumidity:false,
 		showRange:true,
 		showWeather:true,
+		showPop:true,
 
 		icon:"na.png",
 		weather:"Loading",
@@ -150,7 +151,7 @@ enyo.kind({
 		this.$.avgTempF.setShowing(data && !(data.hasOwnProperty('tempF') && data.tempF !== null));
 		this.$.avgTempC.setShowing(data && !(data.hasOwnProperty('tempC') && data.tempC !== null));
 
-		this.$.popRow.setShowing(data && data.hasOwnProperty('pop'));
+		this.$.popRow.setShowing(data && this.getShowPop() && data.hasOwnProperty('pop'));
 
 		this.$.humidityRow.setShowing(data && this.getShowHumidity() && data.hasOwnProperty('humidity'));
 	},

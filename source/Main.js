@@ -12,7 +12,6 @@ enyo.kind({
 	},
 
 	components:[
-		{name:"detailForecastAnimator", kind:"Animator", duration:250, onStep:"animateDetailForecast", onEnd:"repositionDetailForecast"},
 		{kind:"Signals", onBackButton:"onBackGesture", onToggleAppMenu:"toggleAppMenu"},
 		{content:"Beta", classes:"sash"},
 		{name:"appmenu", kind:"Appmenu", components:[
@@ -169,31 +168,12 @@ enyo.kind({
 	},
 
 	showDetail:function(sender,event) {
-		if(!this.$.panels.getIndex() && event.top) {
-			enyo.job('slideUp', enyo.bind(this, function() {
-					this.$.detailForecastAnimator.play({startValue:event.top, endValue:0});
-				}), this.$.panels.getAnimator().getDuration());
-			this.$.detail.$.today.applyStyle('position','relative');
-			this.$.detail.$.today.setBounds({ top:event.top+"px"});
-		}
 		this.$.panels.setIndex(1);
 		this.$.detail.setData(event.data);
 	},
 
 	showMap:function(sender,event) {
 		this.$.panels.setIndex(2);
-	},
-
-	animateDetailForecast:function(animator,event) {
-		this.$.detail.$.today.setBounds({ top:animator.value+"px" });
-	},
-
-	repositionDetailForecast:function(animator,event) {
-		this.$.detail.$.today.applyStyle('position','');
-		this.$.detail.$.today.setBounds({
-			top:"0",
-			left:"0"
-		});
 	},
 
 	panelIndexChanged:function() {
