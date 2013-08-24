@@ -19,7 +19,7 @@ enyo.kind({
 	},
 	
 	components:[
-		{name:"today", classes:"today", kind:"Cumulus.Forecast", showWeather:false, showRange:false, showPop:false, showHumidity:true},
+		{name:"day", classes:"today title nice-padding"},
 		{fit:true, style:"position:relative", components:[
 			{name:"loadingPopup", kind:"LoadingPopup"},
 			{name:"scroller", kind:"Scroller", touch:true, thumb:false, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
@@ -39,15 +39,23 @@ enyo.kind({
 					fillColor:"rgba(132,167,193,0.5)",
 					strokeColor:"rgba(132,167,193,1)"
 				},
-				{name:"normals", kind:"Cumulus.Normals"},
+				{kind:"Divider", content:"Humidity"},
+				{
+					name:"humidityGraph",
+					kind:"Graph",
+					key:"humidity",
+					fillColor:"rgba(255,255,255,0.25)",
+					strokeColor:"rgba(255,255,255,0.75)"
+				},
 				{kind:"Divider", content:"Conditions"},
 				{name:"conditionRepeater", kind:"Repeater", onSetupItem:"renderCondition", components:[
 					{classes:"row condition nice-padding", components:[
 						{name:"icon", kind:"Cumulus.WeatherIcon"},
-						{name:"timespan", classes:"label"},
+						{name:"timespan", classes:"title"},
 						{name:"weather"}
 					]}
 				]},
+				{name:"normals", kind:"Cumulus.Normals"},
 				{classes:"command-menu-placeholder"}
 			]},
 		]},
@@ -59,10 +67,11 @@ enyo.kind({
 
 	dataChanged:function() {
 		var data = this.getData();
-		window.TOD = this.$.today;
-		window.DAT = data;
-		this.$.today.setData(data);
 		this.$.normals.setData(data);
+
+		if(data)
+			this.$.day.setContent(Cumulus.Main.formatDay(new Date(data.dateTimeISO)));
+
 		if(data && this.getApi() && this.getPlace())
 			enyo.job('refresh',enyo.bind(this,"refresh"),100);
 		else
@@ -125,10 +134,12 @@ enyo.kind({
 
 		this.$.tempGraph.setData(periods);
 		this.$.popGraph.setData(periods);
+		this.$.humidityGraph.setData(periods);
 	},
 
 	conditionsChanged:function() {
 		this.$.conditionRepeater.setCount((this.getConditions() || []).length);
+		this.reflow();
 	},
 
 	tidesChanged:function() {
@@ -141,7 +152,10 @@ enyo.kind({
 
 		item.$.weather.setContent(condition.weather);
 		item.$.icon.setIcon(condition.icon);
-		item.$.timespan.setContent(Cumulus.Main.formatTime(new Date(condition.start))+ " - "+Cumulus.Main.formatTime(new Date(condition.end)));
+		if(this.getConditions().length == 1)
+			item.$.timespan.setContent($L("All day"));
+		else
+			item.$.timespan.setContent(Cumulus.Main.formatTime(new Date(condition.start))+ " - "+Cumulus.Main.formatTime(new Date(condition.end)));
 
 		return true;
 	},

@@ -2,6 +2,8 @@
 	z-index:2;
 	box-shadow: 0px 2px 6px rgba(0,0,0,0.75);
 	position:relative;
+	background-color:#DFDFDF;
+	font-size:1.5em;
 }
 
 .detail .scroller {
@@ -50,4 +52,8 @@
 
 .detail .condition .icon-container {
 	background-color:rgba(255,255,255,0.5);
+}
+
+.detail .condition .title {
+	color:#F79A42;
 }

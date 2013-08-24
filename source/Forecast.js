@@ -21,17 +21,17 @@ enyo.kind({
 		{kind:"FittableColumns", components:[
 			{name:"icon", kind:"Cumulus.WeatherIcon"},
 			{fit:true, kind:"FittableRows", classes:"body", components:[
-				{name:"day", classes:"day"},
+				{name:"day", classes:"day title", content:$L("Loading")},
 				{name:"weather"},
 				{components:[
-					{name:"tempNow", components:[
+					{name:"tempNow", showing:false, components:[
 						{tag:"span", name:"temp"},
 						{tag:"span", classes:"label", content:"°F"},
 						{tag:"span", classes:"label", content:" (feels like "},
 						{tag:"span", name:"feelsLike"},
 						{tag:"span", classes:"label", content:" °F)"}
 					]},
-					{name:"tempRange", classes:"temp-range", components:[
+					{name:"tempRange", showing:false, classes:"temp-range", components:[
 						{kind:"Image", src:"assets/icons/temp-min.png"},
 						{tag:"span", name:"minTemp"},
 						{tag:"span", content:" - "},
@@ -39,11 +39,11 @@ enyo.kind({
 						{tag:"span", name:"maxTemp"}
 					]}
 				]},
-				{name:"popRow", components:[
+				{name:"popRow", showing:false, components:[
 					{tag:"span", name:"pop"},
 					{tag:"span", classes:"label", content:"% chance of precipitation"}
 				]},
-				{name:"humidityRow", components:[
+				{name:"humidityRow", showing:false, components:[
 					{tag:"span", name:"humidity"},
 					{tag:"span", classes:"label", content:"% humidity"}
 				]}
@@ -80,7 +80,7 @@ enyo.kind({
 		this.$.day.setShowing(data && this.getShowDay() && data.hasOwnProperty('dateTimeISO'));
 		this.$.weather.setShowing(data && this.getShowWeather() && data.hasOwnProperty('weather'));
 
-		this.$.popRow.setShowing(data && this.getShowPop() && data.hasOwnProperty('pop'));
+		this.$.popRow.setShowing(data && this.getShowPop() && data.pop); //don't show if it's zero.
 
 		this.$.humidityRow.setShowing(data && this.getShowHumidity() && data.hasOwnProperty('humidity'));
 
@@ -100,15 +100,7 @@ enyo.kind({
 				return Cumulus.Main.formatTime(date);
 			}
 			else {
-				date.setHours(0,0,0,0);
-
-				var today = new Date();
-				today.setHours(0,0,0,0);
-
-				if(today - date === 0)
-					return $L("today");
-				else
-					return $L(['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][date.getDay()]);
+				return Cumulus.Main.formatDay(date);
 			}
 		}
 		return value;

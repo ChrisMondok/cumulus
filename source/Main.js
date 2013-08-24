@@ -52,6 +52,17 @@ enyo.kind({
 			var ampm = ["AM","PM"][Math.floor(date.getHours()/12)]
 			return hour+":"+minutes+" "+ampm;
 		},
+		formatDay:function(date) {
+			date.setHours(0,0,0,0);
+
+			var today = new Date();
+			today.setHours(0,0,0,0);
+
+			if(today - date === 0)
+				return $L("today");
+			else
+				return $L(['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][date.getDay()]);
+		}
 	},
 
 	create:function() {
