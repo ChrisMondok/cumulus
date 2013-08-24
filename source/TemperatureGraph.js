@@ -7,12 +7,13 @@ enyo.kind({
 	},
 
 	dataChanged:function() {
-		var key = this.getKey(), step = this.getStep();
-		var temps = (this.getData() || []).map(function(d){return d[key]});
+		var key = this.getKey(), step = this.getStep(),
+			data = this.getData() || [],
+			temps = data.map(function(d){return d[key];});
 
 		if(temps.length) {
-			var min = temps.reduce(function(a,b){return Math.min(a,b)});
-			var max = temps.reduce(function(a,b){return Math.max(a,b)});
+			var min = temps.reduce(function(a,b){return Math.min(a,b);});
+			var max = temps.reduce(function(a,b){return Math.max(a,b);});
 
 			this.setMin(Math.floor((min-1)/step)*step);
 			this.setMax(Math.ceil((max+1)/step)*step);
@@ -20,7 +21,6 @@ enyo.kind({
 			this.$.labels.reflow();
 			this.resizeHandler();
 		}
-
 		else
 			this.setShowLabels(false);
 

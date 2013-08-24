@@ -9,6 +9,7 @@ enyo.kind({
 		sunMoon:null,
 		place:null,
 		periods:null,
+		conditions:null,
 		tides:null,
 		data:null
 	},
@@ -39,9 +40,13 @@ enyo.kind({
 					strokeColor:"rgba(132,167,193,1)"
 				},
 				{name:"normals", kind:"Cumulus.Normals"},
-				{kind:"Divider", content:"Hourly Forecast"},
-				{name:"periodRepeater", kind:"Repeater", count:24, onSetupItem:"renderPeriod", components:[
-					{name:"forecast", kind:"Cumulus.Forecast", classes:"dark hourly", hourly:true, showTemp:false, showRange:false}
+				{kind:"Divider", content:"Conditions"},
+				{name:"conditionRepeater", kind:"Repeater", onSetupItem:"renderCondition", components:[
+					{classes:"row condition nice-padding", components:[
+						{name:"icon", kind:"Cumulus.WeatherIcon"},
+						{name:"timespan", classes:"label"},
+						{name:"weather"}
+					]}
 				]},
 				{classes:"command-menu-placeholder"}
 			]},
@@ -54,6 +59,8 @@ enyo.kind({
 
 	dataChanged:function() {
 		var data = this.getData();
+		window.TOD = this.$.today;
+		window.DAT = data;
 		this.$.today.setData(data);
 		this.$.normals.setData(data);
 		if(data && this.getApi() && this.getPlace())
@@ -108,31 +115,33 @@ enyo.kind({
 	periodsChanged:function() {
 		var periods = this.getPeriods();
 
-		for(var i = 0; i < 24; i++)
-			this.$.periodRepeater.renderRow(i);
-
-		this.$.periodRepeater.resized();
-		this.reflow();
+		this.setConditions(periods.reduce(function(output,value,index,periods) {
+				if(output.length < 1 || output[output.length-1].weather != value.weather)
+					output.push({weather:value.weather, icon:value.icon, start: value.dateTimeISO, end:value.dateTimeISO});
+				else
+					output[output.length-1].end = value.dateTimeISO;
+				return output;
+			}, []));
 
 		this.$.tempGraph.setData(periods);
 		this.$.popGraph.setData(periods);
+	},
+
+	conditionsChanged:function() {
+		this.$.conditionRepeater.setCount((this.getConditions() || []).length);
 	},
 
 	tidesChanged:function() {
 		this.$.normals.setTides(this.getTides());
 	},
 
-	renderPeriod:function(sender,event) {
-		var item = event.item || this;
-		var periods = this.getPeriods();
+	renderCondition:function(sender,event) {
+		var condition = this.getConditions()[event.index],
+			item = event.item;
 
-		if(periods && periods[event.index]) {
-			item.$.forecast.show();
-			item.$.forecast.setData(periods[event.index]);
-		}
-		else 
-			item.$.forecast.hide();
-		
+		item.$.weather.setContent(condition.weather);
+		item.$.icon.setIcon(condition.icon);
+		item.$.timespan.setContent(Cumulus.Main.formatTime(new Date(condition.start))+ " - "+Cumulus.Main.formatTime(new Date(condition.end)));
 
 		return true;
 	},

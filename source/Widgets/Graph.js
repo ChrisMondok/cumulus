@@ -8,7 +8,7 @@ enyo.kind({
 		fillColor:"rgba(255,255,255,0.25)",
 		strokeColor:"rgba(255,255,255,1)",
 		graphColor:"rgba(0,0,0,0.25)",
-		key:"pop",
+		key:"",
 		min:0,
 		max:100,
 

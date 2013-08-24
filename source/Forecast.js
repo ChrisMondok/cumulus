@@ -1,7 +1,7 @@
 enyo.kind({
 	name:"Cumulus.Forecast",
 
-	classes:"forecast nice-padding",
+	classes:"row forecast nice-padding",
 
 	published:{
 		data:{},
@@ -19,9 +19,7 @@ enyo.kind({
 
 	components:[
 		{kind:"FittableColumns", components:[
-			{name:"iconContainer", classes:"icon-container", components:[
-				{name:"icon", kind:"Image"}
-			]},
+			{name:"icon", kind:"Cumulus.WeatherIcon"},
 			{fit:true, kind:"FittableRows", classes:"body", components:[
 				{name:"day", classes:"day"},
 				{name:"weather"},
@@ -57,7 +55,9 @@ enyo.kind({
 		var data = this.getData();
 		if(data) {
 			this.$.day.setContent(this.transformDate(data.dateTimeISO));
-			this.$.icon.setSrc(this.transformIcon(data.icon));
+			this.$.icon.setIcon(data.icon);
+
+			this.$.weather.setContent(data.weather);
 			
 			if(data.tempF === undefined || data.tempF === null)
 				this.$.temp.setContent(data.avgTempF);
@@ -85,12 +85,6 @@ enyo.kind({
 		this.$.humidityRow.setShowing(data && this.getShowHumidity() && data.hasOwnProperty('humidity'));
 
 		this.$.tempRange.setShowing(this.getShowRange() && data.hasOwnProperty('maxTempF'));
-	},
-
-	transformIcon:function(value) {
-		if(value) 
-			return "assets/weathericons/"+value;
-		return value;
 	},
 
 	transformDate:function(value) {

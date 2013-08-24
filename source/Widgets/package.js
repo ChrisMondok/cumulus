@@ -4,6 +4,7 @@ enyo.depends(
 	"Graph.js",
 	"LoadingPopup.js",
 	"CommandMenu.js",
+	"WeatherIcon.js",
 
 	"appmenu.css",
 	"divider.css",

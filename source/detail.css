@@ -8,12 +8,6 @@
 	z-index:1;
 }
 
-.detail .row {
-	background-color:#7A7A7A;
-	border-bottom:1px solid rgba(0,0,0,0.75);
-	border-top:1px solid rgba(255,255,255,0.25);
-}
-
 .detail .tide-table {
 	width:100%;
 	table-layout:fixed;
@@ -39,3 +33,21 @@
 	background-image:url(../assets/icons/sunset.png);
 }
 
+.detail .condition {
+	border-bottom:2px solid rgba(0,0,0,0.75);
+	border-top:2px solid rgba(255,255,255,0.25);
+	color:#DFDFDF;
+	overflow:hidden;
+}
+
+.detail .condition:first-of-type {
+	border-top:none;
+}
+
+.detail .condition:last-of-type {
+	border-bottom:none;
+}
+
+.detail .condition .icon-container {
+	background-color:rgba(255,255,255,0.5);
+}
