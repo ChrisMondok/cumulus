@@ -1,9 +1,13 @@
 {
 	"id":"com.chrismondok.cumulus",
-	"version":"0.1.100",
+	"version":"0.1.130",
 	"vendor":"Chris Mondok",
+	"vendorurl":"http://github.com/ChrisMondok",
 	"type":"web",
 	"main":"index.html",
 	"title":"Cumulus",
-	"uiRevision":2
+	"uiRevision":2,
+	"keywords": ["weather"],
+	"noDeprecatedStyles": true,
+	"theme": "light"
 }

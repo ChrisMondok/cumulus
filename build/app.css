@@ -1,5 +1,5 @@
 
-/* /srv/http/cumulus/enyo/../lib/layout/contextual/source/ContextualLayout.css */
+/* c://src/tests/cumulus/enyo/../lib/layout/contextual/source/ContextualLayout.css */
 
 /* ContextualLayout.css - popup positioning and border radius adjustments */
 
@@ -60,7 +60,7 @@
   border-top-right-radius: 0px;
 }
 
-/* /srv/http/cumulus/enyo/../lib/layout/fittable/source/FittableLayout.css */
+/* c://src/tests/cumulus/enyo/../lib/layout/fittable/source/FittableLayout.css */
 
 .enyo-fittable-rows-layout {
 	position: relative;
@@ -98,6 +98,10 @@
 	white-space: nowrap;
 }
 
+.enyo-locale-right-to-left .enyo-fittable-columns-layout {
+	text-align: right;
+}
+
 .enyo-fittable-columns-layout.enyo-center {
 	text-align: center;
 }
@@ -109,6 +113,10 @@
 	vertical-align: top;
 	display: inline-block;
 	white-space: normal;
+}
+
+.enyo-fittable-columns-layout > table {
+	display: inline-table;
 }
 
 .enyo-fittable-columns-layout.enyo-tool-decorator > * {
@@ -132,7 +140,13 @@
 	margin-bottom: 0 !important;
 }
 
-/* /srv/http/cumulus/enyo/../lib/layout/list/source/List.css */
+.enyo-locale-right-to-left .enyo-fittable-columns-layout {
+	direction: rtl;
+	text-align: right;
+}
+
+
+/* c://src/tests/cumulus/enyo/../lib/layout/list/source/List.css */
 
 .enyo-list {
 	position: relative;
@@ -197,7 +211,7 @@
 	transition: top 0.1s linear, left 0.1s linear;
 }
 
-/* /srv/http/cumulus/enyo/../lib/layout/list/source/PulldownList.css */
+/* c://src/tests/cumulus/enyo/../lib/layout/list/source/PulldownList.css */
 
 .enyo-list-pulldown {
 	position: absolute;
@@ -260,7 +274,7 @@
 	-ms-transform: rotate(180deg);
 }
 
-/* /srv/http/cumulus/enyo/../lib/layout/list/source/GridList.css */
+/* c://src/tests/cumulus/enyo/../lib/layout/list/source/GridList.css */
 
 /*
 	Put anything you reference with "url(../lib/layout/list/source)" in ../assets/
@@ -299,7 +313,7 @@
 	z-index: -1;
 }
 
-/* /srv/http/cumulus/enyo/../lib/layout/list/source/GridListImageItem.css */
+/* c://src/tests/cumulus/enyo/../lib/layout/list/source/GridListImageItem.css */
 
 /*
 	Put anything you reference with "url(../lib/layout/list/source)" in ../assets/
@@ -308,20 +322,15 @@
 .enyo-gridlist-imageitem {
 	width: 100%;
 	height: 100%;
-	background: #333;
 	color: #fff;
 }
 .enyo-gridlist-imageitem img {
 	display: block;
 	width: 100%;
-	height: auto;
 }
 .enyo-gridlist-imageitem .caption, .enyo-gridlist-imageitem .sub-caption {
-	opacity: 0.7;
-	font-weight: bold;
 	text-align: center;
 	font-size: 10pt;
-	text-transform: uppercase;
 	z-index: 10;
 	padding-top: 10px;
 	width: 100%;
@@ -330,8 +339,13 @@
 	overflow: hidden;
 	color: #fff;
 }
+.enyo-gridlist-imageitem.disabled {
+	opacity: 0.4;
+	filter: alpha(opacity=40);
+}
 
-/* /srv/http/cumulus/enyo/../lib/layout/panels/source/arrangers/Arranger.css */
+
+/* c://src/tests/cumulus/enyo/../lib/layout/panels/source/arrangers/Arranger.css */
 
 .enyo-arranger {
 	position: relative;
@@ -360,7 +374,7 @@
 }
 
 
-/* /srv/http/cumulus/enyo/../lib/layout/panels/source/Panels.css */
+/* c://src/tests/cumulus/enyo/../lib/layout/panels/source/Panels.css */
 
 .enyo-panels {
 }
@@ -375,7 +389,7 @@
 	}
 }
 
-/* /srv/http/cumulus/enyo/../lib/layout/tree/source/Node.css */
+/* c://src/tests/cumulus/enyo/../lib/layout/tree/source/Node.css */
 
 .enyo-node {
 	cursor: default;
@@ -409,7 +423,7 @@
 }
 
 
-/* /srv/http/cumulus/enyo/../lib/layout/imageview/source/ImageViewPin.css */
+/* c://src/tests/cumulus/enyo/../lib/layout/imageview/source/ImageViewPin.css */
 
 
 .pinDebug {
@@ -417,7 +431,7 @@
 	border:1px solid yellow;
 }
 
-/* /srv/http/cumulus/enyo/../lib/onyx/css/onyx.less */
+/* c://src/tests/cumulus/enyo/../lib/onyx/css/onyx.less */
 
 /* Onyx default parameters defined here */
 /* Fonts */
@@ -1616,124 +1630,7 @@
 
 
 
-/* source/Cumulus.css */
-
-/*
-	Put anything you reference with "url(../source)" in ../assets/
-	This way, you can minify your application, and just remove the "source" folder for production
-*/
-.nice-padding {
-	padding: 15px;
-}
-
-.nice-margin {
-	margin:15px;
-}
-
-.forecast, .light {
-	background-color:#DFDFDF;
-}
-
-.outlook .forecast{
-	border-bottom:1px solid rgba(0,0,0,0.75);
-	border-top:1px solid rgba(255,255,255,1);
-}
-
-.label {
-	color:#666;
-}
-
-.icon-container {
-	border-radius:4px;
-	box-shadow: inset 0px 2px 6px rgba(0,0,0,0.5);
-	background-color:rgba(0,0,0,0.15);
-}
-
-.icon-container > img {
-	width:50px;
-	height:50px;
-}
-
-.day {
-	text-transform:uppercase;
-	color:#235B86;
-	text-shadow: 0px 1px 0px rgba(255,255,255,0.95), 0px 1px 0px rgba(0,0,0,0.5);
-}
-
-.forecast.primary .icon-container>img {
-	width:100px;
-	height:100px;
-}
-
-.outlook, .dark, .detail {
-	background-color:#555;
-}
-
-.dark {
-	color:#DFDFDF;
-}
-
-.forecast.dark {
-	border-bottom:2px solid rgba(0,0,0,0.75);
-	border-top:2px solid rgba(255,255,255,0.25);
-}
-
-.forecast.dark {
-	background-color:#3A3A3A;
-	color:#DFDFDF;
-}
-
-.forecast.hourly .body {
-	text-align:right;
-}
-
-.forecast.dark .day {
-	color:#F79A42;
-}
-
-.forecast.dark .label {
-	color:#999;
-}
-
-.forecast.dark .icon-container {
-	background-color:rgba(255,255,255,0.5);
-}
-
-.detail .today {
-	z-index:2;
-	box-shadow: 0px 2px 6px rgba(0,0,0,0.75);
-	position:relative;
-}
-
-.detail .scroller {
-	z-index:1;
-}
-
-.detail .row {
-	background-color:#7A7A7A;
-	border-bottom:1px solid rgba(0,0,0,0.75);
-	border-top:1px solid rgba(255,255,255,0.25);
-}
-
-.sunmoon img {
-	margin:0em 1em;
-	vertical-align:middle;
-}
-
-.halfwidth {
-	display:inline-block;
-	box-sizing:border-box;
-	width:50%;
-	vertical-align:middle;
-}
-
-.halfwidth:first-child {
-	border-right:1px solid rgba(255,255,255,0.25);
-}
-
-.halfwidth:last-child {
-	border-left:1px solid rgba(0,0,0,0.75);
-}
+/* source/Widgets/divider.css */
 
 .divider {
 	margin-top:1em;
@@ -1759,26 +1656,10 @@
 	border-radius:0 0.2em 0.2em 0;
 }
 
-.temp-range img {
-	height:1em;
-	vertical-align:middle;
-	margin-right:1ex;
-}
 
-.tide-table {
-	width:100%;
-	table-layout:fixed;
-	text-align:center;
-}
 
-.forecast:first-of-type {
-	border-top:none;
-}
 
-.forecast:last-of-type {
-	border-bottom:none;
-}
-
+/* source/Widgets/commandmenu.css */
 
 .command-menu, .command-menu-placeholder {
 	display:none;
@@ -1799,6 +1680,42 @@
 	height:40px
 }
 
+
+
+/* source/Cumulus.css */
+
+/*
+	Put anything you reference with "url(../source)" in ../assets/
+	This way, you can minify your application, and just remove the "source" folder for production
+*/
+.nice-padding {
+	padding: 15px;
+}
+
+.nice-margin {
+	margin:15px;
+}
+
+
+.dark {
+	color:#DFDFDF;
+}
+
+.halfwidth {
+	display:inline-block;
+	box-sizing:border-box;
+	width:50%;
+	vertical-align:middle;
+}
+
+.halfwidth:first-child {
+	border-right:1px solid rgba(255,255,255,0.25);
+}
+
+.halfwidth:last-child {
+	border-left:1px solid rgba(0,0,0,0.75);
+}
+
 .sash {
 	background-color:#42F799;
 	position:absolute;
@@ -1813,5 +1730,241 @@
 	-ms-transform:rotate(45deg);
 	-webkit-transform:rotate(45deg);
 	transform:rotate(45deg);
+}
+
+.main-panel
+{
+	width:320px;
+}
+
+.icon-container {
+	float:right;
+	border-radius:4px;
+	box-shadow: inset 0px 2px 6px rgba(0,0,0,0.5);
+	background-color:rgba(0,0,0,0.15);
+	line-height:0px;
+}
+
+.icon-container > img {
+	width:50px;
+	height:50px;
+}
+
+.title {
+	text-transform:uppercase;
+	color:#235B86;
+	text-shadow: 0px 1px 0px rgba(255,255,255,0.95), 0px 1px 0px rgba(0,0,0,0.5);
+}
+
+
+
+/* source/map.css */
+
+.map
+{
+	position:relative;
+}
+
+.place-label, .distance-label
+{
+	position:absolute;
+	font-size:0.5em;
+	vertical-align:middle;
+
+	-webkit-animation: fadein 0.5s;
+	-moz-animation: fadein 0.5s;
+	animation: fadein 0.5s;
+
+}
+
+.place-label
+{
+	background-color:rgba(255,255,255,0.5);
+	padding-right:8px;
+}
+
+.place-label > *
+{
+	display:inline-block;
+	vertical-align:middle
+}
+
+.place-label > img
+{
+	height:32px;
+	width:32px;
+	margin:-6px;
+}
+
+.distance-label
+{
+	color:rgba(132,167,193,1);
+	width:48px;
+	height:16px;
+	line-height:16px;
+	text-align:center;
+}
+
+@-webkit-keyframes fadein {
+	from {
+		opacity:0;
+		-webkit-transform:translate(0px,-200px);
+	}
+
+	to {
+		opacity:1;
+		-webkit-transform:translate(0px,0px);
+	}
+}
+@-moz-keyframes fadein {
+	from {
+		opacity:0;
+		-moz-transform:translate(0px,-200px);
+	}
+
+	to {
+		opacity:1;
+		-moz-transform:translate(0px,0px);
+	}
+}
+@keyframes fadein {
+	from {
+		opacity:0;
+		transform:translate(0px,-200px);
+	}
+
+	to {
+		opacity:1;
+		transform:translate(0px,0px);
+	}
+}
+
+
+/* source/detail.css */
+
+.detail .today {
+	z-index:2;
+	box-shadow: 0px 2px 6px rgba(0,0,0,0.75);
+	position:relative;
+	background-color:#DFDFDF;
+	font-size:1.5em;
+}
+
+.detail .scroller {
+	z-index:1;
+}
+
+.detail .tide-table {
+	width:100%;
+	table-layout:fixed;
+	text-align:center;
+}
+
+.detail .sunmoon {
+	text-align:center;
+}
+
+.detail .sunmoon .sunrise, .detail .sunmoon .sunset {
+	line-height:48px;
+	padding-left:48px;
+	background-position:16px center;
+	background-repeat:no-repeat;
+}
+
+.detail .sunmoon .sunrise {
+	background-image:url(../assets/icons/sunrise.png);
+}
+
+.detail .sunmoon .sunset {
+	background-image:url(../assets/icons/sunset.png);
+}
+
+.detail .condition {
+	border-bottom:2px solid rgba(0,0,0,0.75);
+	border-top:2px solid rgba(255,255,255,0.25);
+	color:#DFDFDF;
+	overflow:hidden;
+}
+
+.detail .condition:first-of-type {
+	border-top:none;
+}
+
+.detail .condition:last-of-type {
+	border-bottom:none;
+}
+
+.detail .condition .icon-container {
+	background-color:rgba(255,255,255,0.5);
+}
+
+.detail .condition .title {
+	color:#F79A42;
+}
+
+
+/* source/forecast.css */
+
+.forecast, .light {
+	background-color:#DFDFDF;
+}
+
+
+.forecast.hourly .body {
+	text-align:right;
+}
+
+.forecast.dark .day {
+	color:#F79A42;
+}
+
+.forecast.dark .label {
+	color:#999;
+}
+
+.forecast.dark .icon-container {
+	background-color:rgba(255,255,255,0.5);
+}
+
+.forecast .label {
+	color:#666;
+}
+
+.forecast.hourly .icon-container {
+	float:left;
+}
+
+.forecast.primary {
+	min-height:108px;
+}
+
+.forecast.primary .icon-container>img {
+	width:100px;
+	height:100px;
+}
+
+.forecast .temp-range img {
+	height:1em;
+	vertical-align:middle;
+}
+
+.onyx-popup .forecast {
+	background-color:transparent;
+}
+
+
+/* source/outlook.css */
+
+.outlook, .dark, .detail {
+	background-color:#555;
+}
+
+.outlook .forecast {
+	border-bottom:1px solid rgba(0,0,0,0.75);
+	border-top:1px solid rgba(255,255,255,1);
+}
+
+.outlook .forecast.primary {
+	border-top:none;
 }
 
