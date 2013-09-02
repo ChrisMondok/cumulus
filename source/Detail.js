@@ -156,10 +156,7 @@ enyo.kind({
 		if(this.getConditions().length == 1)
 			item.$.timespan.setContent($L("All day"));
 		else
-			if(condition.start == condition.end)
-				item.$.timespan.setContent(Cumulus.Main.formatTime(new Date(condition.start)));
-			else
-				item.$.timespan.setContent(Cumulus.Main.formatTime(new Date(condition.start))+" - "+Cumulus.Main.formatTime(new Date(condition.end)));
+			item.$.timespan.setContent(Cumulus.Main.formatTime(new Date(condition.start))+" - "+Cumulus.Main.formatTime(new Date(condition.end)));
 
 		return true;
 	},
