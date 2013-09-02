@@ -125,10 +125,11 @@ enyo.kind({
 		var periods = this.getPeriods();
 
 		this.setConditions(periods.reduce(function(output,value,index,periods) {
+				if(output.length) 
+					output[output.length-1].end = value.dateTimeISO;
+
 				if(output.length < 1 || output[output.length-1].weather != value.weather)
 					output.push({weather:value.weather, icon:value.icon, start: value.dateTimeISO, end:value.dateTimeISO});
-				else
-					output[output.length-1].end = value.dateTimeISO;
 				return output;
 			}, []));
 
