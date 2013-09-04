@@ -1,0 +1,24 @@
+.context-drawer {
+	background-color:rgba(0,0,0,0.2);
+	box-shadow:inset 0px 2px 4px rgba(0,0,0,0.5);
+	border-left:2px solid black;
+	border-right:2px solid black;
+}
+
+.context-row {
+	padding:0.5em;
+}
+
+.test-row {
+	padding:0.5em;
+	border-top:1px solid rgba(255,255,255,0.5);
+	border-bottom:1px solid rgba(0,0,0,0.5);
+}
+
+.test-row:first-of-type {
+	border-top:none;
+}
+
+.test-row:last-of-type {
+	border-bottom:none;
+}
