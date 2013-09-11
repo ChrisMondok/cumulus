@@ -35,7 +35,6 @@ enyo.kind({
 			{name:"periodRepeater", kind:"Repeater", classes:"light", onSetupItem:"renderPeriod", components:[
 				{name:"period", kind:"Cumulus.Forecast", ontap:"pickPeriod"}
 			]},
-			{name:"placeName", classes:"label dark", style:"text-align:center"},
 			{classes:"command-menu-placeholder"}
 		]},
 		{name:"loadingPopup", kind:"LoadingPopup"}
@@ -77,7 +76,6 @@ enyo.kind({
 				actualResponse = response.response;
 
 			this.setObservations(actualResponse.ob);
-			this.$.placeName.setContent(actualResponse.place.name);
 		}
 		else
 			ajax.fail(response.error);
