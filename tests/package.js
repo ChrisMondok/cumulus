@@ -2,9 +2,8 @@ enyo.depends(
 	"Simple.js",
 
 	"ContextDisplay.js",
-	"Main.js",
-	"Detail.js",
-	//"Overview.js",
+	"TestRunner.js",
+	"ContextConstructors",
 
 	"testsuite.css"
 );

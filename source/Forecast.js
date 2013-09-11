@@ -85,6 +85,8 @@ enyo.kind({
 		this.$.humidityRow.setShowing(data && this.getShowHumidity() && data.hasOwnProperty('humidity'));
 
 		this.$.tempRange.setShowing(this.getShowRange() && data.hasOwnProperty('maxTempF'));
+
+		this.$.tempNow.setShowing(this.getShowTemp() && data.hasOwnProperty('tempF') || data.hasOwnProperty('avgTempF'));
 	},
 
 	transformDate:function(value) {

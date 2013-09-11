@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Cumulus.Testing.Main",
+	name:"Cumulus.Testing.TestRunner",
 	kind:"FittableRows",
 	classes:"enyo-fit testing",
 
@@ -23,11 +23,13 @@ enyo.kind({
 	rendered:function() {
 		this.inherited(arguments);
 
-		this._uninitialized = Cumulus.Testing.ContextConstructors.slice(0);
+		this._uninitialized = [];
 
-		for(var i in Cumulus.Testing.ContextConstructors)
+		for(var c in Cumulus.Testing.ContextConstructors)
 		{
-			Cumulus.Testing.ContextConstructors[i].response(this,'contextReady').go();	
+			var a = new Cumulus.Testing.ContextConstructors[c];
+			this._uninitialized.push(a);
+			a.response(this,'contextReady').go();	
 		}
 	},
 
