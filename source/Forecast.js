@@ -18,36 +18,29 @@ enyo.kind({
 	},
 
 	components:[
-		{kind:"FittableColumns", components:[
-			{name:"icon", kind:"Cumulus.WeatherIcon"},
-			{fit:true, kind:"FittableRows", classes:"body", components:[
-				{name:"day", classes:"day title", content:$L("Loading")},
-				{name:"weather"},
-				{components:[
-					{name:"tempNow", showing:false, components:[
-						{tag:"span", name:"temp"},
-						{tag:"span", classes:"label", content:"°F"},
-						{tag:"span", classes:"label", content:" (feels like "},
-						{tag:"span", name:"feelsLike"},
-						{tag:"span", classes:"label", content:" °F)"}
-					]},
-					{name:"tempRange", showing:false, classes:"temp-range", components:[
-						{kind:"Image", src:"assets/icons/temp-min.png"},
-						{tag:"span", name:"minTemp"},
-						{tag:"span", content:" - "},
-						{kind:"Image", src:"assets/icons/temp-max.png"},
-						{tag:"span", name:"maxTemp"}
-					]}
-				]},
-				{name:"popRow", showing:false, components:[
-					{tag:"span", name:"pop"},
-					{tag:"span", classes:"label", content:"% chance of precipitation"}
-				]},
-				{name:"humidityRow", showing:false, components:[
-					{tag:"span", name:"humidity"},
-					{tag:"span", classes:"label", content:"% humidity"}
-				]}
-			]}
+		{name:"icon", kind:"Cumulus.WeatherIcon"},
+		{name:"day", classes:"day title", content:$L("Loading")},
+		{name:"weather"},
+		{name:"tempNow", showing:false, components:[
+			{tag:"span", name:"temp"},
+			{tag:"span", classes:"label", content:" (feels like "},
+			{tag:"span", name:"feelsLike"},
+			{tag:"span", classes:"label", content:" °F)"}
+		]},
+		{name:"tempRange", showing:false, classes:"temp-range", components:[
+			{kind:"Image", src:"assets/icons/temp-min.png"},
+			{tag:"span", name:"minTemp"},
+			{tag:"span", content:" - "},
+			{kind:"Image", src:"assets/icons/temp-max.png"},
+			{tag:"span", name:"maxTemp"}
+		]},
+		{name:"popRow", showing:false, components:[
+			{tag:"span", name:"pop"},
+			{tag:"span", classes:"label", content:"% chance of precipitation"}
+		]},
+		{name:"humidityRow", showing:false, components:[
+			{tag:"span", name:"humidity"},
+			{tag:"span", classes:"label", content:"% humidity"}
 		]}
 	],
 
@@ -60,9 +53,9 @@ enyo.kind({
 			this.$.weather.setContent(data.weather);
 			
 			if(data.tempF === undefined || data.tempF === null)
-				this.$.temp.setContent(data.avgTempF);
+				this.$.temp.setContent(data.avgTempF + "°F");
 			else
-				this.$.temp.setContent(data.tempF);
+				this.$.temp.setContent(data.tempF + "°F");
 			
 			this.$.feelsLike.setContent(data.feelslikeF);
 			this.$.minTemp.setContent(data.minTempF);
