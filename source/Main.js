@@ -74,6 +74,9 @@ enyo.kind({
 
 		window.addEventListener('popstate',enyo.bind(this,'stateChanged'));
 		window.INSTANCE = this;
+
+		if(!history.pushState)
+			this.state = [];
 	},
 
 	toggleAppMenu:function() {
@@ -129,22 +132,19 @@ enyo.kind({
 		this.waterfall("onApiCreated",{api:this.getApi()},this);
 	},
 
-	pushDayPickedState:function(sender,event) {
-		if(history.pushState) {
-			history.pushState({data:event.data, top:event.top, index:1}, "Hourly Forecast");
-			this.stateChanged();
-		}
+	pushState:function(state, title, url) {
+		if(history.pushState) 
+			history.pushState(state,title,url)
 		else 
-			this.showDetail(sender,event);
+			this.state.push(state);
+		this.stateChanged();
+	},
+
+	pushDayPickedState:function(sender,event) {
+		this.pushState({data:event.data, top:event.top, index:1}, "Hourly Forecast");
 	},
 	pushShowMapState:function(sender,event) {
-		if(history.pushState) {
-			history.pushState({data:event.data, index:2}, "Local map");
-			this.stateChanged();
-		}
-		else
-			this.showMap(sender,event);
-
+		this.pushState({data:event.data, index:2}, "Local map");
 	},
 
 	onBackGesture:function(sender,event) {
@@ -159,18 +159,26 @@ enyo.kind({
 	back:function(sender,event) {
 		if(history.pushState)
 			history.back();
-		else
-			this.$.panels.setIndex(0);
+		else {
+			this.state.pop();
+			this.stateChanged();
+		}
 	},
 
 	stateChanged:function() {
-		if(history.state) {
-			switch(history.state.index) {
+		var state;
+		if(history.pushState)
+			state = history.state;
+		else
+			state = this.state[this.state.length-1];
+
+		if(state) {
+			switch(state.index) {
 				case 1:
-					this.showDetail(this,history.state);
+					this.showDetail(this,state);
 					break;
 				case 2:
-					this.showMap(this,history.state);
+					this.showMap(this,state);
 					break;
 			}
 		}
