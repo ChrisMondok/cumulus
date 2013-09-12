@@ -16,7 +16,7 @@ enyo.kind({
 		{content:"Beta", classes:"sash"},
 		{name:"appmenu", kind:"Appmenu", components:[
 			{content:"Preferences"},
-			{content:"About"}
+			{content:"About", ontap:"showAbout"}
 		]},
 		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", classes:"enyo-fit", draggable:false, onTransitionFinish:"panelIndexChanged", components:[
 			{ name:"outlook", kind:"Cumulus.Outlook" },
@@ -39,6 +39,19 @@ enyo.kind({
 			onHide:"unobscureMain",
 			components:[
 				{content:"Getting your current location"}
+			]
+		},
+		{
+			name:"aboutPopup",
+			kind:"onyx.Popup",
+			centered:true,
+			scrim:true, scrimWhenModal:true,
+			floating:true,
+			modal:true,
+			components:[
+				{content:"Cumulus"},
+				{content:"by Chris Mondok"},
+				{tag:"a", attributes:{href:"http://github.com/chrismondok"}, content:"Github"},
 			]
 		},
 		{name:"getPlacePopup", kind:"onyx.Popup", centered:true, modal:true, floating:true, scrim:true, autoDismiss:false, scrimWhenModal:true, components:[
@@ -229,5 +242,9 @@ enyo.kind({
 			alert("Property is "+property+", not showing!");
 		else
 			this.addRemoveClass("obscured",newValue);
+	},
+
+	showAbout:function() {
+		this.$.aboutPopup.show();
 	}
 });
