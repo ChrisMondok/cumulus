@@ -26,6 +26,7 @@ html, body {
 	transform:scale(0.9);
 
 	-webkit-filter:blur(3px);
+	filter: url(../assets/filters.svg#blur);
 }
 
 .nice-padding {
