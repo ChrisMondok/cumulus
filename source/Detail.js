@@ -73,7 +73,7 @@ enyo.kind({
 			this.$.day.setContent(Cumulus.Main.formatDay(new Date(data.dateTimeISO)));
 
 		if(data && this.getApi() && this.getPlace())
-			enyo.job('refresh',enyo.bind(this,"refresh"),100);
+			this.startJob(this.id+'refresh','refresh',100);
 		else
 		{
 			this.setTides(null);
@@ -85,12 +85,12 @@ enyo.kind({
 
 	apiChanged:function() {
 		if(this.getData() && this.getPlace())
-			enyo.job('refresh',enyo.bind(this,"refresh"),100);
+			this.startJob(this.id+'refresh','refresh',100);
 	},
 
 	placeChanged:function() {
 		if(this.getApi() && this.getData())
-			enyo.job('refresh',enyo.bind(this,"refresh"),100);
+			this.startJob(this.id+'refresh','refresh',100);
 	},
 
 	refresh:function() {

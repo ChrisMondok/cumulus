@@ -42,29 +42,27 @@ enyo.kind({
 
 	apiChanged:function() {
 		if(this.getPlace())
-			this.refresh();
+			this.startJob(this.id+'refresh','refresh',250);
 	},
 
 	placeChanged:function() {
 		if(this.getApi())
-			this.refresh();
+			this.startJob(this.id+'refresh','refresh',250);
 	},
 
 	refresh:function() {
-		enyo.job('refresh', enyo.bind(this,function() {
-			this.$.loadingPopup.show();
-			var api = this.getApi();
-			api.getAsync('observations',this.getPlace())
-				.response(enyo.bind(this,"gotObservations"))
-				.error(function(ajax,error) {
-					alert(JSON.stringify(error));
-				});
-			api.getAsync('forecast',this.getPlace())
-				.response(enyo.bind(this,"gotForecast"))
-				.error(function(ajax,error) {
-					alert(JSON.stringify(error));
-				});
-		}),250);
+		this.$.loadingPopup.show();
+		var api = this.getApi();
+		api.getAsync('observations',this.getPlace())
+			.response(this,"gotObservations")
+			.error(function(ajax,error) {
+				alert(JSON.stringify(error));
+			});
+		api.getAsync('forecast',this.getPlace())
+			.response(this,"gotForecast")
+			.error(function(ajax,error) {
+				alert(JSON.stringify(error));
+			});
 	},
 
 	gotObservations:function(ajax,response) {
