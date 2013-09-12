@@ -135,19 +135,20 @@ enyo.kind({
 			}))
 			.error(enyo.bind(this, function(sender,error) {
 				this.$.locatingPopup.hide();
-				switch(error.code) {
-					case error.PERMISSION_DENIED:
-						this.$.gpsFailureReason.setContent("GPS permission denied");
-						break;
-					case error.POSITION_UNAVAILABLE:
-						this.$.gpsFailureReason.setContent("GPS position unavailable");
-						break;
-					case error.TIMEOUT:
-						this.$.gpsFailureReason.setContent("GPS timed out");
-						break;
-					default:
-						this.$.gpsFailureReason.setContent("Unknown geolocation error");
-				}
+				if(error)
+					switch(error.code) {
+						case error.PERMISSION_DENIED:
+							this.$.gpsFailureReason.setContent("GPS permission denied");
+							break;
+						case error.POSITION_UNAVAILABLE:
+							this.$.gpsFailureReason.setContent("GPS position unavailable");
+							break;
+						case error.TIMEOUT:
+							this.$.gpsFailureReason.setContent("GPS timed out");
+							break;
+						default:
+							this.$.gpsFailureReason.setContent("Unknown geolocation error");
+					}
 				this.$.getPlacePopup.show();
 				this.$.placeInput.focus();
 			}));

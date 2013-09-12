@@ -4,10 +4,13 @@ enyo.singleton({
 	getLocation:function() {
 		var async = new enyo.Async();
 
-		navigator.geolocation.getCurrentPosition(
-			function(position) {async.go(position.coords)},
-			function(error) {async.fail(error)}
-		);
+		if(navigator.geolocation)
+			navigator.geolocation.getCurrentPosition(
+				function(position) {async.go(position.coords);},
+				function(error) {async.fail(error);}
+			);
+		else
+			enyo.asyncMethod(this,function() {async.fail();});
 
 		return async;
 	}
