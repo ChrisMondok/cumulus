@@ -26,9 +26,21 @@ enyo.kind({
 		{name:"commandMenu", kind:"CommandMenu", components:[
 			{name:"backButton", kind:"onyx.IconButton", src:"assets/icons/back.png", ontap:"back"}
 		]},
-		{name:"locatingPopup", kind:"onyx.Popup", centered:true, modal:true, floating:true, scrim:true, autoDismiss:false, scrimWhenModal:true, components:[
-			{content:"Getting your current location"}
-		]},
+		{
+			name:"locatingPopup",
+			kind:"onyx.Popup",
+			centered:true,
+			modal:true,
+			floating:true,
+			scrim:true,
+			autoDismiss:false,
+			scrimWhenModal:true,
+			onShow:"obscureMain",
+			onHide:"unobscureMain",
+			components:[
+				{content:"Getting your current location"}
+			]
+		},
 		{name:"getPlacePopup", kind:"onyx.Popup", centered:true, modal:true, floating:true, scrim:true, autoDismiss:false, scrimWhenModal:true, components:[
 			{kind:"FittableRows", components:[
 				{content:"Please enter your zip code"},
@@ -125,6 +137,8 @@ enyo.kind({
 				this.$.placeInput.focus();
 			}));
 
+		onyx.scrim.make().addObserver("showing",this.obscuredChanged, this);
+
 		enyo.Signals.send("onStageReady");
 	},
 
@@ -198,7 +212,7 @@ enyo.kind({
 	panelIndexChanged:function() {
 		if(this.$.panels.getIndex() != 1)
 			this.$.detail.setData();
-		this.$.backButton.setDisabled(this.$.panels.getIndex() == 0);
+		this.$.backButton.setDisabled(this.$.panels.getIndex() === 0);
 	},
 
 	calculateCommandMenu:function() {
@@ -208,5 +222,12 @@ enyo.kind({
 			needsBackButton = !JSON.parse(window.PalmSystem.deviceInfo).keyboardAvailable;
 
 		this.addRemoveClass("show-command-menu",needsBackButton); //hide this when there's a native back button
+	},
+
+	obscuredChanged:function(property, oldValue, newValue) {
+		if(property != "showing")
+			alert("Property is "+property+", not showing!");
+		else
+			this.addRemoveClass("obscured",newValue);
 	}
 });
