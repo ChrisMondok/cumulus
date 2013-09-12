@@ -110,6 +110,8 @@ enyo.kind({
 		this.inherited(arguments);
 		this.stateChanged();
 
+		onyx.scrim.make().addObserver("showing",this.obscuredChanged, this);
+
 		this.$.locatingPopup.show();
 		Service.Geolocation.getLocation()
 			.response(enyo.bind(this, function(sender,response) {
@@ -136,8 +138,6 @@ enyo.kind({
 				this.$.getPlacePopup.show();
 				this.$.placeInput.focus();
 			}));
-
-		onyx.scrim.make().addObserver("showing",this.obscuredChanged, this);
 
 		enyo.Signals.send("onStageReady");
 	},

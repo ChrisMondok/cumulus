@@ -3,7 +3,28 @@
 	This way, you can minify your application, and just remove the "source" folder for production
 */
 
+html, body {
+	background-color:black;
+}
+
+#main {
+	-moz-transition: -moz-transform 0.25s ease;
+	-ms-transition: -ms-transform 0.25s ease;
+	-webkit-transition: -webkit-transform 0.25s ease;
+	transition: transform 0.25s ease;
+
+	-moz-transform:scale(1);
+	-ms-transform:scale(1);
+	-webkit-transform:scale(1);
+	transform:scale(1);
+}
+
 #main.obscured {
+	-moz-transform:scale(0.9);
+	-ms-transform:scale(0.9);
+	-webkit-transform:scale(0.9);
+	transform:scale(0.9);
+
 	-webkit-filter:blur(3px);
 }
 
