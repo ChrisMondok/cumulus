@@ -61,12 +61,7 @@ enyo.kind({
 	renderTide:function(sender,event) {
 		var item = event.item, index = event.index, tide = this.getTides()[index];
 
-		item.$.type.setContent(
-			{
-				h:$L("High"),
-				l:$L("Low")
-			}[tide.type]
-		);
+		item.$.type.setContent( {h:$L("High"),l:$L("Low")}[tide.type] );
 
 		item.$.height.setContent([tide.heightFT,$L("FT")].join(' '));
 

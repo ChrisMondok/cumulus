@@ -7,7 +7,7 @@ enyo.kind({
 		api:undefined,
 		observations:undefined,
 		periods:undefined,
-		place:undefined,
+		place:undefined
 	},
 
 	events:{
@@ -87,7 +87,7 @@ enyo.kind({
 	gotForecast:function(ajax,response) {
 		this.$.loadingPopup.hide();
 		if(!response.error)
-			this.setPeriods(response.response[0].periods)
+			this.setPeriods(response.response[0].periods);
 		else
 			ajax.fail(response.error);
 	},
@@ -108,7 +108,7 @@ enyo.kind({
 	},
 
 	pickPeriod:function(sender,event) {
-		var top = this.$.periodRepeater.getControls()[event.index].getControls()[0].getBounds().top // get the item from the Owner Proxy 
+		var top = this.$.periodRepeater.getControls()[event.index].getControls()[0].getBounds().top; // get the item from the Owner Proxy 
 
 		top -= this.$.scroller.getScrollTop();
 		var message = {
@@ -117,5 +117,5 @@ enyo.kind({
 		};
 
 		this.doDayPicked(message);
-	},
+	}
 });

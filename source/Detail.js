@@ -57,8 +57,8 @@ enyo.kind({
 				]},
 				{name:"normals", kind:"Cumulus.Normals"},
 				{classes:"command-menu-placeholder"}
-			]},
-		]},
+			]}
+		]}
 	],
 
 	getApiFromEvent:function(event) {

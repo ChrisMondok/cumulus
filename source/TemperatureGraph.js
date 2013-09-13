@@ -3,7 +3,7 @@ enyo.kind({
 	kind:"Graph",
 
 	published:{
-		step:10,
+		step:10
 	},
 
 	dataChanged:function() {

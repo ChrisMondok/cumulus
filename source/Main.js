@@ -21,7 +21,8 @@ enyo.kind({
 		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", classes:"enyo-fit", draggable:false, onTransitionFinish:"panelIndexChanged", components:[
 			{ name:"outlook", kind:"Cumulus.Outlook" },
 			{ name:"detail", kind:"Cumulus.Detail" },
-			{ name:"map", kind:"Cumulus.Map" }
+			{ name:"map", kind:"Cumulus.Map" },
+			{ name:"settings", kind:"Cumulus.Settings" }
 		]},
 		{name:"commandMenu", kind:"CommandMenu", components:[
 			{name:"backButton", kind:"onyx.IconButton", src:"assets/icons/back.png", ontap:"back"}
@@ -51,7 +52,7 @@ enyo.kind({
 			components:[
 				{content:"Cumulus"},
 				{content:"by Chris Mondok"},
-				{tag:"a", attributes:{href:"http://github.com/chrismondok"}, content:"Github"},
+				{tag:"a", attributes:{href:"http://github.com/chrismondok"}, content:"Github"}
 			]
 		},
 		{name:"getPlacePopup", kind:"onyx.Popup", centered:true, modal:true, floating:true, scrim:true, autoDismiss:false, scrimWhenModal:true, components:[
@@ -63,7 +64,7 @@ enyo.kind({
 				]},
 				{kind:"onyx.Button", content:"Submit", classes:"onyx-dark", style:"display:block; width:100%;", ontap:"submitPlace"}
 			]}
-		]},
+		]}
 	],
 
 	statics:{
@@ -74,7 +75,7 @@ enyo.kind({
 			var minutes = date.getMinutes();
 			if(minutes < 10)
 				minutes = "0"+minutes;
-			var ampm = ["AM","PM"][Math.floor(date.getHours()/12)]
+			var ampm = ["AM","PM"][Math.floor(date.getHours()/12)];
 			return hour+":"+minutes+" "+ampm;
 		},
 		formatDay:function(date) {
@@ -106,7 +107,7 @@ enyo.kind({
 
 	toggleAppMenu:function() {
 		if(this.$.appmenu.getShowing())
-			this.$.appmenu.hide()
+			this.$.appmenu.hide();
 		else
 			this.$.appmenu.showAtPosition({top:0, left:0});
 	},
@@ -148,6 +149,7 @@ enyo.kind({
 							break;
 						default:
 							this.$.gpsFailureReason.setContent("Unknown geolocation error");
+							break;
 					}
 				this.$.getPlacePopup.show();
 				this.$.placeInput.focus();
@@ -161,9 +163,9 @@ enyo.kind({
 	},
 
 	pushState:function(state, title, url) {
-		if(history.pushState) 
-			history.pushState(state,title,url)
-		else 
+		if(history.pushState)
+			history.pushState(state,title,url);
+		else
 			this.state.push(state);
 		this.stateChanged();
 	},
@@ -200,18 +202,17 @@ enyo.kind({
 		else
 			state = this.state[this.state.length-1];
 
-		if(state) {
-			switch(state.index) {
-				case 1:
-					this.showDetail(this,state);
-					break;
-				case 2:
-					this.showMap(this,state);
-					break;
-			}
+		switch(state && state.index || 0) {
+			case 1:
+				this.showDetail(this,state);
+				break;
+			case 2:
+				this.showMap(this,state);
+				break;
+			default:
+				this.$.panels.setIndex(0);
+				break;
 		}
-		else
-			this.$.panels.setIndex(0);
 	},
 
 	showDetail:function(sender,event) {

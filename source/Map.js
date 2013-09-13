@@ -17,10 +17,10 @@ enyo.kind({
 		lerp:function(v,a,b) { //expects two arrays
 			var result = [];
 			for(var i = 0; i < a.length; i++) {
-				result[i] = a[i] * (1-v) + b[i] * (v)
+				result[i] = a[i] * (1-v) + b[i] * (v);
 			}
 
-			return result
+			return result;
 		}
 	},
 
@@ -47,10 +47,10 @@ enyo.kind({
 				{components:[
 					{name:"id"},
 					{name:"temperature"}
-				]},
+				]}
 			]},
 			{name:"distanceLabel", classes:"distance-label"}
-		]},
+		]}
 	],
 
 	apiChanged:function() {
@@ -116,7 +116,7 @@ enyo.kind({
 			ctx.moveTo(bounds.width/2,bounds.height/2);
 			ctx.lineTo.apply(ctx,Cumulus.Map.lerp(animator.value,[bounds.width/2,bounds.height/2],coords));
 			ctx.stroke();
-			ctx.closePath()
+			ctx.closePath();
 		}
 
 		ctx.beginPath();
@@ -128,9 +128,10 @@ enyo.kind({
 	getCoords:function(place) {
 		var bounds = this.getBounds(), here = this.getPlace(), scale = this.getScale();
 
-		x = bounds.width/2 + scale*(place.loc.long - here.longitude),
-		y = bounds.height/2 + scale*(here.latitude - place.loc.lat)
-		return [x,y];
+		return [
+			bounds.width/2 + scale*(place.loc["long"] - here.longitude),
+			bounds.height/2 + scale*(here.latitude - place.loc["lat"])
+		];
 	},
 
 	refresh:function() {
@@ -146,8 +147,8 @@ enyo.kind({
 		var maxX = 0, maxY = 0;
 		var here = this.getPlace();
 		(this.getNearbyObservations() || []).map(function(o) {
-			maxX = Math.max(maxX, Math.abs(here.longitude - o.loc.long));
-			maxY = Math.max(maxY, Math.abs(here.latitude - o.loc.lat));
+			maxX = Math.max(maxX, Math.abs(here.longitude - o.loc["long"]));
+			maxY = Math.max(maxY, Math.abs(here.latitude - o.loc["lat"]));
 		});
 
 		var bounds = this.$.canvas.getBounds();
