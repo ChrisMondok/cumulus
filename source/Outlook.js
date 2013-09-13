@@ -7,12 +7,14 @@ enyo.kind({
 		api:undefined,
 		observations:undefined,
 		periods:undefined,
+		advisories:undefined,
 		place:undefined
 	},
 
 	events:{
 		onDayPicked:"",
-		onShowMap:""
+		onShowMap:"",
+		onAdvisoryPicked:""
 	},
 
 	handlers:{
@@ -31,6 +33,12 @@ enyo.kind({
 
 	components:[
 		{name:"scroller", kind:"Scroller", thumb:false, touch:true, horizontal:"hidden", fit:true, components:[
+			{name:"advisoriesDrawer", kind:"Drawer", open:false, components:[
+				{name:"advisoryRepeater", kind:"Repeater", onSetupItem:"renderAdvisory", components:[
+					{name:"name", classes:"advisory title", ontap:"pickAdvisory"}
+				]}
+			]},
+			{name:"advisoriesOpener", classes:"advisories-button", showing:false, ontap:"toggleAdvisoriesDrawer"},
 			{name:"observations", kind:"Cumulus.Forecast", classes:"primary dark", now:true, showHumidity:true, ontap:"showMap"},
 			{name:"periodRepeater", kind:"Repeater", classes:"light", onSetupItem:"renderPeriod", components:[
 				{name:"period", kind:"Cumulus.Forecast", ontap:"pickPeriod"}
@@ -63,6 +71,11 @@ enyo.kind({
 			.error(function(ajax,error) {
 				alert(JSON.stringify(error));
 			});
+		api.getAsync('advisories',this.getPlace())
+			.response(this,"gotAdvisories")
+			.error(function(ajax,error) {
+				alert(JSON.stringify(error));
+			});
 	},
 
 	gotObservations:function(ajax,response) {
@@ -92,6 +105,30 @@ enyo.kind({
 			ajax.fail(response.error);
 	},
 
+	gotAdvisories:function(ajax,response) {
+		if(!response.error)
+			this.setAdvisories(response.response);
+		else
+			ajax.fail(response.error);
+	},
+
+	advisoriesChanged:function(old,advisories) {
+		if(advisories.length)
+		{
+			this.$.advisoriesOpener.setContent([advisories.length,$L("advisories")].join(" "));
+			this.$.advisoriesOpener.show();
+			this.$.advisoryRepeater.setCount(advisories.length);
+		}
+		else
+		{
+			this.$.advisoriesOpener.hide();
+		}
+	},
+
+	toggleAdvisoriesDrawer:function() {
+		this.$.advisoriesDrawer.setOpen(!this.$.advisoriesDrawer.getOpen());
+	},
+
 	periodsChanged:function() {
 		var periods = this.getPeriods();
 		this.$.periodRepeater.setCount(periods.length);
@@ -100,6 +137,17 @@ enyo.kind({
 	renderPeriod:function(sender,event) {
 		var item = event.item, period = this.getPeriods()[event.index];
 		item.$.period.setData(period);
+	},
+
+	renderAdvisory:function(sender, event) {
+		var item = event.item, advisory = this.getAdvisories()[event.index];
+		item.$.name.setContent(advisory.details.name);
+	},
+
+	showAdvisory:function(sender,event) {
+		var advisory = this.getAdvisories()[event.index];
+		this.$.advisoryDescription.setContent(advisory.details.body.replace(/\n/g,""));
+		this.$.advisoryPopup.show();
 	},
 
 	showMap:function(sender,event) {
@@ -117,5 +165,9 @@ enyo.kind({
 		};
 
 		this.doDayPicked(message);
+	},
+
+	pickAdvisory:function(sender, event) {
+		this.doAdvisoryPicked({advisory:this.getAdvisories()[event.index]});
 	}
 });

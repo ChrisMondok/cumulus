@@ -10,6 +10,7 @@ enyo.depends(
 	"Main.js",
 	"Outlook.js",
 	"Settings.js",
+	"Advisory.js",
 	"Forecast.js",
 	"Detail.js",
 	"Normals.js",
@@ -20,5 +21,6 @@ enyo.depends(
 	"map.css",
 	"detail.css",
 	"forecast.css",
-	"outlook.css"
+	"outlook.css",
+	"advisory.css"
 );

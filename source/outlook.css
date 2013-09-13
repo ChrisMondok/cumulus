@@ -2,11 +2,31 @@
 	background-color:#555;
 }
 
-.outlook .forecast {
+.outlook .forecast, .outlook .advisory {
 	border-bottom:1px solid rgba(0,0,0,0.75);
 	border-top:1px solid rgba(255,255,255,1);
 }
 
+.outlook .advisory.title {
+	background-color:white;
+	color:black;
+}
+
+.outlook .advisory {
+	padding:1em;
+	text-transform:lowercase;
+}
+
+.outlook .advisory:first-letter {
+	text-transform:capitalize;
+}
+
 .outlook .forecast.primary {
 	border-top:none;
+}
+
+.outlook .advisories-button {
+	text-align:center;
+	background-color: yellow;
+	text:black;
 }

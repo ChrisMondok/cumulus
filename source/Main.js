@@ -3,12 +3,14 @@ enyo.kind({
 	classes:"onyx",
 
 	published:{
-		api:null
+		api:null,
+		place:null
 	},
 
 	handlers:{
 		onDayPicked:"pushDayPickedState",
-		onShowMap:"pushShowMapState"
+		onShowMap:"pushShowMapState",
+		onAdvisoryPicked:"pushShowAdvisoryState"
 	},
 
 	components:[
@@ -22,6 +24,7 @@ enyo.kind({
 			{ name:"outlook", kind:"Cumulus.Outlook" },
 			{ name:"detail", kind:"Cumulus.Detail" },
 			{ name:"map", kind:"Cumulus.Map" },
+			{ name:"advisory", kind:"Cumulus.Advisory" },
 			{ name:"settings", kind:"Cumulus.Settings" }
 		]},
 		{name:"commandMenu", kind:"CommandMenu", components:[
@@ -175,6 +178,9 @@ enyo.kind({
 	},
 	pushShowMapState:function(sender,event) {
 		this.pushState({data:event.data, index:2}, "Local map");
+	},
+	pushShowAdvisoryState:function(sender,event) {
+		this.pushState({advisory:event.advisory, index:3}, "Advisory");
 	},
 
 	onBackGesture:function(sender,event) {

@@ -55,6 +55,9 @@ enyo.kind({
 	getForecast:function(loc) {
 		return this.makeRequest.apply(this,this.endpointAndLoc('forecasts',loc));
 	},
+	getAdvisories:function(loc) {
+		return this.makeRequest.apply(this,this.endpointAndLoc('advisories',loc));
+	},
 	getHourlyForecast:function(loc, day) {
 
 		return this.makeRequest.apply(this,this.endpointAndLoc(
