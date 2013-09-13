@@ -2,9 +2,10 @@ APPID	:= com.chrismondok.cumulus
 VERSION	:= 0.1.$(shell git log --pretty=format:'' | wc -l )
 IPK		:= $(APPID)_$(VERSION)_all.ipk
 
-sourcefiles := $(wildcard source/*.js)
+javascript := $(shell find source/ -type f -name '*.js')
+css := $(shell find source/ -type f -name '*.css')
 
-deploy/cumulus: $(sourcefiles)
+deploy/cumulus: $(javascript) $(css)
 	./tools/deploy.sh
 
 deploy/cumulus/appinfo.json: deploy/cumulus
