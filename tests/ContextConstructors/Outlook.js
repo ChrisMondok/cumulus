@@ -11,7 +11,7 @@ enyo.kind({
 				return this.outlook.$.observations.$.tempNow.getShowing();
 			}),
 			new Simple.Test("The current temperature should be 79°F", function() {
-				return this.outlook.$.observations.$.temp.getContent() == 79;
+				return this.outlook.$.observations.$.temp.getContent() == "79°F";
 			})
 		);
 
