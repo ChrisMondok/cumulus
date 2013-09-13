@@ -152,7 +152,6 @@ enyo.kind({
 
 	showMap:function(sender,event) {
 		this.doShowMap();
-		//this.doDayPicked({data:this.getObservations()});
 	},
 
 	pickPeriod:function(sender,event) {

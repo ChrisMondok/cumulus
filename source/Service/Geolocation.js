@@ -7,10 +7,30 @@ enyo.singleton({
 		if(navigator.geolocation)
 			navigator.geolocation.getCurrentPosition(
 				function(position) {async.go(position.coords);},
-				function(error) {async.fail(error);}
+				function(error) {
+					var message = "";
+					switch(error.code) {
+						case error.PERMISSION_DENIED:
+							message = "GPS permission denied";
+							break;
+						case error.POSITION_UNAVAILABLE:
+							message = "GPS position unavailable";
+							this.$.gpsFailureReason.setContent();
+							break;
+						case error.TIMEOUT:
+							message = "GPS timed out";
+							break;
+						default:
+							message = "Unknown geolocation error";
+							break;
+					}
+					
+					async.fail({message:error.message, code:error.code});
+				},
+				{timeout:10000}
 			);
 		else
-			enyo.asyncMethod(this,function() {async.fail();});
+			enyo.asyncMethod(this,function() { async.fail({message:"Geolocation not available"}); });
 
 		return async;
 	}

@@ -39,8 +39,6 @@ enyo.kind({
 			scrim:true,
 			autoDismiss:false,
 			scrimWhenModal:true,
-			onShow:"obscureMain",
-			onHide:"unobscureMain",
 			components:[
 				{content:"Getting your current location"}
 			]
@@ -117,10 +115,7 @@ enyo.kind({
 
 	submitPlace:function() {
 		this.$.getPlacePopup.hide();
-		var place = this.$.placeInput.getValue();
-		this.$.outlook.setPlace(place);
-		this.$.detail.setPlace(place);
-		this.$.map.setPlace(place);
+		this.setPlace(this.$.placeInput.getValue());
 	},
 
 	rendered:function() {
@@ -133,27 +128,11 @@ enyo.kind({
 		Service.Geolocation.getLocation()
 			.response(enyo.bind(this, function(sender,response) {
 				this.$.locatingPopup.hide();
-				this.$.outlook.setPlace(response);
-				this.$.detail.setPlace(response);
-				this.$.map.setPlace(response);
+				this.setPlace(response);
 			}))
 			.error(enyo.bind(this, function(sender,error) {
 				this.$.locatingPopup.hide();
-				if(error)
-					switch(error.code) {
-						case error.PERMISSION_DENIED:
-							this.$.gpsFailureReason.setContent("GPS permission denied");
-							break;
-						case error.POSITION_UNAVAILABLE:
-							this.$.gpsFailureReason.setContent("GPS position unavailable");
-							break;
-						case error.TIMEOUT:
-							this.$.gpsFailureReason.setContent("GPS timed out");
-							break;
-						default:
-							this.$.gpsFailureReason.setContent("Unknown geolocation error");
-							break;
-					}
+				this.$.gpsFailureReason.setContent(error.message);
 				this.$.getPlacePopup.show();
 				this.$.placeInput.focus();
 			}));
@@ -163,6 +142,15 @@ enyo.kind({
 
 	apiChanged:function() {
 		this.waterfall("onApiCreated",{api:this.getApi()},this);
+	},
+
+	placeChanged:function(oldPlace, newPlace) {
+		if(newPlace)
+		{
+			this.$.outlook.setPlace(newPlace);
+			this.$.detail.setPlace(newPlace);
+			this.$.map.setPlace(newPlace);
+		}
 	},
 
 	pushState:function(state, title, url) {
@@ -210,24 +198,20 @@ enyo.kind({
 
 		switch(state && state.index || 0) {
 			case 1:
-				this.showDetail(this,state);
+				this.$.panels.setIndex(1);
+				this.$.detail.setData(state.data);
 				break;
-			case 2:
-				this.showMap(this,state);
+			case 3:
+				this.$.advisory.setAdvisory(state.advisory);
 				break;
 			default:
-				this.$.panels.setIndex(0);
 				break;
 		}
-	},
 
-	showDetail:function(sender,event) {
-		this.$.panels.setIndex(1);
-		this.$.detail.setData(event.data);
-	},
-
-	showMap:function(sender,event) {
-		this.$.panels.setIndex(2);
+		if(state && state.index)
+			this.$.panels.setIndex(state.index)
+		else
+			this.$.panels.setIndex(0);
 	},
 
 	panelIndexChanged:function() {
