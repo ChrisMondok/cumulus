@@ -1,5 +1,5 @@
 
-/* c://src/tests/cumulus/enyo/../lib/layout/contextual/source/ContextualLayout.css */
+/* /srv/http/cumulus/enyo/../lib/layout/contextual/source/ContextualLayout.css */
 
 /* ContextualLayout.css - popup positioning and border radius adjustments */
 
@@ -60,7 +60,7 @@
   border-top-right-radius: 0px;
 }
 
-/* c://src/tests/cumulus/enyo/../lib/layout/fittable/source/FittableLayout.css */
+/* /srv/http/cumulus/enyo/../lib/layout/fittable/source/FittableLayout.css */
 
 .enyo-fittable-rows-layout {
 	position: relative;
@@ -132,7 +132,7 @@
 	margin-bottom: 0 !important;
 }
 
-/* c://src/tests/cumulus/enyo/../lib/layout/list/source/List.css */
+/* /srv/http/cumulus/enyo/../lib/layout/list/source/List.css */
 
 .enyo-list {
 	position: relative;
@@ -197,7 +197,7 @@
 	transition: top 0.1s linear, left 0.1s linear;
 }
 
-/* c://src/tests/cumulus/enyo/../lib/layout/list/source/PulldownList.css */
+/* /srv/http/cumulus/enyo/../lib/layout/list/source/PulldownList.css */
 
 .enyo-list-pulldown {
 	position: absolute;
@@ -260,7 +260,7 @@
 	-ms-transform: rotate(180deg);
 }
 
-/* c://src/tests/cumulus/enyo/../lib/layout/list/source/GridList.css */
+/* /srv/http/cumulus/enyo/../lib/layout/list/source/GridList.css */
 
 /*
 	Put anything you reference with "url(../lib/layout/list/source)" in ../assets/
@@ -299,7 +299,7 @@
 	z-index: -1;
 }
 
-/* c://src/tests/cumulus/enyo/../lib/layout/list/source/GridListImageItem.css */
+/* /srv/http/cumulus/enyo/../lib/layout/list/source/GridListImageItem.css */
 
 /*
 	Put anything you reference with "url(../lib/layout/list/source)" in ../assets/
@@ -331,7 +331,7 @@
 	color: #fff;
 }
 
-/* c://src/tests/cumulus/enyo/../lib/layout/panels/source/arrangers/Arranger.css */
+/* /srv/http/cumulus/enyo/../lib/layout/panels/source/arrangers/Arranger.css */
 
 .enyo-arranger {
 	position: relative;
@@ -360,7 +360,7 @@
 }
 
 
-/* c://src/tests/cumulus/enyo/../lib/layout/panels/source/Panels.css */
+/* /srv/http/cumulus/enyo/../lib/layout/panels/source/Panels.css */
 
 .enyo-panels {
 }
@@ -375,7 +375,7 @@
 	}
 }
 
-/* c://src/tests/cumulus/enyo/../lib/layout/tree/source/Node.css */
+/* /srv/http/cumulus/enyo/../lib/layout/tree/source/Node.css */
 
 .enyo-node {
 	cursor: default;
@@ -409,7 +409,7 @@
 }
 
 
-/* c://src/tests/cumulus/enyo/../lib/layout/imageview/source/ImageViewPin.css */
+/* /srv/http/cumulus/enyo/../lib/layout/imageview/source/ImageViewPin.css */
 
 
 .pinDebug {
@@ -417,7 +417,7 @@
 	border:1px solid yellow;
 }
 
-/* c://src/tests/cumulus/enyo/../lib/onyx/css/onyx.less */
+/* /srv/http/cumulus/enyo/../lib/onyx/css/onyx.less */
 
 /* Onyx default parameters defined here */
 /* Fonts */
@@ -1653,6 +1653,7 @@ html, body {
 	transform:scale(0.9);
 
 	-webkit-filter:blur(3px);
+	filter: url(../assets/filters.svg#blur);
 }
 
 .nice-padding {
@@ -1929,12 +1930,43 @@ html, body {
 	background-color:#555;
 }
 
-.outlook .forecast {
+.outlook .forecast, .outlook .advisory {
 	border-bottom:1px solid rgba(0,0,0,0.75);
 	border-top:1px solid rgba(255,255,255,1);
 }
 
+.outlook .advisory.title {
+	background-color:white;
+	color:black;
+}
+
+.outlook .advisory {
+	padding:1em;
+	text-transform:lowercase;
+}
+
+.outlook .advisory:first-letter {
+	text-transform:capitalize;
+}
+
 .outlook .forecast.primary {
 	border-top:none;
+}
+
+.outlook .advisories-button {
+	text-align:center;
+	background-color: yellow;
+	text:black;
+}
+
+
+/* source/advisory.css */
+
+.cumulus-advisory .body {
+	padding:1em;
+}
+
+.cumulus-advisory .place {
+	text-transform:capitalize;
 }
 
