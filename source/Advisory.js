@@ -9,6 +9,7 @@ enyo.kind({
 		{kind:"Scroller", classes:"enyo-fit", components:[
 			{name:"name", tag:"h1"},
 			{name:"timerange", tag:"h2"},
+			{name:"place", classes:"place"},
 			{name:"body", classes:"body", allowHtml:true}
 		]}
 	],
@@ -16,6 +17,7 @@ enyo.kind({
 	advisoryChanged:function(old,advisory) {
 		this.$.name.setContent(advisory.details.name);
 		this.$.body.setContent(this.formatBody(advisory.details.body));
+		this.$.place.setContent(advisory.place.name);
 		this.$.timerange.setContent([
 			this.formatDate(new Date(advisory.timestamps.beginsISO)),
 			"to",
@@ -39,11 +41,11 @@ enyo.kind({
 						);
 					return "<span class=\"sentence\">"+notYelling+"</span>";
 				}).join(' ');
-		}
+		};
 
 		return paragraphs.map(function(p) {
 			return "<p>"+formatParagraph(p)+"</p>";
-		}).join('');;
+		}).join('');
 	},
 
 	formatDate:function(date) {
@@ -53,6 +55,6 @@ enyo.kind({
 		if(day == $L("today"))
 			return time;
 		else
-			return [day,time].join(" ");
+			return [day.charAt(0).toUpperCase() + day.slice(1),time].join(" ");
 	}
 });

@@ -1,3 +1,7 @@
 .cumulus-advisory .body {
 	padding:1em;
 }
+
+.cumulus-advisory .place {
+	text-transform:capitalize;
+}
