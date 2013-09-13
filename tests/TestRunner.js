@@ -1,7 +1,7 @@
 enyo.kind({
 	name:"Cumulus.Testing.TestRunner",
 	kind:"FittableRows",
-	classes:"enyo-fit testing",
+	classes:"enyo-fit testing onyx",
 
 	published:{
 		contexts:undefined
