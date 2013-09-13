@@ -50,12 +50,12 @@ enyo.kind({
 
 	apiChanged:function() {
 		if(this.getPlace())
-			this.startJob(this.id+'refresh','refresh',250);
+			this.refresh();
 	},
 
 	placeChanged:function() {
 		if(this.getApi())
-			this.startJob(this.id+'refresh','refresh',250);
+			this.refresh();
 	},
 
 	refresh:function() {
