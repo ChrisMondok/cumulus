@@ -96,9 +96,9 @@ enyo.kind({
 	refresh:function() {
 		this.$.loadingPopup.show();
 		this.getApi().getAsync('hourlyForecast',this.getPlace(),new Date(this.getData().dateTimeISO))
-			.response(enyo.bind(this,"gotHourlyForecast"));
+			.response(this,"gotHourlyForecast");
 		this.getApi().getAsync('tides',this.getPlace(), new Date(this.getData().dateTimeISO))
-			.response(enyo.bind(this,"gotTides"));
+			.response(this,"gotTides");
 	},
 
 	gotHourlyForecast:function(ajax,response) {

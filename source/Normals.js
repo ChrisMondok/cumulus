@@ -5,13 +5,8 @@ enyo.kind({
 	published:{
 		sunrise:null,
 		sunset:null,
-		tides:null,
+		tides:null
 	},
-
-	bindings:[
-		{from:"sunrise", to:".$.sunrise.content", transform:"timeFromDateString"},
-		{from:"sunset", to:".$.sunset.content", transform:"timeFromDateString"},
-	],
 
 	components:[
 		{kind:"Divider", content:"Sun"},
@@ -26,14 +21,17 @@ enyo.kind({
 					{name:"type", tag:"td"},
 					{name:"height", tag:"td"},
 					{name:"time", tag:"td"}
-				]},
-			]},
-		]},
+				]}
+			]}
+		]}
 	],
 
 	setData:function(data) {
-		this.setSunrise(data && data.sunriseISO || null);
-		this.setSunset(data && data.sunsetISO || null);
+		if(data && data.sunriseISO && data.sunsetISO)
+		{
+			this.$.sunrise.setContent(this.timeFromDateString(data.sunriseISO));
+			this.$.sunset.setContent(this.timeFromDateString(data.sunsetISO));
+		}
 	},
 
 	setSunMoon:function(normals) {
