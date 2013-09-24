@@ -10,7 +10,8 @@ enyo.kind({
 	handlers:{
 		onDayPicked:"pushDayPickedState",
 		onShowMap:"pushShowMapState",
-		onAdvisoryPicked:"pushShowAdvisoryState"
+		onAdvisoryPicked:"pushShowAdvisoryState",
+		onReceivedAPIError:"receivedAPIError"
 	},
 
 	components:[
@@ -46,14 +47,20 @@ enyo.kind({
 		{
 			name:"aboutPopup",
 			kind:"onyx.Popup",
-			centered:true,
-			scrim:true, scrimWhenModal:true,
-			floating:true,
-			modal:true,
+			centered:true, floating:true, modal:true, scrim:true, scrimWhenModal:true,
 			components:[
 				{content:"Cumulus"},
 				{content:"by Chris Mondok"},
 				{tag:"a", attributes:{href:"http://github.com/chrismondok"}, content:"Github"}
+			]
+		},
+		{
+			name:"errorPopup",
+			kind:"onyx.Popup",
+			centered:true, floating:true, modal:true, scrim:true, scrimWhenModal:true,
+			components:[
+				{tag:"h1", content:"Error"},
+				{name:"errorDescription"}
 			]
 		},
 		{name:"getPlacePopup", kind:"onyx.Popup", centered:true, modal:true, floating:true, scrim:true, autoDismiss:false, scrimWhenModal:true, components:[
@@ -238,5 +245,10 @@ enyo.kind({
 
 	showAbout:function() {
 		this.$.aboutPopup.show();
-	}
+	},
+
+	receivedAPIError:function(sender, event) {
+		this.$.errorDescription.setContent(event.error.description);
+		this.$.errorPopup.show();
+	},
 });

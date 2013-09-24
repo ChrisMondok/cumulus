@@ -14,7 +14,8 @@ enyo.kind({
 	events:{
 		onDayPicked:"",
 		onShowMap:"",
-		onAdvisoryPicked:""
+		onAdvisoryPicked:"",
+		onReceivedAPIError:""
 	},
 
 	handlers:{
@@ -60,27 +61,28 @@ enyo.kind({
 
 	refresh:function() {
 		this.$.loadingPopup.show();
+		var self = this;
 		var api = this.getApi();
 		api.getAsync('observations',this.getPlace())
 			.response(this,"gotObservations")
 			.error(function(ajax,error) {
-				alert(JSON.stringify(error));
+				self.doReceivedAPIError({request:ajax, error:error});
 			});
 		api.getAsync('forecast',this.getPlace())
 			.response(this,"gotForecast")
 			.error(function(ajax,error) {
-				alert(JSON.stringify(error));
+				self.doReceivedAPIError({request:ajax, error:error});
 			});
 		api.getAsync('advisories',this.getPlace())
 			.response(this,"gotAdvisories")
 			.error(function(ajax,error) {
-				alert(JSON.stringify(error));
+				self.doReceivedAPIError({request:ajax, error:error, ignore:true});
 			});
 	},
 
 	gotObservations:function(ajax,response) {
 		var actualResponse;
-		if(!response.error) {
+		if(response.success) {
 			if(response.response instanceof Array)
 				actualResponse = response.response[0];
 			else
@@ -99,14 +101,14 @@ enyo.kind({
 
 	gotForecast:function(ajax,response) {
 		this.$.loadingPopup.hide();
-		if(!response.error)
+		if(response.success)
 			this.setPeriods(response.response[0].periods);
 		else
 			ajax.fail(response.error);
 	},
 
 	gotAdvisories:function(ajax,response) {
-		if(!response.error)
+		if(response.success)
 			this.setAdvisories(response.response);
 		else
 			ajax.fail(response.error);

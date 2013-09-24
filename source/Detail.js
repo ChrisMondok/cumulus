@@ -110,15 +110,15 @@ enyo.kind({
 	},
 
 	gotTides:function(ajax,response) {
-		if(response.error)
-			ajax.fail(response.error);
-		else
+		if(response.success)
 		{
 			if(response.response instanceof Array)
 				this.setTides(response.response[0].periods);
 			else
 				this.setTides(response.response.periods);
 		}
+		else
+			ajax.fail(response.error);
 	},
 
 	periodsChanged:function() {
