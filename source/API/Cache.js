@@ -3,33 +3,68 @@ enyo.kind({
 
 	published:{
 		source:null,
-		cache:null
+		cache:null,
+		cacheName:'cache'
 	},
 	
 	create:function() {
 		this.inherited(arguments);
+		this.setCache({});
 
-		this.dump();
-	},
-
-	sourceChanged:function() {
-		this.dump();
+		this.load();
 	},
 
 	dump:function() {
 		this.setCache({});
+		localStorage.removeItem(this.getCacheName());
+	},
+
+	load:function() {
+		var loaded = localStorage.getItem(this.getCacheName());
+		if(loaded)
+		{
+			this.setCache(JSON.parse(loaded));
+		}
+	},
+	
+	save:function() {
+		localStorage.setItem(this.getCacheName(),JSON.stringify(this.getCache()));
 	},
 
 	ensureTracking:function(property) { // (property, arguments...)
 		var cache = this.getCache();
 
 		if(!cache[property])
-			cache[property] = [];
+			cache[property] = {};
 
 		var args = JSON.stringify(this.stripFirstArgument.apply(this,arguments));
 
 		if(!cache[property][args])
 			cache[property][args] = {lastUpdated:0, value:undefined}
+	},
+
+	stopTracking:function(property,stringargs) { //(property, arguments...)
+		console.groupCollapsed("Removing item from cache");
+		console.info("Property",property);
+		console.info("Arguments",stringargs);
+
+		var cache = this.getCache();
+
+		if(cache[property])
+		{
+
+			if(cache[property][stringargs])
+			{
+				delete cache[property][stringargs];
+				console.info("Deleted");
+				this.startJob('save','save',1000);
+			}
+			else
+				console.info("argument mismatch");
+		}
+		else
+			console.warn("Not cached!");
+		console.groupEnd();
 	},
 
 	isOutdated:function(property) { // (property, arguments...)
@@ -74,10 +109,13 @@ enyo.kind({
 			.response(function(ajax,value) {
 				cache[property][stringargs].value = value;
 				cache[property][stringargs].lastUpdated = new Date();
-				async.go(value);
+				self.startJob('save','save',1000);
+				async.go(value).error(function() {
+					self.stopTracking(property,stringargs);
+				});
 			})
 			.error(function(ajax,error) {
-				async.fail(error);
+				self.stopTracking(property,stringargs);
 			});
 
 		return async;
