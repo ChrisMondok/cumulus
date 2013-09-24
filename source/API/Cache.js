@@ -77,6 +77,10 @@ enyo.kind({
 		return this.getCache()[property][args].value
 	},
 
+	getForecast:function(place,time) {
+		return this.getAsync.apply(this,['forecast'].concat(Array.prototype.slice.call(arguments)))
+	},
+
 	getAsync:function(property) { // (property, arguments...)
 		this.ensureTracking.apply(this,arguments);
 

@@ -9,19 +9,17 @@ enyo.kind({
 		{kind:"Scroller", classes:"enyo-fit", components:[
 			{name:"name", tag:"h1"},
 			{name:"timerange", tag:"h2"},
-			{name:"place", classes:"place"},
 			{name:"body", classes:"body", allowHtml:true}
 		]}
 	],
 
 	advisoryChanged:function(old,advisory) {
-		this.$.name.setContent(advisory.details.name);
-		this.$.body.setContent(this.formatBody(advisory.details.body));
-		this.$.place.setContent(advisory.place.name);
+		this.$.name.setContent(advisory.title);
+		this.$.body.setContent(this.formatBody(advisory.description));
 		this.$.timerange.setContent([
-			this.formatDate(new Date(advisory.timestamps.beginsISO)),
+			this.formatDate(new Date(advisory.time * 1000)),
 			"to",
-			this.formatDate(new Date(advisory.timestamps.expiresISO))
+			this.formatDate(new Date(advisory.expires * 1000))
 		].join(" "));
 	},
 

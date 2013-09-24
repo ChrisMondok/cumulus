@@ -15,6 +15,10 @@ enyo.kind({
 		showLabels:false,
 	},
 
+	events:{
+		onAnimationFinished:""
+	},
+
 	_ctx:null,
 
 	components:[
@@ -24,7 +28,7 @@ enyo.kind({
 			{name:"min"}
 		]},
 		{name:"canvas", style:"width:100%; height:100%", tag:"canvas"},
-		{name:"animator", kind:"Animator", onStep:"drawGraph", start:0, end:1, duration:1000}
+		{name:"animator", kind:"Animator", onStep:"drawGraph", onEnd:"doAnimationFinished", start:0, end:1}
 	],
 
 	create:function() {
@@ -60,7 +64,8 @@ enyo.kind({
 	},
 
 	dataChanged:function() {
-		this.$.animator.play();
+		var data = this.getData();
+		this.$.animator.play({duration:data && data.length ? 250 : 1});
 	},
 
 	getX:function(i) {

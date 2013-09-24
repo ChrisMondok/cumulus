@@ -135,6 +135,7 @@ enyo.kind({
 	},
 
 	refresh:function() {
+		return;
 		this.getApi().getAsync('nearbyObservations',this.getPlace())
 			.response(enyo.bind(this,"gotNearbyObservations"));
 	},

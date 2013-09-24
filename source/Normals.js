@@ -3,8 +3,6 @@ enyo.kind({
 	kind:"FittableRows",
 
 	published:{
-		sunrise:null,
-		sunset:null,
 		tides:null
 	},
 
@@ -27,18 +25,13 @@ enyo.kind({
 	],
 
 	setData:function(data) {
-		if(data && data.sunriseISO && data.sunsetISO)
+		if(data && data.sunriseTime && data.sunsetTime)
 		{
-			this.$.sunrise.setContent(this.timeFromDateString(data.sunriseISO));
-			this.$.sunset.setContent(this.timeFromDateString(data.sunsetISO));
+			this.$.sunrise.setContent(this.timeFromDateString(data.sunriseTime));
+			this.$.sunset.setContent(this.timeFromDateString(data.sunsetTime));
 		}
 	},
 
-	setSunMoon:function(normals) {
-		this.setSunrise(normals && normals.sun.riseISO || null);
-		this.setSunset(normals && normals.sun.setISO || null);
-	},
-	
 	timeFromDateString:function(dateString) {
 		if(dateString)
 			return Cumulus.Main.formatTime(new Date(dateString));

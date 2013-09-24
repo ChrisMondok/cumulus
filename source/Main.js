@@ -24,7 +24,6 @@ enyo.kind({
 		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", classes:"enyo-fit", draggable:false, onTransitionFinish:"panelIndexChanged", components:[
 			{ name:"outlook", kind:"Cumulus.Outlook" },
 			{ name:"detail", kind:"Cumulus.Detail" },
-			{ name:"map", kind:"Cumulus.Map" },
 			{ name:"advisory", kind:"Cumulus.Advisory" },
 			{ name:"settings", kind:"Cumulus.Settings" }
 		]},
@@ -51,7 +50,8 @@ enyo.kind({
 			components:[
 				{content:"Cumulus"},
 				{content:"by Chris Mondok"},
-				{tag:"a", attributes:{href:"http://github.com/chrismondok"}, content:"Github"}
+				{tag:"a", attributes:{href:"http://github.com/chrismondok"}, content:"Github"},
+				{tag:"a", attributes:{href:"http://forecast.io"}, content:"Powered by Forecast"}
 			]
 		},
 		{
@@ -102,7 +102,8 @@ enyo.kind({
 	create:function() {
 		this.inherited(arguments);
 
-		this.setApi(enyo.create({ kind:"Cumulus.Cache", source:new Cumulus.AerisAPI() }));
+		this.setApi(enyo.create({ kind:"Cumulus.Cache", source:new Cumulus.API.ForecastIO() }));
+		//this.setApi(new Cumulus.API.ForecastIO());
 
 		this.calculateCommandMenu();
 
@@ -152,11 +153,9 @@ enyo.kind({
 	},
 
 	placeChanged:function(oldPlace, newPlace) {
-		if(newPlace)
-		{
+		if(newPlace) {
 			this.$.outlook.setPlace(newPlace);
 			this.$.detail.setPlace(newPlace);
-			this.$.map.setPlace(newPlace);
 		}
 	},
 
@@ -169,13 +168,11 @@ enyo.kind({
 	},
 
 	pushDayPickedState:function(sender,event) {
-		this.pushState({data:event.data, top:event.top, index:1}, "Hourly Forecast");
+		this.pushState({daily:event.daily, top:event.top, index:1}, "Hourly Forecast");
 	},
-	pushShowMapState:function(sender,event) {
-		this.pushState({data:event.data, index:2}, "Local map");
-	},
+
 	pushShowAdvisoryState:function(sender,event) {
-		this.pushState({advisory:event.advisory, index:3}, "Advisory");
+		this.pushState({advisory:event.advisory, index:2}, "Advisory");
 	},
 
 	onBackGesture:function(sender,event) {
@@ -206,9 +203,9 @@ enyo.kind({
 		switch(state && state.index || 0) {
 			case 1:
 				this.$.panels.setIndex(1);
-				this.$.detail.setData(state.data);
+				this.$.detail.setDaily(state.daily);
 				break;
-			case 3:
+			case 2:
 				this.$.advisory.setAdvisory(state.advisory);
 				break;
 			default:
@@ -222,8 +219,10 @@ enyo.kind({
 	},
 
 	panelIndexChanged:function() {
-		if(this.$.panels.getIndex() != 1)
-			this.$.detail.setData();
+		if(this.$.panels.getIndex() != 1) {
+			this.$.detail.setHourly();
+			this.$.detail.setDaily();
+		}
 		this.$.backButton.setDisabled(this.$.panels.getIndex() === 0);
 	},
 

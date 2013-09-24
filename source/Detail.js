@@ -6,44 +6,69 @@ enyo.kind({
 
 	published:{
 		api:null,
-		sunMoon:null,
+
 		place:null,
-		periods:null,
 		conditions:null,
-		tides:null,
-		data:null
+		daily:null,
+		hourly:null,
+
+		popThreshhold: 0.1
 	},
 
 	handlers:{
-		onApiCreated:"getApiFromEvent"
+		onApiCreated:"getApiFromEvent",
+		onAnimationFinished:"graphAnimationFinished"
+	},
+
+	graphAnimationFinished:function(graph,event) {
+		var hourly = this.getHourly();
+		if(hourly && hourly.data) {
+			switch (event.originator) {
+				case this.$.popGraph:
+					this.$.tempGraph.setData(hourly.data);
+					console.log("update temp graph");
+					break;
+				case this.$.tempGraph:
+					console.log("update humidity graph");
+					this.$.humidityGraph.setData(hourly.data);
+					break;
+			}
+		}
 	},
 	
 	components:[
-		{name:"day", classes:"today title nice-padding"},
+		{classes:"today nice-padding", components:[
+			{name:"day", classes:"title"},
+			{name:"summary"},
+		]},
 		{fit:true, style:"position:relative", components:[
 			{name:"loadingPopup", kind:"LoadingPopup"},
 			{name:"scroller", kind:"Scroller", touch:true, thumb:false, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
+				{name:"popDrawer", kind:"Drawer", components:[
+					{kind:"Divider", content:"Chance of precipitation"},
+					{
+						name:"popGraph",
+						kind:"Graph",
+						key:"precipProbability",
+						min:0, max:1,
+						fillColor:"rgba(132,167,193,0.5)",
+						strokeColor:"rgba(132,167,193,1)"
+					},
+				]},
 				{kind:"Divider", content:"Temperature"},
 				{
 					name:"tempGraph",
 					kind:"Cumulus.TemperatureGraph",
-					key:"tempF",
+					key:"temperature",
 					fillColor:"rgba(255,0,0,0.25)",
 					strokeColor:"rgba(255,0,0,1)"
-				},
-				{kind:"Divider", content:"Chance of precipitation"},
-				{
-					name:"popGraph",
-					kind:"Graph",
-					key:"pop",
-					fillColor:"rgba(132,167,193,0.5)",
-					strokeColor:"rgba(132,167,193,1)"
 				},
 				{kind:"Divider", content:"Humidity"},
 				{
 					name:"humidityGraph",
 					kind:"Graph",
 					key:"humidity",
+					min:0, max:1,
 					fillColor:"rgba(255,255,255,0.25)",
 					strokeColor:"rgba(255,255,255,0.75)"
 				},
@@ -61,81 +86,90 @@ enyo.kind({
 		]}
 	],
 
+	create:function() {
+		this.inherited(arguments);
+		window.graph = this.$.popGraph;
+		window.detail = this;
+	},
+
 	getApiFromEvent:function(event) {
 		this.setApi(event.api);
 	},
 
-	dataChanged:function() {
-		var data = this.getData();
-		this.$.normals.setData(data);
+	dailyChanged:function() {
+		var daily = this.getDaily();
+		this.$.normals.setData(daily);
 
-		if(data)
-			this.$.day.setContent(Cumulus.Main.formatDay(new Date(data.dateTimeISO)));
-
-		if(data && this.getApi() && this.getPlace())
-			this.startJob(this.id+'refresh','refresh',10);
-		else
-		{
-			this.setTides(null);
-			this.setPeriods([]);
+		if(daily) {
+			this.$.day.setContent(Cumulus.Main.formatDay(new Date(daily.time * 1000)));
+			this.$.summary.setContent(daily.summary);
 		}
 
-		this.$.scroller.scrollToTop();
+		if(daily && this.getApi() && this.getPlace()) {
+			this.startJob(this.id+'refresh','refresh',10);
+			this.$.scroller.scrollToTop();
+		}
+		else
+			this.setHourly();
+
 	},
 
 	apiChanged:function() {
-		if(this.getData() && this.getPlace())
+		if(this.getDaily() && this.getPlace())
 			this.startJob(this.id+'refresh','refresh',10);
 	},
 
 	placeChanged:function() {
-		if(this.getApi() && this.getData())
+		if(this.getApi() && this.getDaily())
 			this.startJob(this.id+'refresh','refresh',10);
 	},
 
 	refresh:function() {
 		this.$.loadingPopup.show();
-		this.getApi().getAsync('hourlyForecast',this.getPlace(),new Date(this.getData().dateTimeISO))
-			.response(this,"gotHourlyForecast");
-		this.getApi().getAsync('tides',this.getPlace(), new Date(this.getData().dateTimeISO))
-			.response(this,"gotTides");
+		var day = new Date(this.getDaily().time * 1000);
+		day.setHours(0,0,0,0);
+		this.getApi().getForecast(this.getPlace(),day)
+			.response(this,"gotForecast");
 	},
 
-	gotHourlyForecast:function(ajax,response) {
+	gotForecast:function(ajax,response) {
 		this.$.loadingPopup.hide();
-		if(response.response instanceof Array)
-			this.setPeriods(response.response[0].periods);
-		else
-			this.setPeriods(response.response.periods);
+		this.setHourly(response.hourly);
 	},
 
-	gotTides:function(ajax,response) {
-		if(response.success)
-		{
-			if(response.response instanceof Array)
-				this.setTides(response.response[0].periods);
+	hourlyChanged:function(oldValue, hourly) {
+		var data = (hourly && hourly.data || []);
+
+		var maxPop = 0;
+
+		this.setConditions(data.reduce(function(output,value,index,periods) {
+
+			maxPop = Math.max(maxPop, value.precipProbability);
+
+			if(output.length) 
+				output[output.length-1].end = value.time;
+
+			if(output.length < 1 
+				|| output[output.length-1].summary != value.summary
+				|| output[output.length-1].icon != value.icon)
+				output.push({summary:value.summary, icon:value.icon, start: value.time, end:value.time});
+			return output;
+			}, [])
+		);
+
+		if(hourly && hourly.data) {
+			this.$.popDrawer.setOpen(maxPop > this.getPopThreshhold());
+			if(this.$.popDrawer.getOpen())
+				this.$.popGraph.setData(data);
 			else
-				this.setTides(response.response.periods);
+				this.$.tempGraph.setData(data);
 		}
-		else
-			ajax.fail(response.error);
-	},
-
-	periodsChanged:function() {
-		var periods = this.getPeriods();
-
-		this.setConditions(periods.reduce(function(output,value,index,periods) {
-				if(output.length) 
-					output[output.length-1].end = value.dateTimeISO;
-
-				if(output.length < 1 || output[output.length-1].weather != value.weather)
-					output.push({weather:value.weather, icon:value.icon, start: value.dateTimeISO, end:value.dateTimeISO});
-				return output;
-			}, []));
-
-		this.$.tempGraph.setData(periods);
-		this.$.popGraph.setData(periods);
-		this.$.humidityGraph.setData(periods);
+		else {
+			this.$.popGraph.setData([]);
+			this.$.tempGraph.setData([]);
+			this.$.humidityGraph.setData([]);
+		}
+		return;
 	},
 
 	conditionsChanged:function() {
@@ -143,27 +177,17 @@ enyo.kind({
 		this.reflow();
 	},
 
-	tidesChanged:function() {
-		this.$.normals.setTides(this.getTides());
-	},
-
 	renderCondition:function(sender,event) {
 		var condition = this.getConditions()[event.index],
 			item = event.item;
 
-		item.$.weather.setContent(condition.weather);
+		item.$.weather.setContent(condition.summary);
 		item.$.icon.setIcon(condition.icon);
 		if(this.getConditions().length == 1)
 			item.$.timespan.setContent($L("All day"));
 		else
-			item.$.timespan.setContent(Cumulus.Main.formatTime(new Date(condition.start))+" - "+Cumulus.Main.formatTime(new Date(condition.end)));
+			item.$.timespan.setContent(Cumulus.Main.formatTime(new Date(condition.start * 1000))+" - "+Cumulus.Main.formatTime(new Date(condition.end * 1000)));
 
 		return true;
-	},
-
-	create:function() {
-		this.inherited(arguments);
-		window.graph = this.$.popGraph;
-		window.detail = this;
 	}
 });

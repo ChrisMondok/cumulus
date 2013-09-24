@@ -47,21 +47,18 @@ enyo.kind({
 	dataChanged:function() {
 		var data = this.getData();
 		if(data) {
-			this.$.day.setContent(this.transformDate(data.dateTimeISO));
+			this.$.day.setContent(this.transformDate(data.time));
 			this.$.icon.setIcon(data.icon);
 
-			this.$.weather.setContent(data.weather);
+			this.$.weather.setContent(data.summary);
 			
-			if(data.tempF === undefined || data.tempF === null)
-				this.$.temp.setContent(data.avgTempF + "°F");
-			else
-				this.$.temp.setContent(data.tempF + "°F");
+			this.$.temp.setContent(data.temperature);
 			
-			this.$.feelsLike.setContent(data.feelslikeF);
-			this.$.minTemp.setContent(data.minTempF);
-			this.$.maxTemp.setContent(data.maxTempF);
-			this.$.pop.setContent(data.pop);
-			this.$.humidity.setContent(data.humidity);
+			this.$.feelsLike.setContent(data.apparentTemperature);
+			this.$.minTemp.setContent(data.temperatureMin);
+			this.$.maxTemp.setContent(data.temperatureMax);
+			this.$.pop.setContent(data.precipProbability*100);
+			this.$.humidity.setContent(data.humidity*100);
 		}
 
 		this.updateShowing();
@@ -70,23 +67,23 @@ enyo.kind({
 	updateShowing:function() {
 		var data = this.getData();
 
-		this.$.day.setShowing(data && this.getShowDay() && data.hasOwnProperty('dateTimeISO'));
-		this.$.weather.setShowing(data && this.getShowWeather() && data.hasOwnProperty('weather'));
+		this.$.day.setShowing(data && this.getShowDay());
+		this.$.weather.setShowing(data && this.getShowWeather() && data.hasOwnProperty('summary'));
 
-		this.$.popRow.setShowing(data && this.getShowPop() && data.pop); //don't show if it's zero.
+		this.$.popRow.setShowing(data && this.getShowPop() && data.precipProbability);
 
 		this.$.humidityRow.setShowing(data && this.getShowHumidity() && data.hasOwnProperty('humidity'));
 
-		this.$.tempRange.setShowing(this.getShowRange() && data.hasOwnProperty('maxTempF'));
+		this.$.tempRange.setShowing(this.getShowRange() && data.hasOwnProperty('temperatureMax'));
 
-		this.$.tempNow.setShowing(this.getShowTemp() && data.hasOwnProperty('tempF') || data.hasOwnProperty('avgTempF'));
+		this.$.tempNow.setShowing(this.getShowTemp() && data.hasOwnProperty('temperature'));
 	},
 
 	transformDate:function(value) {
 		if(this.getNow())
 			return $L('now');
 		if(value) {
-			var date = new Date(value);
+			var date = new Date(value * 1000);
 
 			if(this.getHourly()) {
 				date.setMinutes(0);

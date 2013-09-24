@@ -1,4 +1,5 @@
 HAMWeatherKeys.js
+ForecastIOKey.js
 *.swp
 /build
 /deploy
