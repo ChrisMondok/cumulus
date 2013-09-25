@@ -11,8 +11,12 @@ enyo.kind({
 		key:"",
 		min:0,
 		max:100,
+		nowColor:"#f79a42",
 
 		showLabels:false,
+		showNow:true,
+
+		currentPosition:undefined
 	},
 
 	events:{
@@ -65,7 +69,15 @@ enyo.kind({
 
 	dataChanged:function() {
 		var data = this.getData();
-		this.$.animator.play({duration:data && data.length ? 250 : 1});
+		if(this.getShowNow() && data && data.length) {
+			var first = new Date(data[0].time * 1000),
+				last = new Date(data[data.length - 1].time * 1000);
+
+			this.setCurrentPosition((new Date() - first) / (last - first));
+		}
+		else
+			this.setCurrentPosition(undefined);
+		this.$.animator.play({duration:data && data.length ? 500 : 1});
 	},
 
 	getX:function(i) {
@@ -104,12 +116,12 @@ enyo.kind({
 		var bounds = this.$.canvas.getBounds(),
 			data = this.getData(),
 			ctx = this._ctx,
-			animStep = Math.max(0,this.$.animator.value*2-1); 
+			animStep = Math.max(0,this.$.animator.value*2-1),
+			currentPercentage = this.getCurrentPosition() * bounds.width;
 
 		this.sizeCanvas();
 
 		ctx.clearRect(0,0,bounds.width,bounds.height);
-
 
 		if(data && data.length) {
 			//draw grid
@@ -126,6 +138,30 @@ enyo.kind({
 			ctx.lineTo(bounds.width,bounds.height);
 			ctx.lineTo(0,bounds.height);
 			ctx.fill();
+
+			//draw now
+			if(currentPercentage !== undefined) {
+				var v = this.$.animator.value;
+				ctx.strokeStyle = this.getNowColor();
+				ctx.fillStyle = this.getNowColor();
+				ctx.beginPath();
+				ctx.moveTo(currentPercentage, 5);
+				ctx.lineTo(currentPercentage+5, 0);
+				ctx.lineTo(currentPercentage-5, 0);
+				ctx.lineTo(currentPercentage, 5);
+
+				ctx.lineTo(currentPercentage, (bounds.height - 5)*v);
+				ctx.lineTo(currentPercentage - 5, (bounds.height - 5)*v+5);
+				ctx.lineTo(currentPercentage + 5, (bounds.height - 5)*v+5);
+				ctx.lineTo(currentPercentage, (bounds.height - 5)*v);
+				ctx.fill();
+				ctx.stroke();
+
+				//ctx.moveTo(currentPercentage,0);
+				//ctx.lineTo(currentPercentage,bounds.height);
+				//ctx.stroke();
+
+			}
 		}
 
 		this.$.min.setContent(this.getMin());
