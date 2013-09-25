@@ -2,6 +2,25 @@
 	background-color:#DFDFDF;
 }
 
+.forecast .icon-container {
+	float:right;
+	margin-left:1ex;
+}
+
+.forecast .temp-range {
+	display:inline-block;
+	float:right;
+	text-align:right
+}
+
+.forecast .temp-range img {
+	height:1em;
+	vertical-align:middle;
+}
+
+.forecast .label {
+	color:#666;
+}
 
 .forecast.hourly .body {
 	text-align:right;
@@ -9,6 +28,7 @@
 
 .forecast.dark .day {
 	color:#F79A42;
+	display:inline-block;
 }
 
 .forecast.dark .label {
@@ -17,10 +37,6 @@
 
 .forecast.dark .icon-container {
 	background-color:rgba(255,255,255,0.5);
-}
-
-.forecast .label {
-	color:#666;
 }
 
 .forecast.hourly .icon-container {
@@ -34,11 +50,6 @@
 .forecast.primary .icon-container>img {
 	width:100px;
 	height:100px;
-}
-
-.forecast .temp-range img {
-	height:1em;
-	vertical-align:middle;
 }
 
 .onyx-popup .forecast {

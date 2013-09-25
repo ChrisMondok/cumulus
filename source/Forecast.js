@@ -1,7 +1,7 @@
 enyo.kind({
 	name:"Cumulus.Forecast",
 
-	classes:"row forecast nice-padding",
+	classes:"row forecast nice-padding columns",
 
 	published:{
 		data:{},
@@ -14,25 +14,26 @@ enyo.kind({
 		showTemp:true,
 		showRange:true,
 		showWeather:true,
-		showPop:true
+		showPop:true,
+
+		feelsLikeThreshold:5
 	},
 
+	controlClasses:"column",
 	components:[
 		{name:"icon", kind:"Cumulus.WeatherIcon"},
-		{name:"day", classes:"day title", content:$L("Loading")},
-		{name:"weather"},
+		{name:"day", classes:"day title", style:"display:inline-block", content:$L("Loading")},
+		{name:"tempRange", classes:"temp-range", components:[
+			{tag:"span", name:"minTemp"},
+			{tag:"span", content:" / "},
+			{tag:"span", name:"maxTemp"}
+		]},
+		{name:"weather", classes:"weather"},
 		{name:"tempNow", showing:false, components:[
 			{tag:"span", name:"temp"},
 			{tag:"span", classes:"label", content:" (feels like "},
 			{tag:"span", name:"feelsLike"},
-			{tag:"span", classes:"label", content:" °F)"}
-		]},
-		{name:"tempRange", showing:false, classes:"temp-range", components:[
-			{kind:"Image", src:"assets/icons/temp-min.png"},
-			{tag:"span", name:"minTemp"},
-			{tag:"span", content:" - "},
-			{kind:"Image", src:"assets/icons/temp-max.png"},
-			{tag:"span", name:"maxTemp"}
+			{tag:"span", name:"feelsLikeLabel", classes:"label", content:" °F)"}
 		]},
 		{name:"popRow", showing:false, components:[
 			{tag:"span", name:"pop"},
@@ -52,13 +53,13 @@ enyo.kind({
 
 			this.$.weather.setContent(data.summary);
 			
-			this.$.temp.setContent(data.temperature);
+			this.$.temp.setContent(Math.round(data.temperature));
 			
-			this.$.feelsLike.setContent(data.apparentTemperature);
-			this.$.minTemp.setContent(data.temperatureMin);
-			this.$.maxTemp.setContent(data.temperatureMax);
-			this.$.pop.setContent(data.precipProbability*100);
-			this.$.humidity.setContent(data.humidity*100);
+			this.$.feelsLike.setContent(Math.round(data.apparentTemperature));
+			this.$.minTemp.setContent(Math.round(data.temperatureMin));
+			this.$.maxTemp.setContent(Math.round(data.temperatureMax));
+			this.$.pop.setContent(Math.round(data.precipProbability*100));
+			this.$.humidity.setContent(Math.round(data.humidity*100));
 		}
 
 		this.updateShowing();
@@ -66,6 +67,7 @@ enyo.kind({
 
 	updateShowing:function() {
 		var data = this.getData();
+		var showFeelsLike = this.getShowTemp() && data.hasOwnProperty('temperature') && data.hasOwnProperty('apparentTemperature') && Math.abs(data.temperature - data.apparentTemperature) < this.getFeelsLikeThreshold();
 
 		this.$.day.setShowing(data && this.getShowDay());
 		this.$.weather.setShowing(data && this.getShowWeather() && data.hasOwnProperty('summary'));
@@ -77,6 +79,9 @@ enyo.kind({
 		this.$.tempRange.setShowing(this.getShowRange() && data.hasOwnProperty('temperatureMax'));
 
 		this.$.tempNow.setShowing(this.getShowTemp() && data.hasOwnProperty('temperature'));
+
+		this.$.feelsLike.setShowing(showFeelsLike);
+		this.$.feelsLike.setShowing(showFeelsLike);
 	},
 
 	transformDate:function(value) {
