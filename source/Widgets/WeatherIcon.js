@@ -17,7 +17,7 @@ enyo.kind({
 
 	transformIcon:function(value) {
 		if(value) 
-			return "assets/weathericons/"+value;
+			return "assets/weathericons/"+value+".png";
 		return value;
 	}
 });
