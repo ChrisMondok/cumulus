@@ -1,7 +1,7 @@
 enyo.kind({
 	name:"Cumulus.Forecast",
 
-	classes:"row forecast nice-padding columns",
+	classes:"row forecast nice-padding",
 
 	published:{
 		data:{},
@@ -19,11 +19,10 @@ enyo.kind({
 		feelsLikeThreshold:5
 	},
 
-	controlClasses:"column",
 	components:[
 		{name:"icon", kind:"Cumulus.WeatherIcon"},
 		{name:"day", classes:"day title", style:"display:inline-block", content:$L("Loading")},
-		{name:"tempRange", classes:"temp-range", components:[
+		{name:"tempRange", classes:"temp-range", showing:false, components:[
 			{tag:"span", name:"minTemp"},
 			{tag:"span", content:" / "},
 			{tag:"span", name:"maxTemp"}

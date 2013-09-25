@@ -30,3 +30,9 @@
 	background-color: yellow;
 	text:black;
 }
+
+.outlook .light .icon-container {
+	float:left;
+	margin-right:1ex;
+	margin-left:0;
+}

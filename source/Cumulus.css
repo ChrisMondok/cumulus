@@ -82,7 +82,7 @@ html, body {
 	border-radius:4px;
 	display:inline-block;
 	box-shadow: inset 0px 2px 6px rgba(0,0,0,0.5);
-	background-color:rgba(0,0,0,0.15);
+	background-color:#BDBDBD;
 	line-height:0px;
 }
 

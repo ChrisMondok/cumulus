@@ -1,3 +1,7 @@
+.forecast {
+	overflow:hidden;
+}
+
 .forecast, .light {
 	background-color:#DFDFDF;
 }
@@ -33,10 +37,6 @@
 
 .forecast.dark .label {
 	color:#999;
-}
-
-.forecast.dark .icon-container {
-	background-color:rgba(255,255,255,0.5);
 }
 
 .forecast.hourly .icon-container {
