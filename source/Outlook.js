@@ -63,7 +63,7 @@ enyo.kind({
 		this.$.loadingPopup.show();
 		var self = this;
 		var api = this.getApi();
-		api.getForecast(this.getPlace())
+		api.getDailyForecast(this.getPlace())
 			.response(this, "gotForecast")
 			.error(function(ajax,error) {
 				self.doReceivedAPIError({request:ajax, error:error})
@@ -73,9 +73,7 @@ enyo.kind({
 
 	gotForecast:function(ajax,response) {
 		this.$.loadingPopup.hide();
-		this.setCurrently(response.currently);
-		this.setDaily(response.daily.data);
-		this.setAdvisories(response.alerts || []);
+		this.setDaily(response);
 	},
 
 	currentlyChanged:function() {
@@ -87,8 +85,10 @@ enyo.kind({
 	},
 
 	renderDay:function(sender, event) {
-		var item = event.item, period = this.getDaily()[event.index];
-		item.$.forecast.setData(period);
+		var item = event.item,
+			data = this.getDaily()[event.index];
+		console.log("Render day ",new Date(data.time));
+		item.$.forecast.setData(data);
 	},
 
 	advisoriesChanged:function(old,advisories) {

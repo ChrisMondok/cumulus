@@ -87,7 +87,7 @@ enyo.kind({
 		if(this.getNow())
 			return $L('now');
 		if(value) {
-			var date = new Date(value * 1000);
+			var date = new Date(value);
 
 			if(this.getHourly()) {
 				date.setMinutes(0);

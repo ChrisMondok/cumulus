@@ -102,8 +102,7 @@ enyo.kind({
 	create:function() {
 		this.inherited(arguments);
 
-		this.setApi(enyo.create({ kind:"Cumulus.Cache", source:new Cumulus.API.ForecastIO() }));
-		//this.setApi(new Cumulus.API.ForecastIO());
+		this.setApi(new Cumulus.API.ForecastIO);
 
 		this.calculateCommandMenu();
 
