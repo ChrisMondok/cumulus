@@ -1,7 +1,6 @@
 var defaultLifetimes = {
 	hourly:60*60*1000, // 1 hour
 	daily:24*60*60*1000, //1 day
-	minutely: 30*60*1000, // 30 minutes
 	currently: 30*60*1000, // 30 minutes
 	alerts: 6*60*60*1000 // 6 hours
 };
@@ -13,6 +12,9 @@ enyo.kind({
 		cache:undefined,
 		cacheLifetimes:undefined
 	},
+
+	_updateRequest: null,
+
 	create:function() {
 		this.inherited(arguments);
 		if(window.forecastIOKey)
@@ -109,7 +111,9 @@ enyo.kind({
 	},
 
 	update:function(loc,time) {
-		var params = [loc.latitude, loc.longitude];
+		var params = [loc.latitude, loc.longitude],
+			ajax = this._updateRequest;
+			
 		if(time) {
 			if(time instanceof Date) 
 				params.push(this.formatTime(time));
@@ -117,14 +121,17 @@ enyo.kind({
 				params.push(time);
 		}
 
-		var ajax = new enyo.JsonpRequest({
-			url:[this.getUrl(),'forecast',this.getKey(),params.join(',')].join('/'),
-			cacheBust:false
-		});
+		if(!ajax) {
+			ajax = this._updateRequest = new enyo.JsonpRequest({
+				url:[this.getUrl(),'forecast',this.getKey(),params.join(',')].join('/'),
+				cacheBust:false
+			});
 
-		ajax.go(); 
+			ajax.go({exclude:"minutely"}); 
 
-		ajax.response(this,"gotUpdates");
+			ajax.response(this,function() {this._updateRequest = null;});
+			ajax.response(this,"gotUpdates");
+		}
 
 		return ajax;
 	},
