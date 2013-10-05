@@ -61,12 +61,17 @@ enyo.kind({
 
 	refresh:function() {
 		this.$.loadingPopup.show();
-		var self = this;
-		var api = this.getApi();
+		var place = this.getPlace(),
+			api = this.getApi();
+
 		api.getDailyForecast(this.getPlace())
 			.response(this, "gotForecast")
 			.error(function(ajax,error) {
 				self.doReceivedAPIError({request:ajax, error:error})
+			});
+		api.getCurrent(this.getPlace())
+			.response(this, function(async,currently) {
+				this.setCurrently(currently);
 			});
 		return;
 	},

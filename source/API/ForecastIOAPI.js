@@ -84,6 +84,10 @@ enyo.kind({
 		return async;
 	},
 
+	getCurrent:function(loc) {
+		return this.getAsync(loc,'currently').response(function(async, currently){return currently[0]});
+	},
+
 	getDailyForecast:function(loc,time) {
 		var async;
 		if(time) {
