@@ -22,15 +22,13 @@ enyo.kind({
 
 	graphAnimationFinished:function(graph,event) {
 		var hourly = this.getHourly();
-		if(hourly && hourly.data) {
+		if(hourly && hourly.length) {
 			switch (event.originator) {
 				case this.$.popGraph:
-					this.$.tempGraph.setData(hourly.data);
-					console.log("update temp graph");
+					this.$.tempGraph.setData(hourly);
 					break;
 				case this.$.tempGraph:
-					console.log("update humidity graph");
-					this.$.humidityGraph.setData(hourly.data);
+					this.$.humidityGraph.setData(hourly);
 					break;
 			}
 		}
@@ -101,7 +99,7 @@ enyo.kind({
 		this.$.normals.setData(daily);
 
 		if(daily) {
-			this.$.day.setContent(Cumulus.Main.formatDay(new Date(daily.time * 1000)));
+			this.$.day.setContent(Cumulus.Main.formatDay(new Date(daily.time)));
 			this.$.summary.setContent(daily.summary);
 		}
 
@@ -186,7 +184,7 @@ enyo.kind({
 		if(this.getConditions().length == 1)
 			item.$.timespan.setContent($L("All day"));
 		else
-			item.$.timespan.setContent(Cumulus.Main.formatTime(new Date(condition.start * 1000))+" - "+Cumulus.Main.formatTime(new Date(condition.end * 1000)));
+			item.$.timespan.setContent(Cumulus.Main.formatTime(new Date(condition.start))+" - "+Cumulus.Main.formatTime(new Date(condition.end)));
 
 		return true;
 	}

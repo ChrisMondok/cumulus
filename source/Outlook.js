@@ -92,7 +92,6 @@ enyo.kind({
 	renderDay:function(sender, event) {
 		var item = event.item,
 			data = this.getDaily()[event.index];
-		console.log("Render day ",new Date(data.time));
 		item.$.forecast.setData(data);
 	},
 
