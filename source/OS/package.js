@@ -1,4 +1,5 @@
 enyo.depends(
 	"firefoxOS.js",
-	"webos.js"
+	"webos.js",
+	"browser.js"
 );
