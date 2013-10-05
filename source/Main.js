@@ -237,7 +237,7 @@ enyo.kind({
 		this.addRemoveClass("show-command-menu",needsBackButton); //hide this when there's a native back button
 	},
 
-	obscuredChanged:function(property, oldValue, newValue) {
+	obscuredChanged:function(oldValue, newValue, property) {
 		if(property != "showing")
 			alert("Property is "+property+", not showing!");
 		else
@@ -251,5 +251,5 @@ enyo.kind({
 	receivedAPIError:function(sender, event) {
 		this.$.errorDescription.setContent(event.error.description);
 		this.$.errorPopup.show();
-	},
+	}
 });
