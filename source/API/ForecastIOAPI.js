@@ -86,6 +86,14 @@ enyo.kind({
 		return async;
 	},
 
+	getDayThatContainsTime:function(time) {
+		var day = new Date(time);
+		day.setHours(0,0,0,0);
+		var start = day.getTime();
+		var end = start + 24*60*60*1000 - 1;
+		return {start:start, end:end};
+	},
+
 	getCurrent:function(loc) {
 		return this.getAsync(loc,'currently').response(function(async, currently){return currently[0]});
 	},
@@ -93,18 +101,28 @@ enyo.kind({
 	getDailyForecast:function(loc,time) {
 		var async;
 		if(time) {
-			var day = new Date(time);
-			day.setHours(0,0,0,0);
-			var start = day.getTime();
-			var end = start + 24*60*60*1000 - 1;
-
-			async = this.getAsync(loc,'daily',start,end);
-		}
-		else
+			var range = this.getDayThatContainsTime(time);
+			async = this.getAsync(loc,'daily',range.start,range.end);
+		} else
 			async = this.getAsync(loc,'daily');
+
 		async.response(function(async, dailyForecasts) {
 			if(!dailyForecasts.length)
 				async.fail({error:"Didn't get any daily forecasts"});
+		});
+
+		return async;
+	},
+
+	getHourlyForecast:function(loc,time) {
+		var async,
+			range = this.getDayThatContainsTime(time);
+
+		var async = this.getAsync(loc,'hourly',range.start,range.end);
+
+		async.response(function(async, hourlyForecasts) {
+			if(!hourlyForecasts.length)
+				async.fail({error:"Didn't get any hourly forecasts"});
 		});
 
 		return async;
@@ -145,18 +163,23 @@ enyo.kind({
 		if(response.hasOwnProperty('currently'))
 			response.currently = {data:[response.currently]};
 
-		for(var key in cache) {
-			if(response.hasOwnProperty(key)) {
-				response[key].data.forEach(
-					function(value){
-						value._cacheExpireTime = now + cacheLifetimes[key];
-						value.time = value.time * 1000;
-						return value;
+		for(var property in cache) {
+			if(response.hasOwnProperty(property)) {
+				response[property].data.forEach(
+					function(dataItem){
+						for(var key in dataItem) {
+							if(key == 'time' || key.indexOf('Time') == key.length - 4) {
+								console.info("Adjusting property "+key);
+								dataItem[key] = dataItem[key] * 1000;
+							}
+						}
+						dataItem._cacheExpireTime = now + cacheLifetimes[property];
+						return dataItem;
 					});
-				this.mergeCachedProperty(key,response[key].data);
+				this.mergeCachedProperty(property,response[property].data);
 			}
 			else
-				console.warn("Didn't get "+key);
+				console.warn("Didn't get "+property);
 		}
 	},
 

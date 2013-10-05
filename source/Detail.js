@@ -126,19 +126,19 @@ enyo.kind({
 
 	refresh:function() {
 		this.$.loadingPopup.show();
-		var day = new Date(this.getDaily().time * 1000);
+		var day = new Date(this.getDaily().time);
 		day.setHours(0,0,0,0);
-		this.getApi().getForecast(this.getPlace(),day)
-			.response(this,"gotForecast");
+		this.getApi().getHourlyForecast(this.getPlace(),day)
+			.response(this,"gotHourly");
 	},
 
-	gotForecast:function(ajax,response) {
+	gotHourly:function(ajax,hourly) {
 		this.$.loadingPopup.hide();
-		this.setHourly(response.hourly);
+		this.setHourly(hourly);
 	},
 
 	hourlyChanged:function(oldValue, hourly) {
-		var data = (hourly && hourly.data || []);
+		var data = hourly || [];
 
 		var maxPop = 0;
 
@@ -157,7 +157,7 @@ enyo.kind({
 			}, [])
 		);
 
-		if(hourly && hourly.data) {
+		if(data.length) {
 			this.$.popDrawer.setOpen(maxPop > this.getPopThreshhold());
 			if(this.$.popDrawer.getOpen())
 				this.$.popGraph.setData(data);
