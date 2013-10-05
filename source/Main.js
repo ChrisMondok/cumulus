@@ -9,7 +9,6 @@ enyo.kind({
 
 	handlers:{
 		onDayPicked:"pushDayPickedState",
-		onShowMap:"pushShowMapState",
 		onAdvisoryPicked:"pushShowAdvisoryState",
 		onReceivedAPIError:"receivedAPIError"
 	},
@@ -18,7 +17,7 @@ enyo.kind({
 		{kind:"Signals", onBackButton:"onBackGesture", onToggleAppMenu:"toggleAppMenu"},
 		{content:"Beta", classes:"sash"},
 		{name:"appmenu", kind:"Appmenu", components:[
-			{content:"Preferences"},
+			{content:"Preferences", ontap:"pushSettingsState"},
 			{content:"About", ontap:"showAbout"}
 		]},
 		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", classes:"enyo-fit", draggable:false, onTransitionFinish:"panelIndexChanged", components:[
@@ -172,6 +171,10 @@ enyo.kind({
 
 	pushShowAdvisoryState:function(sender,event) {
 		this.pushState({advisory:event.advisory, index:2}, "Advisory");
+	},
+
+	pushSettingsState:function(sender, event) {
+		this.pushState({index:3},"Preferences");
 	},
 
 	onBackGesture:function(sender,event) {

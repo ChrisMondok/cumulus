@@ -97,6 +97,10 @@ html, body {
 	text-shadow: 0px 1px 0px rgba(255,255,255,0.95), 0px 1px 0px rgba(0,0,0,0.5);
 }
 
+.onyx-popup .title {
+	color:#F79A42;
+}
+
 h1 {
 	text-shadow: 0px -1px rgba(0,0,0,0.5), 0px 1px rgba(255,255,255,0.5);
 	color:rgba(0,0,0,0.5);
@@ -104,4 +108,15 @@ h1 {
 
 .onyx-popup h1 {
 	color:rgba(255,255,255,0.5);
+}
+
+.onyx-button.row-button {
+	display:block;
+	width:100%;
+	box-sizing:border-box;
+}
+
+.with-vertical-margin {
+	margin-top: 15px;
+	margin-bottom:15px;
 }
