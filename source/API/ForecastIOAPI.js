@@ -118,7 +118,7 @@ enyo.kind({
 		var async,
 			range = this.getDayThatContainsTime(time);
 
-		var async = this.getAsync(loc,'hourly',range.start,range.end);
+		async = this.getAsync(loc,'hourly',range.start,range.end);
 
 		async.response(function(async, hourlyForecasts) {
 			if(!hourlyForecasts.length)
@@ -126,6 +126,22 @@ enyo.kind({
 		});
 
 		return async;
+	},
+
+	getMinutelyForecast:function(loc) {
+		var jsonpRequest = new enyo.JsonpRequest({
+			url:[this.getUrl(),'forecast',this.getKey(),[loc.latitude,loc.longitude].join(',')].join('/'),
+			cacheBust:true
+		});
+
+		jsonpRequest.go({exclude:"currently,hourly,daily,alerts,flags"});
+		jsonpRequest.response(function(request,response) {
+			response.minutely.data.forEach( function(minute) {
+				minute.time = minute.time * 1000;
+			});
+			return response.minutely;
+		});
+		return jsonpRequest;
 	},
 
 	update:function(loc,time) {
@@ -169,7 +185,6 @@ enyo.kind({
 					function(dataItem){
 						for(var key in dataItem) {
 							if(key == 'time' || key.indexOf('Time') == key.length - 4) {
-								console.info("Adjusting property "+key);
 								dataItem[key] = dataItem[key] * 1000;
 							}
 						}
