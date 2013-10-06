@@ -26,8 +26,7 @@ enyo.singleton({
 					}
 					
 					async.fail({message:error.message, code:error.code});
-				},
-				{timeout:10000}
+				}
 			);
 		else
 			enyo.asyncMethod(this,function() { async.fail({message:"Geolocation not available"}); });
