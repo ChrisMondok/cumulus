@@ -41,7 +41,7 @@ enyo.kind({
 	},
 
 	showLabelsChanged:function() {
-		var show = this.getShowLabels()
+		var show = this.getShowLabels();
 
 		this.$.labels.setShowing(show);
 
