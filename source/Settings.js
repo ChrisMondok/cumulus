@@ -56,6 +56,7 @@ enyo.kind({
 	},
 
 	setReloadInterval:function(slider, event) {
+		this.updateReloadIntervalDisplay(slider,event);
 		var minutes = (event.value+1)*10;
 		if(minutes > 60)
 			minutes = 0;
