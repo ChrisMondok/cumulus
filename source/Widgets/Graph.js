@@ -70,8 +70,8 @@ enyo.kind({
 	dataChanged:function() {
 		var data = this.getData();
 		if(this.getShowNow() && data && data.length) {
-			var first = new Date(data[0].time * 1000),
-				last = new Date(data[data.length - 1].time * 1000);
+			var first = new Date(data[0].time),
+				last = new Date(data[data.length - 1].time);
 
 			this.setCurrentPosition((new Date() - first) / (last - first));
 		}
