@@ -12,6 +12,7 @@ enyo.depends(
 	"Settings.js",
 	"Advisory.js",
 	"Forecast.js",
+	"MinutelyForecast.js",
 	"Detail.js",
 	"Normals.js",
 	"TemperatureGraph.js",

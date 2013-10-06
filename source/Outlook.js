@@ -1,6 +1,5 @@
 enyo.kind({
 	name:"Cumulus.Outlook",
-	kind:"FittableRows",
 	classes:"outlook",
 
 	published:{
@@ -33,14 +32,17 @@ enyo.kind({
 	},
 
 	components:[
-		{name:"scroller", kind:"Scroller", thumb:false, touch:true, horizontal:"hidden", fit:true, components:[
+		{name:"scroller", kind:"Scroller", classes:"enyo-fit", thumb:false, touch:true, horizontal:"hidden", fit:true, components:[
 			{name:"advisoriesDrawer", kind:"Drawer", open:false, components:[
 				{name:"advisoryRepeater", kind:"Repeater", onSetupItem:"renderAdvisory", components:[
 					{name:"name", classes:"advisory title", ontap:"pickAdvisory"}
 				]}
 			]},
 			{name:"advisoriesOpener", classes:"advisories-button", showing:false, ontap:"toggleAdvisoriesDrawer"},
-			{name:"currentConditions", kind:"Cumulus.Forecast", classes:"primary dark", now:true, showHumidity:true, ontap:"showMap"},
+			{name:"currentConditions", kind:"Cumulus.Forecast", classes:"primary dark", now:true, showHumidity:true, ontap:"toggleMinutely"},
+			{name:"minutelyForecastDrawer", kind:"Drawer", classes:"minutely-forecast-drawer", open:false, components:[
+				{name:"minutelyForecast", kind:"Cumulus.MinutelyForecast"}
+			]},
 			{name:"dayRepeater", kind:"Repeater", classes:"light", onSetupItem:"renderDay", components:[
 				{name:"forecast", kind:"Cumulus.Forecast", ontap:"pickDay"}
 			]},
@@ -54,9 +56,10 @@ enyo.kind({
 			this.refresh();
 	},
 
-	placeChanged:function() {
+	placeChanged:function(oldPlace, newPlace) {
 		if(this.getApi())
 			this.refresh();
+		this.$.minutelyForecast.setPlace(newPlace);
 	},
 
 	refresh:function() {
@@ -74,6 +77,15 @@ enyo.kind({
 				this.setCurrently(currently);
 			});
 		return;
+	},
+
+	toggleMinutely:function() {
+		if(!this.$.minutelyForecastDrawer.getOpen())
+			this.$.minutelyForecast.refresh();
+		this.$.minutelyForecastDrawer.setOpen(!this.$.minutelyForecastDrawer.getOpen());
+	},
+
+	maybeRefreshMinutely:function(drawer, event) {
 	},
 
 	gotForecast:function(ajax,response) {
