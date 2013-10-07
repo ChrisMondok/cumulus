@@ -190,7 +190,7 @@ enyo.kind({
 				response[property].data.forEach(
 					function(dataItem){
 						for(var key in dataItem) {
-							if(key == 'time' || key.indexOf('Time') == key.length - 4) {
+							if(key == 'time' || key == 'expires' || key.indexOf('Time') == key.length - 4) {
 								dataItem[key] = dataItem[key] * 1000;
 							}
 						}
