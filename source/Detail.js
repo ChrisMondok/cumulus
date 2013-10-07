@@ -35,9 +35,13 @@ enyo.kind({
 	},
 	
 	components:[
-		{classes:"today nice-padding", components:[
-			{name:"day", classes:"title"},
-			{name:"summary"},
+		{classes:"today", components:[
+			{kind:"Panels", classes:"title-carousel", arrangerKind:"CarouselArranger", controlClasses: "title", index:1, components:[
+				{name:"previousDay"},
+				{name:"day"},
+				{name:"nextDay"}
+			]},
+			{name:"summary", classes:"summary"},
 		]},
 		{fit:true, style:"position:relative", components:[
 			{name:"loadingPopup", kind:"LoadingPopup"},
@@ -99,7 +103,9 @@ enyo.kind({
 		this.$.normals.setData(daily);
 
 		if(daily) {
+			this.$.previousDay.setContent(Cumulus.Main.formatDay(new Date(daily.time - 24*60*60*1000)));
 			this.$.day.setContent(Cumulus.Main.formatDay(new Date(daily.time)));
+			this.$.nextDay.setContent(Cumulus.Main.formatDay(new Date(daily.time + 24*60*60*1000)));
 			this.$.summary.setContent(daily.summary);
 		}
 

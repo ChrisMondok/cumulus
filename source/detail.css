@@ -7,6 +7,16 @@
 
 .detail .today .title {
 	font-size:1.5em;
+	padding:1rem 1rem 0rem 1rem;
+}
+
+.detail .title-carousel {
+	width:100%;
+	height:3rem;
+}
+
+.detail .summary {
+	padding:0rem 1rem 1rem 1rem;
 }
 
 .detail .scroller {
