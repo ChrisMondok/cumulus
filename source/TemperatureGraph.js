@@ -27,7 +27,7 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 
-	drawGraphLines:function() {
+	drawGraphLines:function(animStep) {
 		this.inherited(arguments);
 
 		var step = this.getStep();
@@ -35,7 +35,7 @@ enyo.kind({
 		var bottom = Math.floor(this.getMin()/step)*step;
 		var top = Math.ceil(this.getMax()/step)*step;
 
-		var amount = this.$.animator.value;
+		var amount = animStep;
 
 		for(var i = bottom; i < top; i+=step) {
 			var y = this.valueToY(i);

@@ -25,6 +25,8 @@ enyo.kind({
 
 	_ctx:null,
 
+	_oldData: null,
+
 	components:[
 		{name:"labels", kind:"FittableRows", style:"position:absolute; left:0px; top:0px; height:100%", components:[
 			{name:"max"},
@@ -38,6 +40,7 @@ enyo.kind({
 	create:function() {
 		this.inherited(arguments);
 		this.showLabelsChanged();
+		this.setData(this.getData() || null);
 	},
 
 	showLabelsChanged:function() {
@@ -66,9 +69,10 @@ enyo.kind({
 		this.inherited(arguments);
 		this._ctx = this.$.canvas.hasNode().getContext('2d');
 	},
+	
+	dataChanged:function(old, data) {
+		this._oldData = old;
 
-	dataChanged:function() {
-		var data = this.getData();
 		if(this.getShowNow() && data && data.length) {
 			var first = new Date(data[0].time),
 				last = new Date(data[data.length - 1].time);
@@ -88,16 +92,27 @@ enyo.kind({
 		return this.valueToY(this.getData()[i][this.getKey()]);
 	},
 
+	getOldY:function(i) {
+		var data = this.getData(),
+			oldData = this._oldData || [],
+			key = this.getKey();
+			a = this.$.animator.value;
+
+		if(data.length != oldData.length)
+			return this.valueToY(this.getMin());
+		return this.valueToY(oldData[i][key]);
+	},
+
 	valueToY:function(value) {
 		var min = this.getMin(), max = this.getMax();
 		return this.getBounds().height * (1 - (value-min)/(max-min));
 	},
 
-	drawGraphLines:function() {
+	drawGraphLines:function(animValue) {
 		this._ctx.strokeStyle = this.getGraphColor();
 		var data = this.getData();
 
-		var amount = (data.length-1) * this.$.animator.value;
+		var amount = (data.length-1) * animValue;
 
 		for(var i = 0; i < amount; i++) {
 			var x = this.getX(i);
@@ -125,14 +140,17 @@ enyo.kind({
 
 		if(data && data.length) {
 			//draw grid
-			this.drawGraphLines();
+			if(this._oldData && this._oldData.length == data.length)
+				this.drawGraphLines(1);
+			else
+				this.drawGraphLines(animStep);
 
 			//draw graph
 			ctx.fillStyle = this.getFillColor();
 			ctx.strokeStyle = this.getStrokeColor();
 			ctx.beginPath();
 			for(var i in data) {
-				ctx.lineTo(this.getX(i),animStep*this.getY(i)+(1-animStep)*bounds.height); 
+				ctx.lineTo(this.getX(i),animStep*this.getY(i)+(1-animStep)*this.getOldY(i)); 
 			}
 			ctx.stroke();
 			ctx.lineTo(bounds.width,bounds.height);
