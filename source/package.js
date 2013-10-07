@@ -23,5 +23,6 @@ enyo.depends(
 	"detail.css",
 	"forecast.css",
 	"outlook.css",
+	"minutelyForecast.css",
 	"advisory.css"
 );

@@ -20,11 +20,13 @@ enyo.kind({
 	_graphUpperBound:0,
 	_graphLineIncrement: 0.25,
 	_gutterWidth:48,
+	_oldData: null,
 
 	components:[
 		{name:"summary", content:$L("Hang on a second...")},
 		{name:"graph", tag:"canvas", attributes:{height:"300px"}, style:"height:300px; width:100%;"},
-		{name:"animator", kind:"Animator", onStep:"drawGraph", start:0, end:1}
+		{name:"animator", kind:"Animator", onStep:"drawGraph", start:0, end:1},
+		{name:"loadingOverlay", tag:"div", classes:"loading-overlay"}
 	],
 
 	getApiFromEvent:function(event) {
@@ -37,15 +39,16 @@ enyo.kind({
 		}
 	},
 
-	reset:function() {
-		this.setMinutely(null);
-	},
 	refresh:function() {
 		var api = this.getApi(),
 			place = this.getPlace();
 
-		if(api && place)
-			api.getMinutelyForecast(this.getPlace()).response(this,"gotMinutelyForecast");
+		if(api && place) {
+			this.$.loadingOverlay.show();
+			api.getMinutelyForecast(this.getPlace())
+				.response(this,"gotMinutelyForecast")
+				.response(this.$.loadingOverlay,this.$.loadingOverlay.hide);
+		}
 	},
 
 	resizeHandler:function() {
@@ -120,6 +123,7 @@ enyo.kind({
 			bounds = this.$.graph.getBounds(),
 			data = this.getData(),
 			animValue = this.$.animator.value;
+			canAnimateData = this._oldData && this._oldData.data.length == data.length;
 
 		ctx.clearRect(0,0,bounds.width,bounds.height);
 
@@ -130,12 +134,16 @@ enyo.kind({
 		ctx.fillStyle = this.getGraphFillStyle();
 		
 		ctx.beginPath();
-		data.forEach(function(item,index,array) {
-			ctx[index?"lineTo":"moveTo"](
-				this._gutterWidth + (animValue*item.precipIntensity/this._graphUpperBound)*(bounds.width-this._gutterWidth),
-				bounds.height*index/(array.length-1)
+		
+
+		for(var i = 0; i < data.length; i++) {
+			var intensity = animValue * data[i].precipIntensity + (1-animValue) * (canAnimateData ? this._oldData.data[i].precipIntensity : 0);
+
+			ctx[i?"lineTo":"moveTo"](
+				this._gutterWidth + (intensity/this._graphUpperBound)*(bounds.width-this._gutterWidth),
+				bounds.height*i/(data.length-1)
 			);
-		}.bind(this));
+		}
 		ctx.stroke();
 		ctx.lineTo(this._gutterWidth,bounds.height);
 		ctx.lineTo(this._gutterWidth,0);
@@ -152,6 +160,7 @@ enyo.kind({
 	},
 
 	minutelyChanged:function(old, minutely) {
+		this._oldData = old;
 		this.$.summary.setContent(minutely ? minutely.summary : $L("Hang on a second..."));
 
 		var data = this.getData();

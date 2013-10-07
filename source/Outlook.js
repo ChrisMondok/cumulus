@@ -40,7 +40,7 @@ enyo.kind({
 			]},
 			{name:"advisoriesOpener", classes:"advisories-button", showing:false, ontap:"toggleAdvisoriesDrawer"},
 			{name:"currentConditions", kind:"Cumulus.Forecast", classes:"primary dark", now:true, showHumidity:true, ontap:"toggleMinutely"},
-			{name:"minutelyForecastDrawer", kind:"Drawer", classes:"minutely-forecast-drawer", onDrawerAnimationEnd:"maybeResetMinutely", open:false, components:[
+			{name:"minutelyForecastDrawer", kind:"Drawer", classes:"minutely-forecast-drawer", open:false, components:[
 				{name:"minutelyForecast", kind:"Cumulus.MinutelyForecast"}
 			]},
 			{name:"dayRepeater", kind:"Repeater", classes:"light", onSetupItem:"renderDay", components:[
@@ -87,11 +87,6 @@ enyo.kind({
 		if(!this.$.minutelyForecastDrawer.getOpen())
 			this.$.minutelyForecast.refresh();
 		this.$.minutelyForecastDrawer.setOpen(!this.$.minutelyForecastDrawer.getOpen());
-	},
-
-	maybeResetMinutely:function(drawer, event) {
-		if(!drawer.getOpen())
-			this.$.minutelyForecast.reset();
 	},
 
 	gotForecast:function(ajax,response) {
