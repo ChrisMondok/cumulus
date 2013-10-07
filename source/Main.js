@@ -170,7 +170,7 @@ enyo.kind({
 	},
 
 	pushShowAdvisoryState:function(sender,event) {
-		this.pushState({advisory:event.advisory, index:2}, "Advisory");
+		this.pushState({advisory:event.advisory, index:2}, event.advisory.title);
 	},
 
 	pushSettingsState:function(sender, event) {
