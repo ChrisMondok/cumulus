@@ -76,6 +76,10 @@ enyo.kind({
 			.response(this, function(async,currently) {
 				this.setCurrently(currently);
 			});
+		api.getAlerts(this.getPlace())
+			.response(this, function(async, advisories) {
+				this.setAdvisories(advisories);
+			});
 		return;
 	},
 

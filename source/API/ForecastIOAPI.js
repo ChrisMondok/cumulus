@@ -95,7 +95,11 @@ enyo.kind({
 	},
 
 	getCurrent:function(loc) {
-		return this.getAsync(loc,'currently').response(function(async, currently){return currently[0]});
+		return this.getAsync(loc,'currently').response(function(async, currently){return currently[0];});
+	},
+
+	getAlerts:function(loc) {
+		return this.getAsync(loc,'alerts');
 	},
 
 	getDailyForecast:function(loc,time) {
@@ -176,6 +180,8 @@ enyo.kind({
 			cacheLifetimes = this.getCacheLifetimes();
 
 		//jam it into an array so it'll play nicely with the cache.
+		if(response.hasOwnProperty('alerts'))
+			response.alerts = {data:response.alerts};
 		if(response.hasOwnProperty('currently'))
 			response.currently = {data:[response.currently]};
 
