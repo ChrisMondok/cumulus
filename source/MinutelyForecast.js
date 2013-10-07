@@ -19,11 +19,11 @@ enyo.kind({
 	_ctx:null,
 	_graphUpperBound:0,
 	_graphLineIncrement: 0.25,
-	_gutterWidth:64,
+	_gutterWidth:48,
 
 	components:[
 		{name:"summary", content:$L("Hang on a second...")},
-		{name:"graph", tag:"canvas", attributes:{height:"320px"}, style:"height:320px; width:100%;"},
+		{name:"graph", tag:"canvas", attributes:{height:"300px"}, style:"height:300px; width:100%;"},
 		{name:"animator", kind:"Animator", onStep:"drawGraph", start:0, end:1}
 	],
 
@@ -37,6 +37,9 @@ enyo.kind({
 		}
 	},
 
+	reset:function() {
+		this.setMinutely(null);
+	},
 	refresh:function() {
 		var api = this.getApi(),
 			place = this.getPlace();
@@ -56,8 +59,7 @@ enyo.kind({
 
 		ctx.strokeStyle = this.getGraphLineStyle();
 		ctx.beginPath();
-		for(var i = 0; i < this._graphUpperBound; i += this._graphLineIncrement)
-		{
+		for(var i = 0; i < this._graphUpperBound; i += this._graphLineIncrement) {
 			ctx.moveTo(this._gutterWidth+(i/this._graphUpperBound)*(bounds.width-this._gutterWidth),0);
 			ctx.lineTo(this._gutterWidth+(i/this._graphUpperBound)*(bounds.width-this._gutterWidth),bounds.height * this.$.animator.value);
 		}
@@ -66,7 +68,7 @@ enyo.kind({
 		ctx.fillStyle = this.getGraphLineStyle();
 		ctx.textAlign = "end";
 		ctx.textBaseline = "top";
-		ctx.fillText([this._graphUpperBound,"in/hr"].join(' '),bounds.width-8,8);
+		ctx.fillText([this._graphUpperBound,"in/hr"].join(' '),bounds.width-4,4);
 	},
 
 	drawMinutes:function() {
@@ -90,7 +92,7 @@ enyo.kind({
 			var diff = new Date(item.time) - now;
 			var minutes = Math.floor(diff / 60000);
 			if(!(minutes % 5))
-				ctx.fillText([minutes,$L("min")].join(' '),gutterWidth*(2-animValue),bounds.height*(index/array.length));
+				ctx.fillText(minutes?[minutes,$L("min")].join(' '):$L("Now"),gutterWidth*(2-animValue),bounds.height*(index/array.length));
 		});
 
 		ctx.clearRect(gutterWidth,0,bounds.width-gutterWidth,bounds.height);
@@ -150,7 +152,7 @@ enyo.kind({
 	},
 
 	minutelyChanged:function(old, minutely) {
-		this.$.summary.setContent(minutely.summary);
+		this.$.summary.setContent(minutely ? minutely.summary : $L("Hang on a second..."));
 
 		var data = this.getData();
 
