@@ -1,10 +1,15 @@
 enyo.kind({
 	name:"Cumulus.MinutelyForecast",
 	classes:"minutely-forecast",
+
 	published:{
 		api:null,
 		place:null,
 		minutely:null,
+		graphFillStyle:"rgba(35,91,134,0.5)",
+		graphStrokeStyle:"rgba(35,91,134,1)",
+		graphLineStyle:"rgba(0,0,0,0.5)",
+		graphMinuteStyle:"rgba(0,0,0,1)"
 	},
 
 	handlers:{
@@ -13,11 +18,12 @@ enyo.kind({
 
 	_ctx:null,
 	_graphUpperBound:0,
+	_graphLineIncrement: 0.25,
 	_gutterWidth:64,
 
 	components:[
 		{name:"summary", content:$L("Hang on a second...")},
-		{name:"graph", tag:"canvas", attributes:{height:"480px"}, style:"height:480px; width:100%;"},
+		{name:"graph", tag:"canvas", attributes:{height:"320px"}, style:"height:320px; width:100%;"},
 		{name:"animator", kind:"Animator", onStep:"drawGraph", start:0, end:1}
 	],
 
@@ -48,20 +54,19 @@ enyo.kind({
 		var ctx = this._ctx,
 			bounds = this.$.graph.getBounds();
 
-		ctx.strokeStyle = "rgba(0,0,0,0.5)";
+		ctx.strokeStyle = this.getGraphLineStyle();
 		ctx.beginPath();
-		for(var i = 0; i < this._graphUpperBound; i += 0.25)
+		for(var i = 0; i < this._graphUpperBound; i += this._graphLineIncrement)
 		{
 			ctx.moveTo(this._gutterWidth+(i/this._graphUpperBound)*(bounds.width-this._gutterWidth),0);
-			ctx.lineTo(this._gutterWidth+(i/this._graphUpperBound)*(bounds.width-this._gutterWidth),bounds.height);
+			ctx.lineTo(this._gutterWidth+(i/this._graphUpperBound)*(bounds.width-this._gutterWidth),bounds.height * this.$.animator.value);
 		}
 		ctx.stroke();
 
-		ctx.strokeStyle = "rgba(0,0,0,1)";
-		ctx.beginPath();
-		ctx.moveTo(this._gutterWidth,0);
-		ctx.lineTo(this._gutterWidth,bounds.height);
-		ctx.stroke();
+		ctx.fillStyle = this.getGraphLineStyle();
+		ctx.textAlign = "end";
+		ctx.textBaseline = "top";
+		ctx.fillText([this._graphUpperBound,"in/hr"].join(' '),bounds.width-8,8);
 	},
 
 	drawMinutes:function() {
@@ -69,20 +74,36 @@ enyo.kind({
 			ctx = this._ctx,
 			now = new Date(),
 			bounds = this.$.graph.getBounds(),
-			gutterWidth = this._gutterWidth;
+			gutterWidth = this._gutterWidth,
+			animValue = this.$.animator.value;
 
-		ctx.strokeStyle = ctx.fillStyle = "rgba(0,0,0,0.55)";
+		ctx.fillStyle = ctx.strokeStyle = this.getGraphMinuteStyle();
+		ctx.beginPath();
+		ctx.moveTo(this._gutterWidth,0);
+		ctx.lineTo(this._gutterWidth,bounds.height);
+		ctx.stroke();
+
 		ctx.textAlign = "end";
 		ctx.textBaseline = "middle";
-		ctx.font = "20px sans-serif";
+		ctx.font = "12px sans-serif";
+		data.forEach(function(item,index,array) {
+			var diff = new Date(item.time) - now;
+			var minutes = Math.floor(diff / 60000);
+			if(!(minutes % 5))
+				ctx.fillText([minutes,$L("min")].join(' '),gutterWidth*(2-animValue),bounds.height*(index/array.length));
+		});
+
+		ctx.clearRect(gutterWidth,0,bounds.width-gutterWidth,bounds.height);
+		ctx.strokeStyle = ctx.fillStyle = this.getGraphLineStyle();
 		ctx.beginPath();
 		data.forEach(function(item,index,array) {
+			if(index/array.length > animValue)
+				return;
 			var diff = new Date(item.time) - now;
 			var minutes = Math.floor(diff / 60000);
 			if(!(minutes % 5)) {
 				ctx.moveTo(gutterWidth,bounds.height*(index/array.length));
 				ctx.lineTo(bounds.width,bounds.height*(index/array.length));
-				ctx.fillText([minutes,$L("min")].join(' '),gutterWidth,bounds.height*(index/array.length));
 			}
 		});
 		ctx.stroke();
@@ -95,20 +116,21 @@ enyo.kind({
 
 		var ctx = this._ctx,
 			bounds = this.$.graph.getBounds(),
-			data = this.getData()
+			data = this.getData(),
+			animValue = this.$.animator.value;
 
 		ctx.clearRect(0,0,bounds.width,bounds.height);
 
-		this.drawGraphLines();
 		this.drawMinutes();
+		this.drawGraphLines();
 		
-		ctx.strokeStyle = "rgba(132,167,193,1)";
-		ctx.fillStyle = "rgba(132,167,193,0.5)";
+		ctx.strokeStyle = this.getGraphStrokeStyle();
+		ctx.fillStyle = this.getGraphFillStyle();
 		
 		ctx.beginPath();
 		data.forEach(function(item,index,array) {
 			ctx[index?"lineTo":"moveTo"](
-				this._gutterWidth + (item.precipIntensity/this._graphUpperBound)*(bounds.width-this._gutterWidth),
+				this._gutterWidth + (animValue*item.precipIntensity/this._graphUpperBound)*(bounds.width-this._gutterWidth),
 				bounds.height*index/(array.length-1)
 			);
 		}.bind(this));
@@ -131,10 +153,25 @@ enyo.kind({
 		this.$.summary.setContent(minutely.summary);
 
 		var data = this.getData();
-		var maxPrecipIntensity = data.reduce(function(max,item){return Math.max(max,item.precipIntensity);},0);
-		this._graphUpperBound = Math.ceil(maxPrecipIntensity/0.25)*0.25;
 
-		this.drawGraph();
+		var maxPrecipIntensity = data.reduce(
+			function(max,item){return Math.max(max,item.precipIntensity);},0
+		);
+
+
+		if(maxPrecipIntensity < 0.1)
+			this._graphLineIncrement = 0.05;
+		else if(maxPrecipIntensity < 0.25)
+			this._graphLineIncrement = 0.1;
+		else if(maxPrecipIntensity < 1)
+			this._graphLineIncrement = 0.25;
+		else
+			this._graphLineIncrement = 1;
+
+		this._graphUpperBound = Math.ceil(maxPrecipIntensity/this._graphLineIncrement)*this._graphLineIncrement;
+
+		this.$.animator.play({duration:data && data.length ? 1000 : 1});
+
 	},
 
 	getData:function() {
