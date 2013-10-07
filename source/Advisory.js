@@ -1,16 +1,15 @@
 enyo.kind({
 	name:"Cumulus.Advisory",
-	classes:"cumulus-advisory",
+	classes:"cumulus-advisory enyo-fit",
+	kind:"Scroller",
 	published:{
 		advisory:null
 	},
 
 	components:[
-		{kind:"Scroller", classes:"enyo-fit", components:[
-			{name:"name", tag:"h1"},
-			{name:"timerange", tag:"h2"},
-			{name:"body", classes:"body", allowHtml:true}
-		]}
+		{name:"name", tag:"h1"},
+		{name:"timerange", tag:"h2"},
+		{name:"body", classes:"body", allowHtml:true}
 	],
 
 	advisoryChanged:function(old,advisory) {
