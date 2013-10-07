@@ -130,7 +130,7 @@ enyo.kind({
 
 	pickDay:function(sender,event) {
 		var message = {
-			daily:this.getDaily()[event.index]
+			day:this.getDaily()[event.index].time
 		};
 
 		this.doDayPicked(message);

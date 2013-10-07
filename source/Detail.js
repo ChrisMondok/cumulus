@@ -5,14 +5,16 @@ enyo.kind({
 	classes:"detail",
 
 	published:{
-		api:null,
+		popThreshhold: 0.1,
 
+		day:null,
+		daily:null,
+
+		api:null,
 		place:null,
 		conditions:null,
-		daily:null,
 		hourly:null,
 
-		popThreshhold: 0.1
 	},
 
 	handlers:{
@@ -36,7 +38,7 @@ enyo.kind({
 	
 	components:[
 		{classes:"today", components:[
-			{kind:"Panels", classes:"title-carousel", arrangerKind:"CarouselArranger", controlClasses: "title", index:1, components:[
+			{kind:"Panels", onTransitionFinish:"dayCarouselChanged", classes:"title-carousel", arrangerKind:"CarouselArranger", controlClasses: "title", index:1, components:[
 				{name:"previousDay"},
 				{name:"day"},
 				{name:"nextDay"}
@@ -98,42 +100,66 @@ enyo.kind({
 		this.setApi(event.api);
 	},
 
-	dailyChanged:function() {
-		var daily = this.getDaily();
-		this.$.normals.setData(daily);
+	dayCarouselChanged:function(carousel, event) {
+		if(event.toIndex == 1)
+			return;
 
-		if(daily) {
-			this.$.previousDay.setContent(Cumulus.Main.formatDay(new Date(daily.time - 24*60*60*1000)));
-			this.$.day.setContent(Cumulus.Main.formatDay(new Date(daily.time)));
-			this.$.nextDay.setContent(Cumulus.Main.formatDay(new Date(daily.time + 24*60*60*1000)));
-			this.$.summary.setContent(daily.summary);
+		var delta = event.toIndex - 1;
+		var newDay = this.getDay().getTime() + delta * 24*60*60*1000;
+		this.setDay(new Date(newDay));
+		carousel.setIndexDirect(1);
+	},
+
+	dayChanged:function(oldDay, day) {
+		var api = this.getApi(),
+			place = this.getPlace();
+
+		if(day) {
+			this.$.previousDay.setContent(Cumulus.Main.formatDay(new Date(day.getTime() - 24*60*60*1000)));
+			this.$.day.setContent(Cumulus.Main.formatDay(new Date(day.getTime())));
+			this.$.nextDay.setContent(Cumulus.Main.formatDay(new Date(day.getTime() + 24*60*60*1000)));
 		}
 
-		if(daily && this.getApi() && this.getPlace()) {
+		if(day && api && place) {
 			this.startJob(this.id+'refresh','refresh',10);
-			this.$.scroller.scrollToTop();
 		}
-		else
+		else {
 			this.setHourly();
+			this.setDaily();
+		}
 
+		this.$.scroller.scrollToTop();
+	},
+
+	dailyChanged:function(old, daily) {
+		if(daily) {
+			this.$.summary.setContent(daily && daily.summary || "");
+		}
+		this.$.normals.setData(daily);
 	},
 
 	apiChanged:function() {
-		if(this.getDaily() && this.getPlace())
+		if(this.getDay() && this.getPlace())
 			this.startJob(this.id+'refresh','refresh',10);
 	},
 
 	placeChanged:function() {
-		if(this.getApi() && this.getDaily())
+		if(this.getApi() && this.getDay())
 			this.startJob(this.id+'refresh','refresh',10);
 	},
 
 	refresh:function() {
-		this.$.loadingPopup.show();
-		var day = new Date(this.getDaily().time);
+		var day = this.getDay();
 		day.setHours(0,0,0,0);
+		this.$.loadingPopup.show();
+		this.getApi().getDailyForecast(this.getPlace,day)
+			.response(this,"gotDaily");
 		this.getApi().getHourlyForecast(this.getPlace(),day)
 			.response(this,"gotHourly");
+	},
+
+	gotDaily:function(ajax,daily) {
+		this.setDaily(daily[0]);
 	},
 
 	gotHourly:function(ajax,hourly) {

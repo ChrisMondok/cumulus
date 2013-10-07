@@ -166,7 +166,7 @@ enyo.kind({
 	},
 
 	pushDayPickedState:function(sender,event) {
-		this.pushState({daily:event.daily, top:event.top, index:1}, "Hourly Forecast");
+		this.pushState({day:event.day, top:event.top, index:1}, "Hourly Forecast");
 	},
 
 	pushShowAdvisoryState:function(sender,event) {
@@ -205,7 +205,7 @@ enyo.kind({
 		switch(state && state.index || 0) {
 			case 1:
 				this.$.panels.setIndex(1);
-				this.$.detail.setDaily(state.daily);
+				this.$.detail.setDay(new Date(state.day));
 				break;
 			case 2:
 				this.$.advisory.setAdvisory(state.advisory);
