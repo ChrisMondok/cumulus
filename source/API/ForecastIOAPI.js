@@ -17,8 +17,6 @@ enyo.kind({
 		onReceivedAPIError:""
 	},
 
-	_updateRequest: null,
-
 	create:function() {
 		this.inherited(arguments);
 		if(window.forecastIOKey)
@@ -153,8 +151,7 @@ enyo.kind({
 	},
 
 	update:function(loc,time) {
-		var params = [loc.latitude, loc.longitude],
-			ajax = this._updateRequest;
+		var params = [loc.latitude, loc.longitude];
 			
 		if(time) {
 			if(time instanceof Date) 
@@ -163,21 +160,18 @@ enyo.kind({
 				params.push(time);
 		}
 
-		if(!ajax) {
-			var url = [this.getUrl(),'forecast',this.getKey(),params.join(',')].join('/');
-			ajax = this._updateRequest = new enyo.JsonpRequest({
-				url:url,
-				cacheBust:false
-			});
+		var url = [this.getUrl(),'forecast',this.getKey(),params.join(',')].join('/');
+		ajax =  new enyo.JsonpRequest({
+			url:url,
+			cacheBust:false
+		});
 
-			ajax.go({exclude:"minutely"}); 
+		ajax.go({exclude:"minutely"});
 
-			ajax.response(this,function() {this._updateRequest = null;});
-			ajax.response(this,"gotUpdates");
-			ajax.error(this, function(req,error) {
-				this.doReceivedAPIError({url:url,error:error});
-			});
-		}
+		ajax.response(this,"gotUpdates");
+		ajax.error(this, function(req,error) {
+			this.doReceivedAPIError({url:url,error:error});
+		});
 
 		return ajax;
 	},
