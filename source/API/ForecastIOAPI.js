@@ -13,6 +13,10 @@ enyo.kind({
 		cacheLifetimes:undefined
 	},
 
+	events:{
+		onReceivedAPIError:""
+	},
+
 	_updateRequest: null,
 
 	create:function() {
@@ -66,7 +70,7 @@ enyo.kind({
 
 		var cachedValues = this.getFromCache(property,start,end);
 
-		if(cachedValues.length) {
+		if(cachedValues.length && (!end || cachedValues[cachedValues.length - 1].time >= end)) {
 			async.go(cachedValues);
 		} else {
 			var request = null;
@@ -90,7 +94,7 @@ enyo.kind({
 		var day = new Date(time);
 		day.setHours(0,0,0,0);
 		var start = day.getTime();
-		var end = start + 24*60*60*1000 - 1;
+		var end = start + 23*60*60*1000;
 		return {start:start, end:end};
 	},
 
@@ -106,7 +110,7 @@ enyo.kind({
 		var async;
 		if(time) {
 			var range = this.getDayThatContainsTime(time);
-			async = this.getAsync(loc,'daily',range.start,range.end);
+			async = this.getAsync(loc,'daily',range.start,range.start);
 		} else
 			async = this.getAsync(loc,'daily');
 
@@ -160,8 +164,9 @@ enyo.kind({
 		}
 
 		if(!ajax) {
+			var url = [this.getUrl(),'forecast',this.getKey(),params.join(',')].join('/');
 			ajax = this._updateRequest = new enyo.JsonpRequest({
-				url:[this.getUrl(),'forecast',this.getKey(),params.join(',')].join('/'),
+				url:url,
 				cacheBust:false
 			});
 
@@ -169,6 +174,9 @@ enyo.kind({
 
 			ajax.response(this,function() {this._updateRequest = null;});
 			ajax.response(this,"gotUpdates");
+			ajax.error(this, function(req,error) {
+				this.doReceivedAPIError({url:url,error:error});
+			});
 		}
 
 		return ajax;
@@ -201,6 +209,17 @@ enyo.kind({
 			}
 			else
 				console.warn("Didn't get "+property);
+		}
+
+		this.sortCache();
+	},
+
+	sortCache:function() {
+		var cache = this.getCache();
+		for(var property in cache) {
+			cache[property].sort(function(a,b) {
+				return a.time - b.time;
+			});
 		}
 	},
 
