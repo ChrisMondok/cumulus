@@ -222,8 +222,7 @@ enyo.kind({
 
 	panelIndexChanged:function() {
 		if(this.$.panels.getIndex() != 1) {
-			this.$.detail.setHourly();
-			this.$.detail.setDaily();
+			this.$.detail.setDay(null);
 		}
 		this.$.backButton.setDisabled(this.$.panels.getIndex() === 0);
 	},

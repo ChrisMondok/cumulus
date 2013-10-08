@@ -38,11 +38,7 @@ enyo.kind({
 	
 	components:[
 		{classes:"today", components:[
-			{kind:"Panels", onTransitionFinish:"dayCarouselChanged", classes:"title-carousel", arrangerKind:"CarouselArranger", controlClasses: "title", index:1, components:[
-				{name:"previousDay"},
-				{name:"day"},
-				{name:"nextDay"}
-			]},
+			{name:"dayCarousel", kind:"Panels", onTransitionFinish:"dayCarouselChanged", classes:"title-carousel", arrangerKind:"CarouselArranger"},
 			{name:"summary", classes:"summary"},
 		]},
 		{fit:true, style:"position:relative", components:[
@@ -94,20 +90,40 @@ enyo.kind({
 		this.inherited(arguments);
 		window.graph = this.$.popGraph;
 		window.detail = this;
+
+		var today = new Date();
+		today.setHours(0,0,0,0);
+
+		for(var i = 0; i < 7; i++) {
+			var day = this.$.dayCarousel.createComponent({
+				classes:"title",
+				content:Cumulus.Main.formatDay(new Date(today.getTime() + 24*60*60*1000*i))
+			});
+			day.render();
+		}
+		this.$.dayCarousel.reflow();
 	},
 
 	getApiFromEvent:function(event) {
 		this.setApi(event.api);
 	},
 
+	setupCarouselItem:function(repeater, event) {
+		var today = new Date();
+		event.item.$.day.setContent(
+			Cumulus.Main.formatDay(new Date(today.getTime() + 24*60*60*1000*event.index))
+		);
+
+		return true;
+	},
 	dayCarouselChanged:function(carousel, event) {
-		if(event.toIndex == 1)
+		if(event.fromIndex == event.toIndex)
 			return;
 
-		var delta = event.toIndex - 1;
-		var newDay = this.getDay().getTime() + delta * 24*60*60*1000;
+		var today = new Date();
+		today.setHours(0,0,0,0);
+		var newDay = today.getTime() + event.toIndex * 24*60*60*1000;
 		this.setDay(new Date(newDay));
-		carousel.setIndexDirect(1);
 	},
 
 	dayChanged:function(oldDay, day) {
@@ -115,13 +131,19 @@ enyo.kind({
 			place = this.getPlace();
 
 		if(day) {
-			this.$.previousDay.setContent(Cumulus.Main.formatDay(new Date(day.getTime() - 24*60*60*1000)));
-			this.$.day.setContent(Cumulus.Main.formatDay(new Date(day.getTime())));
-			this.$.nextDay.setContent(Cumulus.Main.formatDay(new Date(day.getTime() + 24*60*60*1000)));
-		}
+			var today = new Date();
+			today.setHours(0,0,0,0);
 
-		if(day && api && place) {
-			this.startJob(this.id+'refresh','refresh',10);
+			var daysFromNow = (day.getTime() - today.getTime())/(24*60*60*1000);
+			console.info(daysFromNow);
+
+			if(oldDay)
+				this.$.dayCarousel.setIndex(daysFromNow);
+			else
+				this.$.dayCarousel.setIndexDirect(daysFromNow);
+
+			if(api && place)
+				this.startJob(this.id+'refresh','refresh',10);
 		}
 		else {
 			this.setHourly();
@@ -132,9 +154,7 @@ enyo.kind({
 	},
 
 	dailyChanged:function(old, daily) {
-		if(daily) {
-			this.$.summary.setContent(daily && daily.summary || "");
-		}
+		this.$.summary.setContent(daily && daily.summary || "");
 		this.$.normals.setData(daily);
 	},
 
@@ -149,13 +169,14 @@ enyo.kind({
 	},
 
 	refresh:function() {
-		var day = this.getDay();
+		var day = this.getDay(),
+			place = this.getPlace()
+
 		day.setHours(0,0,0,0);
+
 		this.$.loadingPopup.show();
-		this.getApi().getDailyForecast(this.getPlace,day)
-			.response(this,"gotDaily");
-		this.getApi().getHourlyForecast(this.getPlace(),day)
-			.response(this,"gotHourly");
+		this.getApi().getDailyForecast(place,day).response(this,"gotDaily");
+		this.getApi().getHourlyForecast(place,day).response(this,"gotHourly");
 	},
 
 	gotDaily:function(ajax,daily) {
