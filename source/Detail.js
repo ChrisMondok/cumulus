@@ -135,7 +135,6 @@ enyo.kind({
 			today.setHours(0,0,0,0);
 
 			var daysFromNow = (day.getTime() - today.getTime())/(24*60*60*1000);
-			console.info(daysFromNow);
 
 			if(oldDay)
 				this.$.dayCarousel.setIndex(daysFromNow);
@@ -174,7 +173,8 @@ enyo.kind({
 
 		day.setHours(0,0,0,0);
 
-		this.$.loadingPopup.show();
+		this.startJob('showLoadingPopup',enyo.bind(this.$.loadingPopup,"show"),100,1);
+
 		this.getApi().getDailyForecast(place,day).response(this,"gotDaily");
 		this.getApi().getHourlyForecast(place,day).response(this,"gotHourly");
 	},
@@ -184,6 +184,7 @@ enyo.kind({
 	},
 
 	gotHourly:function(ajax,hourly) {
+		this.stopJob('showLoadingPopup');
 		this.$.loadingPopup.hide();
 		this.setHourly(hourly);
 	},
