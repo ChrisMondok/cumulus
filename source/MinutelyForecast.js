@@ -170,16 +170,14 @@ enyo.kind({
 		);
 
 
-		if(maxPrecipIntensity < 0.1)
-			this._graphLineIncrement = 0.05;
-		else if(maxPrecipIntensity < 0.25)
-			this._graphLineIncrement = 0.1;
-		else if(maxPrecipIntensity < 1)
-			this._graphLineIncrement = 0.25;
+		if (maxPrecipIntensity < 0.5)
+			this._graphLineIncrement = 0.25
+		else if (maxPrecipIntensity < 1)
+			this._graphLineIncrement = 0.5;
 		else
 			this._graphLineIncrement = 1;
 
-		this._graphUpperBound = Math.ceil(maxPrecipIntensity/this._graphLineIncrement)*this._graphLineIncrement;
+		this._graphUpperBound = Math.max(Math.ceil(maxPrecipIntensity/this._graphLineIncrement),2)*this._graphLineIncrement;
 
 		this.$.animator.play({duration:data && data.length ? 1000 : 1});
 
