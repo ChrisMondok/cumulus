@@ -221,15 +221,17 @@ enyo.kind({
 		);
 
 		var dsbo = maxPop > this.getPopThreshhold();
-		if(this.$.popDrawer.getOpen() == dsbo)
+		if(this.$.popDrawer.getOpen() == dsbo || !data.length)
 		{
-			this.getGraphAnimator().play();
+			if(data.length)
+				this.getGraphAnimator().play();
 			this.$.popGraph.setData(data);
 			this.$.tempGraph.setData(data);
 			this.$.humidityGraph.setData(data);
 		}
 		else
-			this.$.popDrawer.setOpen(dsbo);
+			if(data.length)
+				this.$.popDrawer.setOpen(dsbo);
 		return;
 	},
 
