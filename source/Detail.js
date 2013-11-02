@@ -20,6 +20,13 @@ enyo.kind({
 		onApiCreated:"getApiFromEvent"
 	},
 
+	popDrawerFinished:function() {
+		var data = this.getHourly();
+		this.$.popGraph.setData(data);
+		this.$.tempGraph.setData(data);
+		this.$.humidityGraph.setData(data);
+	},
+
 	components:[
 		{classes:"today", components:[
 			{name:"dayCarousel", kind:"Panels", onTransitionFinish:"dayCarouselChanged", classes:"title-carousel", arrangerKind:"CarouselArranger"},
@@ -28,7 +35,7 @@ enyo.kind({
 		{fit:true, style:"position:relative", components:[
 			{name:"loadingPopup", kind:"LoadingPopup"},
 			{name:"scroller", kind:"Scroller", touch:true, thumb:false, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
-				{name:"popDrawer", kind:"Drawer", components:[
+				{name:"popDrawer", kind:"Drawer", onDrawerAnimationEnd:"popDrawerFinished", components:[
 					{kind:"Divider", content:"Chance of precipitation"},
 					{
 						name:"popGraph",
@@ -178,6 +185,7 @@ enyo.kind({
 
 		var maxPop = 0;
 
+
 		this.setConditions(data.reduce(function(output,value,index,periods) {
 
 			maxPop = Math.max(maxPop, value.precipProbability);
@@ -193,10 +201,15 @@ enyo.kind({
 			}, [])
 		);
 
-		this.$.popDrawer.setOpen(maxPop > this.getPopThreshhold());
-		this.$.popGraph.setData(data);
-		this.$.tempGraph.setData(data);
-		this.$.humidityGraph.setData(data);
+		var dsbo = maxPop > this.getPopThreshhold();
+		if(this.$.popDrawer.getOpen() == dsbo)
+		{
+			this.$.popGraph.setData(data);
+			this.$.tempGraph.setData(data);
+			this.$.humidityGraph.setData(data);
+		}
+		else
+			this.$.popDrawer.setOpen(dsbo);
 		return;
 	},
 
