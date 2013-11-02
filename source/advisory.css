@@ -5,3 +5,11 @@
 .cumulus-advisory .place {
 	text-transform:capitalize;
 }
+
+.cumulus-advisory p {
+	text-indent:1em;
+}
+
+.cumulus-advisory .sentence.bullet {
+	display:block;
+}
