@@ -23,9 +23,9 @@ enyo.kind({
 		{name:"icon", kind:"Cumulus.WeatherIcon"},
 		{name:"day", classes:"day title", style:"display:inline-block", content:$L("Loading")},
 		{name:"tempRange", classes:"temp-range", showing:false, components:[
-			{tag:"span", name:"minTemp"},
+			{tag:"span", name:"maxTemp"},
 			{tag:"span", content:" / "},
-			{tag:"span", name:"maxTemp"}
+			{tag:"span", name:"minTemp"}
 		]},
 		{name:"weather", classes:"weather"},
 		{name:"tempNow", showing:false, components:[
