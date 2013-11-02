@@ -13,7 +13,9 @@ enyo.kind({
 		api:null,
 		place:null,
 		conditions:null,
-		hourly:null
+		hourly:null,
+
+		graphAnimator:null,
 	},
 
 	handlers:{
@@ -22,6 +24,7 @@ enyo.kind({
 
 	popDrawerFinished:function() {
 		var data = this.getHourly();
+		this.getGraphAnimator().play();
 		this.$.popGraph.setData(data);
 		this.$.tempGraph.setData(data);
 		this.$.humidityGraph.setData(data);
@@ -93,6 +96,22 @@ enyo.kind({
 			day.render();
 		}
 		this.$.dayCarousel.reflow();
+
+		this.setGraphAnimator(
+			this.createComponent({name:"animator", kind:"Animator", onStep:"drawGraphs", duration:750})
+		);
+	},
+
+	graphAnimatorChanged:function(oldAnimator, animator) {
+		this.$.popGraph.setAnimator(animator);
+		this.$.tempGraph.setAnimator(animator);
+		this.$.humidityGraph.setAnimator(animator);
+	},
+
+	drawGraphs:function() {
+		this.$.popGraph.drawGraph();
+		this.$.tempGraph.drawGraph();
+		this.$.humidityGraph.drawGraph();
 	},
 
 	getApiFromEvent:function(event) {
@@ -204,6 +223,7 @@ enyo.kind({
 		var dsbo = maxPop > this.getPopThreshhold();
 		if(this.$.popDrawer.getOpen() == dsbo)
 		{
+			this.getGraphAnimator().play();
 			this.$.popGraph.setData(data);
 			this.$.tempGraph.setData(data);
 			this.$.humidityGraph.setData(data);

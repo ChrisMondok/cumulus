@@ -16,7 +16,9 @@ enyo.kind({
 		showLabels:false,
 		showNow:true,
 
-		currentPosition:undefined
+		currentPosition:undefined,
+
+		animator:null
 	},
 
 	_ctx:null,
@@ -26,8 +28,7 @@ enyo.kind({
 	components:[
 		{name:"max", style:"position:absolute; left:0px; top:0px;"},
 		{name:"min", style:"position:absolute; left:0px; bottom:0px;"},
-		{name:"canvas", style:"width:100%; height:100%", tag:"canvas"},
-		{name:"animator", kind:"Animator", onStep:"drawGraph", onEnd:"doAnimationFinished", start:0, end:1}
+		{name:"canvas", style:"width:100%; height:100%", tag:"canvas"}
 	],
 
 	create:function() {
@@ -72,10 +73,11 @@ enyo.kind({
 		}
 		else
 			this.setCurrentPosition(undefined);
-		this.$.animator.play({duration:data && data.length && this.getBounds().height ? 500 : 1});
 
 		this.$.min.setContent(this.getMin());
 		this.$.max.setContent(this.getMax());
+
+		this.drawGraph();
 	},
 
 	getX:function(i) {
@@ -90,7 +92,6 @@ enyo.kind({
 		var data = this.getData(),
 			oldData = this._oldData || [],
 			key = this.getKey();
-			a = this.$.animator.value;
 
 		if(data.length != oldData.length)
 			return this.valueToY(this.getMin());
@@ -125,7 +126,7 @@ enyo.kind({
 		var bounds = this.$.canvas.getBounds(),
 			data = this.data,
 			ctx = this._ctx,
-			animStep = this.$.animator.value,
+			animStep = this.animator ? this.animator.value : 1,
 			currentPercentage = this.currentPosition * bounds.width;
 
 		ctx.clearRect(0,0,bounds.width,bounds.height);
@@ -150,7 +151,6 @@ enyo.kind({
 
 			//draw now
 			if(currentPercentage !== undefined) {
-				var v = this.$.animator.value;
 				ctx.strokeStyle = this.getNowColor();
 				ctx.fillStyle = this.getNowColor();
 				ctx.beginPath();
@@ -159,10 +159,10 @@ enyo.kind({
 				ctx.lineTo(currentPercentage-5, 0);
 				ctx.lineTo(currentPercentage, 5);
 
-				ctx.lineTo(currentPercentage, (bounds.height - 5)*v);
-				ctx.lineTo(currentPercentage - 5, (bounds.height - 5)*v+5);
-				ctx.lineTo(currentPercentage + 5, (bounds.height - 5)*v+5);
-				ctx.lineTo(currentPercentage, (bounds.height - 5)*v);
+				ctx.lineTo(currentPercentage, (bounds.height - 5)*animStep);
+				ctx.lineTo(currentPercentage - 5, (bounds.height - 5)*animStep+5);
+				ctx.lineTo(currentPercentage + 5, (bounds.height - 5)*animStep+5);
+				ctx.lineTo(currentPercentage, (bounds.height - 5)*animStep);
 				ctx.fill();
 				ctx.stroke();
 			}
