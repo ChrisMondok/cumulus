@@ -54,6 +54,7 @@ enyo.kind({
 
 	resizeHandler:function() {
 		this.inherited(arguments);
+		this.sizeCanvas();
 		this.drawGraph();
 	},
 
@@ -68,6 +69,7 @@ enyo.kind({
 	rendered:function() {
 		this.inherited(arguments);
 		this._ctx = this.$.canvas.hasNode().getContext('2d');
+		this.sizeCanvas();
 	},
 	
 	dataChanged:function(old, data) {
@@ -81,7 +83,7 @@ enyo.kind({
 		}
 		else
 			this.setCurrentPosition(undefined);
-		this.$.animator.play({duration:data && data.length ? 500 : 1});
+		this.$.animator.play({duration:data && data.length && this.getBounds().height ? 500 : 1});
 	},
 
 	getX:function(i) {
@@ -133,8 +135,6 @@ enyo.kind({
 			ctx = this._ctx,
 			animStep = Math.max(0,this.$.animator.value*2-1),
 			currentPercentage = this.getCurrentPosition() * bounds.width;
-
-		this.sizeCanvas();
 
 		ctx.clearRect(0,0,bounds.width,bounds.height);
 
