@@ -38,6 +38,22 @@ enyo.kind({
 			cache[key] = cache[key] || [];
 
 		this.setCache(cache);
+		this.purgeExpiredItems();
+	},
+
+	purgeExpiredItems:function() {
+		var cache = this.getCache(),
+			now = new Date();
+			lifetimes = this.getCacheLifetimes();
+
+		for(var key in cache) {
+			var expireTime = now.getTime() + lifetimes[key];
+			cache[key] = cache[key].filter(function(cachedItem) {
+				if(cachedItem.hasOwnProperty('expires')) //alerts, conveniently, have this property
+					return cachedItem.expires < now;
+				return cachedItem._updateTime > expireTime;
+			});
+		}
 	},
 
 	persistCache:function() {
@@ -178,8 +194,7 @@ enyo.kind({
 
 	gotUpdates:function(ajax,response) {
 		var cache = this.getCache(),
-			now = new Date().getTime(),
-			cacheLifetimes = this.getCacheLifetimes();
+			now = new Date().getTime();
 
 		//jam it into an array so it'll play nicely with the cache.
 		if(response.hasOwnProperty('alerts'))
@@ -196,7 +211,7 @@ enyo.kind({
 								dataItem[key] = dataItem[key] * 1000;
 							}
 						}
-						dataItem._cacheExpireTime = now + cacheLifetimes[property];
+						dataItem._updateTime = now;
 						return dataItem;
 					});
 				this.mergeCachedProperty(property,response[property].data);
