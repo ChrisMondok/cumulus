@@ -13,33 +13,17 @@ enyo.kind({
 		api:null,
 		place:null,
 		conditions:null,
-		hourly:null,
-
+		hourly:null
 	},
 
 	handlers:{
-		onApiCreated:"getApiFromEvent",
-		onAnimationFinished:"graphAnimationFinished"
+		onApiCreated:"getApiFromEvent"
 	},
 
-	graphAnimationFinished:function(graph,event) {
-		var hourly = this.getHourly();
-		if(hourly && hourly.length) {
-			switch (event.originator) {
-				case this.$.popGraph:
-					this.$.tempGraph.setData(hourly);
-					break;
-				case this.$.tempGraph:
-					this.$.humidityGraph.setData(hourly);
-					break;
-			}
-		}
-	},
-	
 	components:[
 		{classes:"today", components:[
 			{name:"dayCarousel", kind:"Panels", onTransitionFinish:"dayCarouselChanged", classes:"title-carousel", arrangerKind:"CarouselArranger"},
-			{name:"summary", classes:"summary"},
+			{name:"summary", classes:"summary"}
 		]},
 		{fit:true, style:"position:relative", components:[
 			{name:"loadingPopup", kind:"LoadingPopup"},
@@ -53,7 +37,7 @@ enyo.kind({
 						min:0, max:1,
 						fillColor:"rgba(132,167,193,0.5)",
 						strokeColor:"rgba(132,167,193,1)"
-					},
+					}
 				]},
 				{kind:"Divider", content:"Temperature"},
 				{
@@ -169,7 +153,7 @@ enyo.kind({
 
 	refresh:function() {
 		var day = this.getDay(),
-			place = this.getPlace()
+			place = this.getPlace();
 
 		day.setHours(0,0,0,0);
 
@@ -209,18 +193,10 @@ enyo.kind({
 			}, [])
 		);
 
-		if(data.length) {
-			this.$.popDrawer.setOpen(maxPop > this.getPopThreshhold());
-			if(this.$.popDrawer.getOpen())
-				this.$.popGraph.setData(data);
-			else
-				this.$.tempGraph.setData(data);
-		}
-		else {
-			this.$.popGraph.setData([]);
-			this.$.tempGraph.setData([]);
-			this.$.humidityGraph.setData([]);
-		}
+		this.$.popDrawer.setOpen(maxPop > this.getPopThreshhold());
+		this.$.popGraph.setData(data);
+		this.$.tempGraph.setData(data);
+		this.$.humidityGraph.setData(data);
 		return;
 	},
 

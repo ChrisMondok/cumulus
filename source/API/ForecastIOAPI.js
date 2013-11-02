@@ -43,15 +43,20 @@ enyo.kind({
 
 	purgeExpiredItems:function() {
 		var cache = this.getCache(),
-			now = new Date();
+			now = new Date(),
 			lifetimes = this.getCacheLifetimes();
 
 		for(var key in cache) {
 			var expireTime = now.getTime() + lifetimes[key];
 			cache[key] = cache[key].filter(function(cachedItem) {
+				var expires = false;
 				if(cachedItem.hasOwnProperty('expires')) //alerts, conveniently, have this property
-					return cachedItem.expires < now;
-				return cachedItem._updateTime > expireTime;
+					valid = cachedItem.expires < now;
+				else
+					valid = cachedItem._updateTime < expireTime;
+				if(!valid)
+					console.log("Expiring a thing!");
+				return valid
 			});
 		}
 	},
