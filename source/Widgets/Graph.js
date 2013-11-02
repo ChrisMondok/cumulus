@@ -19,20 +19,13 @@ enyo.kind({
 		currentPosition:undefined
 	},
 
-	events:{
-		onAnimationFinished:""
-	},
-
 	_ctx:null,
 
 	_oldData: null,
 
 	components:[
-		{name:"labels", kind:"FittableRows", style:"position:absolute; left:0px; top:0px; height:100%", components:[
-			{name:"max"},
-			{fit:true},
-			{name:"min"}
-		]},
+		{name:"max", style:"position:absolute; left:0px; top:0px;"},
+		{name:"min", style:"position:absolute; left:0px; bottom:0px;"},
 		{name:"canvas", style:"width:100%; height:100%", tag:"canvas"},
 		{name:"animator", kind:"Animator", onStep:"drawGraph", onEnd:"doAnimationFinished", start:0, end:1}
 	],
@@ -43,13 +36,9 @@ enyo.kind({
 		this.setData(this.getData() || null);
 	},
 
-	showLabelsChanged:function() {
-		var show = this.getShowLabels();
-
-		this.$.labels.setShowing(show);
-
-		if(show)
-			this.$.labels.reflow();
+	showLabelsChanged:function(wasShowing, show) {
+		this.$.max.setShowing(show);
+		this.$.min.setShowing(show);
 	},
 
 	resizeHandler:function() {
@@ -84,6 +73,9 @@ enyo.kind({
 		else
 			this.setCurrentPosition(undefined);
 		this.$.animator.play({duration:data && data.length && this.getBounds().height ? 500 : 1});
+
+		this.$.min.setContent(this.getMin());
+		this.$.max.setContent(this.getMax());
 	},
 
 	getX:function(i) {
@@ -131,10 +123,10 @@ enyo.kind({
 			return;
 
 		var bounds = this.$.canvas.getBounds(),
-			data = this.getData(),
+			data = this.data,
 			ctx = this._ctx,
-			animStep = Math.max(0,this.$.animator.value*2-1),
-			currentPercentage = this.getCurrentPosition() * bounds.width;
+			animStep = this.$.animator.value,
+			currentPercentage = this.currentPosition * bounds.width;
 
 		ctx.clearRect(0,0,bounds.width,bounds.height);
 
@@ -146,12 +138,11 @@ enyo.kind({
 				this.drawGraphLines(animStep);
 
 			//draw graph
-			ctx.fillStyle = this.getFillColor();
-			ctx.strokeStyle = this.getStrokeColor();
+			ctx.fillStyle = this.fillColor;
+			ctx.strokeStyle = this.strokeColor;
 			ctx.beginPath();
-			for(var i in data) {
+			for(var i in data)
 				ctx.lineTo(this.getX(i),animStep*this.getY(i)+(1-animStep)*this.getOldY(i)); 
-			}
 			ctx.stroke();
 			ctx.lineTo(bounds.width,bounds.height);
 			ctx.lineTo(0,bounds.height);
@@ -174,15 +165,8 @@ enyo.kind({
 				ctx.lineTo(currentPercentage, (bounds.height - 5)*v);
 				ctx.fill();
 				ctx.stroke();
-
-				//ctx.moveTo(currentPercentage,0);
-				//ctx.lineTo(currentPercentage,bounds.height);
-				//ctx.stroke();
-
 			}
 		}
 
-		this.$.min.setContent(this.getMin());
-		this.$.max.setContent(this.getMax());
 	}
 });

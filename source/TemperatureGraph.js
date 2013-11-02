@@ -18,7 +18,6 @@ enyo.kind({
 			this.setMin(Math.floor((min-1)/step)*step);
 			this.setMax(Math.ceil((max+1)/step)*step);
 			this.setShowLabels(true);
-			this.$.labels.reflow();
 			this.resizeHandler();
 		}
 		else
@@ -30,14 +29,10 @@ enyo.kind({
 	drawGraphLines:function(animStep) {
 		this.inherited(arguments);
 
-		var step = this.getStep();
+		var step = this.getStep(),
+			amount = animStep;
 
-		var bottom = Math.floor(this.getMin()/step)*step;
-		var top = Math.ceil(this.getMax()/step)*step;
-
-		var amount = animStep;
-
-		for(var i = bottom; i < top; i+=step) {
+		for(var i = this.min; i < this.max; i+=step) {
 			var y = this.valueToY(i);
 			this._ctx.beginPath();
 			this._ctx.moveTo(0,this.valueToY(i));
