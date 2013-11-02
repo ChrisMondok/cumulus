@@ -61,8 +61,8 @@ enyo.kind({
 		var canvas = this.$.canvas;
 		var bounds = canvas.getBounds();
 
-		canvas.setAttribute("height",bounds.height+"px");
-		canvas.setAttribute("width",bounds.width+"px");
+		canvas.setAttribute("height",bounds.height);
+		canvas.setAttribute("width",bounds.width);
 	},
 
 	rendered:function() {

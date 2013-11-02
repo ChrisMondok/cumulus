@@ -8,7 +8,7 @@ enyo.kind({
 	},
 
 	components:[
-		{kind:"enyo.Image", src:"assets/weathericons/na.png"}
+		{kind:"enyo.Image", src:"assets/weathericons/na.png", attributes:{alt:"weather icon"}}
 	],
 
 	iconChanged:function() {
