@@ -1,9 +1,6 @@
 enyo.kind({
 	name:"Cumulus.Preferences",
-	defaultKind:"onyx.Groupbox",
 	classes:"preferences onyx",
-	controlClasses:"with-vertical-margin",
-	style:"padding: 0 15px;",
 
 	statics:{
 		reloadInterval:30
@@ -15,38 +12,42 @@ enyo.kind({
 	},
 
 	components:[
-		{components:[
-			{kind:"onyx.GroupboxHeader", content:"Saved Locations"},
-			{kind:"Group", onActivate:"placeGroupActivated", tag:null, components:[
-				{kind:"onyx.Item", components:[
-					{name:"useGPSButton", kind:"onyx.Checkbox", content:"Use GPS", index:false},
-				]},
-				{name:"locationRepeater", tag:null, onSetupItem:"renderLocation", kind:"enyo.Repeater", components:[
+		{kind:"Scroller", classes:"prefs-scroller", style:"height:100%", thumb:false, horizontal:"hidden", components:[
+			{kind:"onyx.Groupbox", components:[
+				{kind:"onyx.GroupboxHeader", content:"Saved Locations"},
+				{kind:"Group", onActivate:"placeGroupActivated", tag:null, components:[
 					{kind:"onyx.Item", components:[
-						{name:"locationName", kind:"onyx.Checkbox"},
-					]}
+						{name:"useGPSButton", kind:"onyx.Checkbox", content:"Use GPS", index:false},
+					]},
+					{name:"locationRepeater", tag:null, onSetupItem:"renderLocation", kind:"enyo.Repeater", components:[
+						{kind:"onyx.Item", components:[
+							{name:"locationName", kind:"onyx.Checkbox"},
+						]}
+					]},
 				]},
+				{kind:"onyx.Item", components:[
+					{kind:"onyx.IconButton", src:"assets/icons/add.png", content:"Save this location"},
+				]}
 			]},
-			{kind:"onyx.Item", components:[
-				{kind:"onyx.IconButton", src:"assets/icons/add.png", content:"Save this location"},
-			]}
-		]},
-		{components:[
-			{kind:"onyx.GroupboxHeader", content:"Automatically reload"},
-			{kind:"onyx.Item", components:[
-				{name:"reloadIntervalSlider", kind:"onyx.Slider", min:0, max:60, increment:10, onChanging:"updateReloadIntervalDisplay", onChange:"setReloadInterval"}
+			{kind:"onyx.Groupbox", components:[
+				{kind:"onyx.GroupboxHeader", content:"Automatically reload"},
+				{kind:"onyx.Item", components:[
+					{name:"reloadIntervalSlider", kind:"onyx.Slider", min:0, max:60, increment:10, onChanging:"updateReloadIntervalDisplay", onChange:"setReloadInterval"}
+				]},
+				{name:"reloadIntervalDisplay", kind:"onyx.Item", content:"N minutes"}
 			]},
-			{name:"reloadIntervalDisplay", kind:"onyx.Item", content:"N minutes"}
-		]},
-		//{kind:"onyx.Button", classes:"row-button", content:"Micro manage"},
-		{name:"clearCacheButton", kind:"onyx.Button", classes:"onyx-negative row-button", content:"Reset Cache"},
-		{kind:"onyx.Button", classes:"onyx-negative row-button", content:"Reset Everything", ontap:"promptResetEverything"},
-		{classes:"command-menu-placeholder"},
+			//{kind:"onyx.Button", classes:"row-button", content:"Micro manage"},
+			{classes:"groupbox", components:[
+				{name:"clearCacheButton", kind:"onyx.Button", classes:"onyx-negative row-button", content:"Reset Cache"},
+				{kind:"onyx.Button", classes:"onyx-negative row-button", content:"Reset Everything", ontap:"promptResetEverything"},
+			]},
+			{classes:"command-menu-placeholder"},
 
-		{name:"resetEverythingPopup", kind:"onyx.Popup", controlClasses:"with-vertical-margin", centered:true, scrim:true, floating:true, modal:true, components:[
-			{content:$L("This action cannot be undone")},
-			{kind:"onyx.Button", content:$L("Cancel"), classes:"row-button", ontap:"closeResetEverythingPopup"},
-			{kind:"onyx.Button", content:$L("Reset Everything"), classes:"onyx-negative row-button", ontap:"actuallyResetEverything" }
+			{name:"resetEverythingPopup", kind:"onyx.Popup", controlClasses:"with-vertical-margin", centered:true, scrim:true, floating:true, modal:true, components:[
+				{content:$L("This action cannot be undone")},
+				{kind:"onyx.Button", content:$L("Cancel"), classes:"row-button", ontap:"closeResetEverythingPopup"},
+				{kind:"onyx.Button", content:$L("Reset Everything"), classes:"onyx-negative row-button", ontap:"actuallyResetEverything" }
+			]}
 		]}
 	],
 
