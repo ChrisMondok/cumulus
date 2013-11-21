@@ -110,8 +110,11 @@ enyo.kind({
 	getDayThatContainsTime:function(time) {
 		var day = new Date(time);
 		day.setHours(0,0,0,0);
+
 		var start = day.getTime();
-		var end = start + 24*60*60*1000;
+
+		day.setDate(day.getDate() + 1);
+		var end = day.getTime();
 		return {start:start, end:end};
 	},
 
@@ -142,6 +145,8 @@ enyo.kind({
 	getHourlyForecast:function(loc,time) {
 		var async,
 			range = this.getDayThatContainsTime(time);
+
+		range.end -= 60*60*1000;
 
 		async = this.getAsync(loc,'hourly',range.start,range.end);
 
