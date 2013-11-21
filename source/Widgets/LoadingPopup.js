@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"LoadingPopup",
+	name:"Cumulus.LoadingPopup",
 	kind:"Popup",
 	
 	published:{

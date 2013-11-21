@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Appmenu",
+	name:"Cumulus.Appmenu",
 	kind:"onyx.Menu",
 
 	classes:"appmenu"

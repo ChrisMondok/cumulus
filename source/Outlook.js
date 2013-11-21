@@ -48,7 +48,7 @@ enyo.kind({
 			]},
 			{classes:"command-menu-placeholder"}
 		]},
-		{name:"loadingPopup", kind:"LoadingPopup"}
+		{name:"loadingPopup", kind:"Cumulus.LoadingPopup"}
 	],
 
 	apiChanged:function() {

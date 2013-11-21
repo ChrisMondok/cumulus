@@ -16,7 +16,7 @@ enyo.kind({
 	components:[
 		{kind:"Signals", onBackButton:"onBackGesture", onToggleAppMenu:"toggleAppMenu"},
 		{content:"Beta", classes:"sash"},
-		{name:"appmenu", kind:"Appmenu", components:[
+		{name:"appmenu", kind:"Cumulus.Appmenu", components:[
 			{content:"Preferences", ontap:"pushPreferencesState"},
 			{content:"About", ontap:"showAbout"}
 		]},
@@ -26,7 +26,7 @@ enyo.kind({
 			{ name:"advisory", kind:"Cumulus.Advisory" },
 			{ name:"preferences", kind:"Cumulus.Preferences" }
 		]},
-		{name:"commandMenu", kind:"CommandMenu", components:[
+		{name:"commandMenu", kind:"Cumulus.CommandMenu", components:[
 			{name:"backButton", kind:"onyx.IconButton", src:"assets/icons/back.png", ontap:"back"}
 		]},
 		{

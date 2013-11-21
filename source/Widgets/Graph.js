@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Graph",
+	name:"Cumulus.Graph",
 
 	style:"position:relative; height:4em;",
 

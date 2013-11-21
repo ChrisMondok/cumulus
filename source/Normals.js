@@ -7,13 +7,13 @@ enyo.kind({
 	},
 
 	components:[
-		{kind:"Divider", content:"Sun"},
+		{kind:"Cumulus.Divider", content:"Sun"},
 		{kind:"FittableColumns", controlClasses:"halfwidth", classes:"sunmoon", components:[
 			{name:"sunrise", classes:"sunrise"},
 			{name:"sunset", classes:"sunset"}
 		]},
 		{name:"tideDrawer", kind:"Drawer", open:false, components:[
-			{kind:"Divider", content:"Tides"},
+			{kind:"Cumulus.Divider", content:"Tides"},
 			{name:"tideRepeater", kind:"Repeater", tag:"table", classes:"tide-table", onSetupItem:"renderTide", components:[
 				{tag:"tr", components:[
 					{name:"type", tag:"td"},

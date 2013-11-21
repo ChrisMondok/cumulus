@@ -5,6 +5,7 @@ enyo.depends(
 	"LoadingPopup.js",
 	"CommandMenu.js",
 	"WeatherIcon.js",
+	"Map.js",
 
 	"appmenu.css",
 	"divider.css",
