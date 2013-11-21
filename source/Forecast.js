@@ -22,17 +22,16 @@ enyo.kind({
 	components:[
 		{name:"icon", kind:"Cumulus.WeatherIcon"},
 		{name:"day", classes:"day title", style:"display:inline-block", content:$L("Loading")},
-		{name:"tempRange", classes:"temp-range", showing:false, components:[
-			{tag:"span", name:"maxTemp"},
-			{tag:"span", content:" / "},
-			{tag:"span", name:"minTemp"}
-		]},
+		{name:"tempRange", classes:"temp-range", showing:false, content:"? / ?"},
 		{name:"weather", classes:"weather"},
 		{name:"tempNow", showing:false, components:[
 			{tag:"span", name:"temp"},
-			{tag:"span", classes:"label", content:" (feels like "},
-			{tag:"span", name:"feelsLike"},
-			{tag:"span", name:"feelsLikeLabel", classes:"label", content:" °F)"}
+			{tag:"span", classes:"label", content:"°F"},
+			{tag:"span", classes:"feels-like", name:"feelsLikeContainer", components:[
+				{tag:null, content:" (feels like "},
+				{tag:"span", classes:"feels-like-value", name:"feelsLike"},
+				{tag:null, content:" )"}
+			]}
 		]},
 		{name:"popRow", showing:false, components:[
 			{tag:"span", name:"pop"},
@@ -55,8 +54,10 @@ enyo.kind({
 			this.$.temp.setContent(Math.round(data.temperature));
 			
 			this.$.feelsLike.setContent(Math.round(data.apparentTemperature));
-			this.$.minTemp.setContent(Math.round(data.temperatureMin));
-			this.$.maxTemp.setContent(Math.round(data.temperatureMax));
+			this.$.tempRange.setContent([
+				Math.round(data.temperatureMax),
+				Math.round(data.temperatureMin)
+				].join(' / '));
 			this.$.pop.setContent(Math.round(data.precipProbability*100));
 			this.$.humidity.setContent(Math.round(data.humidity*100));
 		}
@@ -66,7 +67,7 @@ enyo.kind({
 
 	updateShowing:function() {
 		var data = this.getData();
-		var showFeelsLike = this.getShowTemp() && data.hasOwnProperty('temperature') && data.hasOwnProperty('apparentTemperature') && Math.abs(data.temperature - data.apparentTemperature) < this.getFeelsLikeThreshold();
+		var showFeelsLike = this.getShowTemp() && data.hasOwnProperty('temperature') && data.hasOwnProperty('apparentTemperature') && Math.abs(data.temperature - data.apparentTemperature) > this.getFeelsLikeThreshold();
 
 		this.$.day.setShowing(data && this.getShowDay());
 		this.$.weather.setShowing(data && this.getShowWeather() && data.hasOwnProperty('summary'));
@@ -80,7 +81,7 @@ enyo.kind({
 		this.$.tempNow.setShowing(this.getShowTemp() && data.hasOwnProperty('temperature'));
 
 		this.$.feelsLike.setShowing(showFeelsLike);
-		this.$.feelsLike.setShowing(showFeelsLike);
+		this.$.feelsLikeContainer.setShowing(showFeelsLike);
 	},
 
 	transformDate:function(value) {

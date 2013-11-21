@@ -18,8 +18,12 @@
 	vertical-align:middle;
 }
 
-.forecast .label {
+.forecast .label, .forecast .feels-like {
 	color:#666;
+}
+
+.forecast .feels-like-value {
+	color:#333;
 }
 
 .forecast.hourly .body {
@@ -31,7 +35,11 @@
 	display:inline-block;
 }
 
-.forecast.dark .label {
+.forecast.dark .feels-like-value {
+	color:#DFDFDF;
+}
+
+.forecast.dark .label, .forecast .feels-like {
 	color:#999;
 }
 
@@ -46,6 +54,10 @@
 .forecast.primary .icon-container>img {
 	width:100px;
 	height:100px;
+}
+
+.forecast .weather {
+	overflow:hidden;
 }
 
 .onyx-popup .forecast {
