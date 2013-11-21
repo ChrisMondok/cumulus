@@ -17,14 +17,14 @@ enyo.kind({
 		{kind:"Signals", onBackButton:"onBackGesture", onToggleAppMenu:"toggleAppMenu"},
 		{content:"Beta", classes:"sash"},
 		{name:"appmenu", kind:"Appmenu", components:[
-			{content:"Preferences", ontap:"pushSettingsState"},
+			{content:"Preferences", ontap:"pushPreferencesState"},
 			{content:"About", ontap:"showAbout"}
 		]},
 		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", classes:"enyo-fit", draggable:false, onTransitionFinish:"panelIndexChanged", components:[
 			{ name:"outlook", kind:"Cumulus.Outlook" },
 			{ name:"detail", kind:"Cumulus.Detail" },
 			{ name:"advisory", kind:"Cumulus.Advisory" },
-			{ name:"settings", kind:"Cumulus.Settings" }
+			{ name:"preferences", kind:"Cumulus.Preferences" }
 		]},
 		{name:"commandMenu", kind:"CommandMenu", components:[
 			{name:"backButton", kind:"onyx.IconButton", src:"assets/icons/back.png", ontap:"back"}
@@ -173,7 +173,7 @@ enyo.kind({
 		this.pushState({advisory:event.advisory, index:2}, event.advisory.title);
 	},
 
-	pushSettingsState:function(sender, event) {
+	pushPreferencesState:function(sender, event) {
 		this.pushState({index:3},"Preferences");
 	},
 

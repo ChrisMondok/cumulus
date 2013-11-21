@@ -9,7 +9,7 @@ enyo.depends(
 
 	"Main.js",
 	"Outlook.js",
-	"Settings.js",
+	"Preferences.js",
 	"Advisory.js",
 	"Forecast.js",
 	"MinutelyForecast.js",

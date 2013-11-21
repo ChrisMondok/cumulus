@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Cumulus.Settings",
+	name:"Cumulus.Preferences",
 	defaultKind:"onyx.Groupbox",
 	classes:"onyx",
 	controlClasses:"with-vertical-margin",
@@ -21,7 +21,7 @@ enyo.kind({
 		{components:[
 			{kind:"onyx.GroupboxHeader", content:"Automatically reload"},
 			{kind:"onyx.Item", components:[
-				{kind:"onyx.Slider", min:0, max:6, increment:1, onChanging:"updateReloadIntervalDisplay", onChange:"setReloadInterval"}
+				{kind:"onyx.Slider", min:0, max:5, increment:1, onChanging:"updateReloadIntervalDisplay", onChange:"setReloadInterval"}
 			]},
 			{name:"reloadIntervalDisplay", kind:"onyx.Item", content:"N minutes"}
 		]},
@@ -33,7 +33,7 @@ enyo.kind({
 			{content:$L("This action cannot be undone")},
 			{kind:"onyx.Button", content:$L("Cancel"), classes:"row-button", ontap:"closeResetEverythingPopup"},
 			{kind:"onyx.Button", content:$L("Reset Everything"), classes:"onyx-negative row-button", ontap:"actuallyResetEverything" }
-		]},
+		]}
 	],
 
 	create:function() {
@@ -71,6 +71,11 @@ enyo.kind({
 	setSetting:function(setting, value) {
 		Cumulus.Settings[setting] = value;
 		enyo.Signals.send("settingChanged",{setting:setting, value:value});
+		this.startJob("saveSettings","saveSettings");
+	},
+
+	saveSettings:function() {
+		localStorage.setItem("settings",JSON.stringify(Cumulus.Settings));
 	},
 
 	promptResetEverything:function() {
