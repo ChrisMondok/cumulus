@@ -1,6 +1,6 @@
 var defaultLifetimes = {
 	hourly:60*60*1000, // 1 hour
-	daily:24*60*60*1000, //1 day
+	daily:4*60*60*1000, // 4 hours
 	currently: 30*60*1000, // 30 minutes
 	alerts: 6*60*60*1000 // 6 hours
 };
@@ -67,8 +67,6 @@ enyo.kind({
 	},
 
 	getFromCache:function(property,start,end,allowStale) {
-		var now = new Date().getTime();
-
 		return this.filterStartEnd(this.getCache()[property],start,end);
 	},
 
@@ -113,7 +111,7 @@ enyo.kind({
 		var day = new Date(time);
 		day.setHours(0,0,0,0);
 		var start = day.getTime();
-		var end = start + 23*60*60*1000;
+		var end = start + 24*60*60*1000;
 		return {start:start, end:end};
 	},
 
@@ -129,9 +127,9 @@ enyo.kind({
 		var async;
 		if(time) {
 			var range = this.getDayThatContainsTime(time);
-			async = this.getAsync(loc,'daily',range.start,range.start);
+			async = this.getAsync(loc,'daily',range.start);
 		} else
-			async = this.getAsync(loc,'daily');
+			async = this.getAsync(loc,'daily',new Date().setHours(0,0,0,0));
 
 		async.response(function(async, dailyForecasts) {
 			if(!dailyForecasts.length)
