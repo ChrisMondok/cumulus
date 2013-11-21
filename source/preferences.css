@@ -1,0 +1,15 @@
+.add-location-button {
+	background-image:url(../assets/icons/add.png);
+	background-position: 14px 50%;
+	background-repeat: no-repeat;
+	text-indent:38px;
+	height:32px;
+	line-height:32px;
+}
+
+.preferences .onyx-checkbox, .preferences .onyx-icon-button {
+	line-height:32px;
+	text-indent:40px;
+	display:block;
+	width:auto;
+}

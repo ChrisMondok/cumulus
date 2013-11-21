@@ -1,7 +1,7 @@
 enyo.kind({
 	name:"Cumulus.Preferences",
 	defaultKind:"onyx.Groupbox",
-	classes:"onyx",
+	classes:"preferences onyx",
 	controlClasses:"with-vertical-margin",
 	style:"padding: 0 15px;",
 
@@ -10,24 +10,38 @@ enyo.kind({
 	},
 
 	published:{
-		api:null
+		api:null,
+		settings:null
 	},
 
 	components:[
 		{components:[
 			{kind:"onyx.GroupboxHeader", content:"Saved Locations"},
-			{kind:"onyx.Item", content:"Saved items go here"}
+			{kind:"Group", onActivate:"placeGroupActivated", tag:null, components:[
+				{kind:"onyx.Item", components:[
+					{name:"useGPSButton", kind:"onyx.Checkbox", content:"Use GPS", index:false},
+				]},
+				{name:"locationRepeater", tag:null, onSetupItem:"renderLocation", kind:"enyo.Repeater", components:[
+					{kind:"onyx.Item", components:[
+						{name:"locationName", kind:"onyx.Checkbox"},
+					]}
+				]},
+			]},
+			{kind:"onyx.Item", components:[
+				{kind:"onyx.IconButton", src:"assets/icons/add.png", content:"Save this location"},
+			]}
 		]},
 		{components:[
 			{kind:"onyx.GroupboxHeader", content:"Automatically reload"},
 			{kind:"onyx.Item", components:[
-				{kind:"onyx.Slider", min:0, max:5, increment:1, onChanging:"updateReloadIntervalDisplay", onChange:"setReloadInterval"}
+				{name:"reloadIntervalSlider", kind:"onyx.Slider", min:0, max:60, increment:10, onChanging:"updateReloadIntervalDisplay", onChange:"setReloadInterval"}
 			]},
 			{name:"reloadIntervalDisplay", kind:"onyx.Item", content:"N minutes"}
 		]},
-		{kind:"onyx.Button", classes:"row-button", content:"Micro manage"},
+		//{kind:"onyx.Button", classes:"row-button", content:"Micro manage"},
 		{name:"clearCacheButton", kind:"onyx.Button", classes:"onyx-negative row-button", content:"Reset Cache"},
 		{kind:"onyx.Button", classes:"onyx-negative row-button", content:"Reset Everything", ontap:"promptResetEverything"},
+		{classes:"command-menu-placeholder"},
 
 		{name:"resetEverythingPopup", kind:"onyx.Popup", controlClasses:"with-vertical-margin", centered:true, scrim:true, floating:true, modal:true, components:[
 			{content:$L("This action cannot be undone")},
@@ -39,6 +53,13 @@ enyo.kind({
 	create:function() {
 		this.inherited(arguments);
 		this.apiChanged();
+		this.loadSettings();
+	},
+
+	placeGroupActivated:function(sender, event) {
+		if(event.originator.getActive()) {
+			this.setSetting('usePlace',event.originator.index);
+		}
 	},
 
 	showingChanged:function(wasShowing, isShowing) {
@@ -47,9 +68,15 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 
+	updateLocationDisplay:function() {
+		var settings = this.getSettings();
+		this.$.locationRepeater.setCount(settings.places.length);
+		this.$.useGPSButton.setActive(settings.usePlace === false);
+	},
+
 	updateReloadIntervalDisplay:function(slider,event) {
-		var minutes = (event.value+1)*10;
-		if(minutes <= 60)
+		var minutes = this.$.reloadIntervalSlider.getValue();
+		if(minutes)
 			this.$.reloadIntervalDisplay.setContent([minutes,$L("minutes")].join(' '));
 		else
 			this.$.reloadIntervalDisplay.setContent($L("Manually"));
@@ -57,10 +84,9 @@ enyo.kind({
 
 	setReloadInterval:function(slider, event) {
 		this.updateReloadIntervalDisplay(slider,event);
-		var minutes = (event.value+1)*10;
+		var minutes = event.value;
 		if(minutes > 60)
 			minutes = 0;
-		Cumulus.Settings.reloadInterval = minutes;
 		this.setSetting("reloadInterval", minutes);
 	},
 
@@ -69,13 +95,42 @@ enyo.kind({
 	},
 
 	setSetting:function(setting, value) {
-		Cumulus.Settings[setting] = value;
-		enyo.Signals.send("settingChanged",{setting:setting, value:value});
+		var settings = this.getSettings();
+
+		settings[setting] = value;
+		this.settingsChanged();
 		this.startJob("saveSettings","saveSettings");
 	},
 
 	saveSettings:function() {
-		localStorage.setItem("settings",JSON.stringify(Cumulus.Settings));
+		localStorage.setItem("settings",JSON.stringify(this.getSettings()));
+	},
+
+	loadSettings:function() {
+		var loaded = localStorage.getItem('settings');
+		this.setSettings(JSON.parse(loaded) || this.getDefaultSettings());
+	},
+
+	settingsChanged:function() {
+		var settings = this.getSettings();
+
+		enyo.Signals.send("settingsChanged",settings);
+		
+		this.$.reloadIntervalSlider.setValue(settings.reloadInterval);
+		this.updateReloadIntervalDisplay();
+
+		this.updateLocationDisplay();
+	},
+
+	getDefaultSettings:function() {
+		return {
+			reloadInterval: 0,
+			places:[
+				{name:"Neptune"},
+				{name:"Long Valley"}
+			],
+			usePlace:false
+		};
 	},
 
 	promptResetEverything:function() {
@@ -89,5 +144,16 @@ enyo.kind({
 	actuallyResetEverything:function() {
 		localStorage.clear();
 		this.closeResetEverythingPopup();
-	}
+	},
+
+	renderLocation:function(sender, event) {
+		var item = event.item,
+			index = event.index,
+			settings = this.getSettings(),
+			place = settings.places[index];
+
+		item.$.locationName.setContent(place.name);
+		item.$.locationName.setActive(index === settings.usePlace);
+		item.$.locationName.index = index;
+	},
 });
