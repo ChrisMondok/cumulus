@@ -37,7 +37,7 @@ enyo.kind({
 		]},
 		{fit:true, style:"position:relative", components:[
 			{name:"loadingPopup", kind:"Cumulus.LoadingPopup"},
-			{name:"scroller", kind:"Scroller", touch:true, thumb:false, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
+			{name:"scroller", kind:"Scroller", thumb:false, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
 				{name:"popDrawer", kind:"Drawer", onDrawerAnimationEnd:"popDrawerFinished", components:[
 					{kind:"Cumulus.Divider", content:"Chance of precipitation"},
 					{

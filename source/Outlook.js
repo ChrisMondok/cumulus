@@ -32,7 +32,7 @@ enyo.kind({
 	},
 
 	components:[
-		{name:"scroller", kind:"Scroller", classes:"enyo-fit", thumb:false, touch:true, horizontal:"hidden", components:[
+		{name:"scroller", kind:"Scroller", classes:"enyo-fit", thumb:false, horizontal:"hidden", components:[
 			{name:"advisoriesDrawer", kind:"Drawer", open:false, components:[
 				{name:"advisoryRepeater", kind:"Repeater", onSetupItem:"renderAdvisory", components:[
 					{name:"name", classes:"advisory title", ontap:"pickAdvisory"}
