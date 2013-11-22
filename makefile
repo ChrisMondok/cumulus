@@ -5,7 +5,7 @@ IPK		:= $(APPID)_$(VERSION)_all.ipk
 javascript := $(shell find source/ -type f -name '*.js')
 css := $(shell find source/ -type f -name '*.css')
 
-deploy/cumulus: $(javascript) $(css)
+deploy/cumulus: $(javascript) $(css) index.html
 	./tools/deploy.sh
 
 deploy/cumulus/appinfo.json: deploy/cumulus
