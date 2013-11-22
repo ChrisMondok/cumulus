@@ -154,6 +154,7 @@ enyo.kind({
 		if(newPlace) {
 			this.$.outlook.setPlace(newPlace);
 			this.$.detail.setPlace(newPlace);
+			this.$.preferences.setPlace(newPlace);
 		}
 	},
 

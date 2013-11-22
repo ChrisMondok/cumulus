@@ -3,12 +3,33 @@ enyo.kind({
 	classes:"preferences onyx",
 
 	statics:{
-		reloadInterval:30
+		reloadInterval:30,
+
+		getGeoDistance:function(latitude, longitude, targetlat, targetlon) {
+
+			var degToRad = function(degrees) {
+				return (degrees/180)*Math.PI;
+			};
+
+			var earthRadius = 6371,
+				lat1 = degToRad(latitude),
+				lon1 = degToRad(longitude),
+				lat2 = degToRad(targetlat),
+				lon2 = degToRad(targetlon),
+				dLat = lat2 - lat1,
+				dLon = lon2 - lon1;
+
+			var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)*Math.sin(dLon/2);
+			var c = 2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+			var distanceInKm = earthRadius*c;
+			return Math.round(distanceInKm*62.1371)/100;
+		}
 	},
 
 	published:{
 		api:null,
-		settings:null
+		settings:null,
+		place:null
 	},
 
 	components:[
@@ -17,16 +38,19 @@ enyo.kind({
 				{kind:"onyx.GroupboxHeader", content:"Saved Locations"},
 				{kind:"Group", onActivate:"placeGroupActivated", tag:null, components:[
 					{kind:"onyx.Item", components:[
-						{name:"useGPSButton", kind:"onyx.Checkbox", content:"Use GPS", index:false},
+						{name:"useGPSButton", kind:"onyx.Checkbox", content:"Use GPS", index:false}
 					]},
 					{name:"locationRepeater", tag:null, onSetupItem:"renderLocation", kind:"enyo.Repeater", components:[
 						{kind:"onyx.Item", components:[
-							{name:"locationName", kind:"onyx.Checkbox"},
+							{name:"locationCheckbox", kind:"onyx.Checkbox", components:[
+								{name:"locationName", style:"float:left"},
+								{name:"locationDistance", classes:"label", style:"float:right", content:"2 miles"}
+							]}
 						]}
-					]},
+					]}
 				]},
-				{kind:"onyx.Item", components:[
-					{kind:"onyx.IconButton", src:"assets/icons/add.png", content:"Save this location"},
+				{name:"savePlaceButton", kind:"onyx.Item", components:[
+					{kind:"onyx.IconButton", src:"assets/icons/add.png", content:"Save this location"}
 				]}
 			]},
 			{kind:"onyx.Groupbox", components:[
@@ -39,7 +63,7 @@ enyo.kind({
 			//{kind:"onyx.Button", classes:"row-button", content:"Micro manage"},
 			{classes:"groupbox", components:[
 				{name:"clearCacheButton", kind:"onyx.Button", classes:"onyx-negative row-button", content:"Reset Cache"},
-				{kind:"onyx.Button", classes:"onyx-negative row-button", content:"Reset Everything", ontap:"promptResetEverything"},
+				{kind:"onyx.Button", classes:"onyx-negative row-button", content:"Reset Everything", ontap:"promptResetEverything"}
 			]},
 			{classes:"command-menu-placeholder"},
 
@@ -98,9 +122,12 @@ enyo.kind({
 	setSetting:function(setting, value) {
 		var settings = this.getSettings();
 
+		if(settings[setting] === value)
+			return;
+
 		settings[setting] = value;
 		this.settingsChanged();
-		this.startJob("saveSettings","saveSettings");
+		this.startJob("saveSettings","saveSettings",1000);
 	},
 
 	saveSettings:function() {
@@ -127,8 +154,8 @@ enyo.kind({
 		return {
 			reloadInterval: 0,
 			places:[
-				{name:"Neptune"},
-				{name:"Long Valley"}
+				{name:"Neptune", latitude:40.220391, longitude:-74.012082},
+				{name:"Long Valley", latitude:40.78225, longitude:-74.776936}
 			],
 			usePlace:false
 		};
@@ -147,14 +174,23 @@ enyo.kind({
 		this.closeResetEverythingPopup();
 	},
 
+	placeChanged:function() {
+		this.$.locationRepeater.build();
+	},
+
 	renderLocation:function(sender, event) {
 		var item = event.item,
 			index = event.index,
 			settings = this.getSettings(),
-			place = settings.places[index];
+			place = settings.places[index],
+			currentLocation = this.getPlace();
 
 		item.$.locationName.setContent(place.name);
-		item.$.locationName.setActive(index === settings.usePlace);
-		item.$.locationName.index = index;
-	},
+		item.$.locationCheckbox.setActive(index === settings.usePlace);
+		item.$.locationCheckbox.index = index;
+		item.$.locationDistance.setContent(currentLocation
+			? Cumulus.Preferences.getGeoDistance(currentLocation.latitude, currentLocation.longitude, place.latitude, place.longitude) +"mi"
+			: ""
+			);
+	}
 });
