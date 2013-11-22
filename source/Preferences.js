@@ -79,6 +79,7 @@ enyo.kind({
 		this.inherited(arguments);
 		this.apiChanged();
 		this.loadSettings();
+		window.S = this;
 	},
 
 	placeGroupActivated:function(sender, event) {
@@ -132,6 +133,7 @@ enyo.kind({
 
 	saveSettings:function() {
 		localStorage.setItem("settings",JSON.stringify(this.getSettings()));
+		webosCompatibility.showBanner("Settings saved");
 	},
 
 	loadSettings:function() {

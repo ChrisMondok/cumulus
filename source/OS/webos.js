@@ -36,5 +36,10 @@ enyo.singleton({
 	stageReady:function() {
 		if(window.PalmSystem)
 			PalmSystem.stageReady();
-	}
+	},
+
+	showBanner:function(message, response, icon, soundClass, soundFile, soundDurationMs) {
+		if(window.PalmSystem)
+			PalmSystem.addBannerMessage(message, JSON.stringify(response || {}), icon, soundClass, soundFile, soundDurationMs);
+	},
 });
