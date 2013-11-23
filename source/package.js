@@ -19,7 +19,6 @@ enyo.depends(
 	"AboutPopup.js",
 	
 	"Cumulus.css",
-	"map.css",
 	"detail.css",
 	"forecast.css",
 	"outlook.css",
