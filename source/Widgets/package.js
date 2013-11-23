@@ -9,5 +9,6 @@ enyo.depends(
 
 	"appmenu.css",
 	"divider.css",
-	"commandmenu.css"
+	"commandmenu.css",
+	"map.css"
 );
