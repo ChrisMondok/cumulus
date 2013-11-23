@@ -49,8 +49,8 @@ enyo.kind({
 						]}
 					]}
 				]},
-				{name:"savePlaceButton", kind:"onyx.Item", components:[
-					{kind:"onyx.IconButton", src:"assets/icons/add.png", content:"Save this location"}
+				{kind:"onyx.Item", components:[
+					{name:"savePlaceButton", kind:"onyx.IconButton", src:"assets/icons/add.png", ontap:"showSavePopup", disabled:true, content:"Save this location"}
 				]}
 			]},
 			{kind:"onyx.Groupbox", components:[
@@ -71,6 +71,14 @@ enyo.kind({
 				{content:$L("This action cannot be undone")},
 				{kind:"onyx.Button", content:$L("Cancel"), classes:"row-button", ontap:"closeResetEverythingPopup"},
 				{kind:"onyx.Button", content:$L("Reset Everything"), classes:"onyx-negative row-button", ontap:"actuallyResetEverything" }
+			]},
+
+			{name:"savePopup", kind:"onyx.Popup", centered:true, scrim:true, floating:true, modal:true, components:[
+				{content:$L("Where are you?")},
+				{kind:"onyx.InputDecorator", components:[
+					{name:"placeNameInput", kind:"onyx.Input"}
+				]},
+				{kind:"onyx.Button", classes:"onyx-blue row-button", content:"Save", ontap:"addPlace"}
 			]}
 		]}
 	],
@@ -131,6 +139,10 @@ enyo.kind({
 		this.startJob("saveSettings","saveSettings",1000);
 	},
 
+	showSavePopup:function() {
+		this.$.savePopup.show();
+	},
+
 	saveSettings:function() {
 		localStorage.setItem("settings",JSON.stringify(this.getSettings()));
 		webosCompatibility.showBanner("Settings saved");
@@ -174,10 +186,13 @@ enyo.kind({
 	actuallyResetEverything:function() {
 		localStorage.clear();
 		this.closeResetEverythingPopup();
+		webosCompatibility.showBanner("Settings saved");
+		this.loadSettings();
 	},
 
-	placeChanged:function() {
+	placeChanged:function(old, place) {
 		this.$.locationRepeater.build();
+		this.$.savePlaceButton.setDisabled(!place);
 	},
 
 	renderLocation:function(sender, event) {
@@ -194,5 +209,19 @@ enyo.kind({
 			? Cumulus.Preferences.getGeoDistance(currentLocation.latitude, currentLocation.longitude, place.latitude, place.longitude) +"mi"
 			: ""
 			);
+	},
+
+	addPlace:function() {
+		var places = this.getSettings().places.slice(),
+			loc = this.getPlace();
+
+		places.push({
+			name:this.$.placeNameInput.getValue(),
+			latitude:loc.latitude,
+			longitude:loc.longitude
+		});
+
+		this.$.savePopup.hide();
+		this.setSetting("places",places);
 	}
 });
