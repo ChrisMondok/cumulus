@@ -16,7 +16,7 @@ enyo.kind({
 		showWeather:true,
 		showPop:true,
 
-		feelsLikeThreshold:5
+		feelsLikeThreshold:3
 	},
 
 	components:[
