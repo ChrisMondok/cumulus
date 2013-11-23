@@ -16,6 +16,7 @@ enyo.depends(
 	"Detail.js",
 	"Normals.js",
 	"TemperatureGraph.js",
+	"AboutPopup.js",
 	
 	"Cumulus.css",
 	"map.css",
