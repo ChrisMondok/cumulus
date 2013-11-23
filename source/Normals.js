@@ -1,6 +1,5 @@
 enyo.kind({
 	name:"Cumulus.Normals",
-	kind:"FittableRows",
 
 	published:{
 		tides:null

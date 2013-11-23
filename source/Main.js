@@ -42,17 +42,7 @@ enyo.kind({
 				{content:"Getting your current location"}
 			]
 		},
-		{
-			name:"aboutPopup",
-			kind:"onyx.Popup",
-			centered:true, floating:true, modal:true, scrim:true, scrimWhenModal:true,
-			components:[
-				{content:"Cumulus"},
-				{content:"by Chris Mondok"},
-				{tag:"a", attributes:{href:"http://github.com/chrismondok"}, content:"Github"},
-				{tag:"a", attributes:{href:"http://forecast.io"}, content:"Powered by Forecast"}
-			]
-		},
+		{ kind:"Cumulus.AboutPopup" },
 		{
 			name:"errorPopup",
 			kind:"onyx.Popup",
@@ -61,17 +51,7 @@ enyo.kind({
 				{tag:"h1", content:"Error"},
 				{name:"errorDescription"}
 			]
-		},
-		{name:"getPlacePopup", kind:"onyx.Popup", centered:true, modal:true, floating:true, scrim:true, autoDismiss:false, scrimWhenModal:true, components:[
-			{kind:"FittableRows", components:[
-				{content:"Please enter your zip code"},
-				{name:"gpsFailureReason", style:"color:#AAA"},
-				{kind:"onyx.InputDecorator", alwaysLooksFocused:true, components:[
-					{name:"placeInput", kind:"onyx.Input"}
-				]},
-				{kind:"onyx.Button", content:"Submit", classes:"onyx-dark", style:"display:block; width:100%;", ontap:"submitPlace"}
-			]}
-		]}
+		}
 	],
 
 	statics:{
@@ -112,18 +92,6 @@ enyo.kind({
 			this.state = [];
 	},
 
-	toggleAppMenu:function() {
-		if(this.$.appmenu.getShowing())
-			this.$.appmenu.hide();
-		else
-			this.$.appmenu.showAtPosition({top:0, left:0});
-	},
-
-	submitPlace:function() {
-		this.$.getPlacePopup.hide();
-		this.setPlace(this.$.placeInput.getValue());
-	},
-
 	rendered:function() {
 		this.inherited(arguments);
 		this.stateChanged();
@@ -139,8 +107,6 @@ enyo.kind({
 			.error(enyo.bind(this, function(sender,error) {
 				this.$.locatingPopup.hide();
 				this.$.gpsFailureReason.setContent(error.message);
-				this.$.getPlacePopup.show();
-				this.$.placeInput.focus();
 			}));
 
 		enyo.Signals.send("onStageReady");
@@ -216,7 +182,7 @@ enyo.kind({
 		}
 
 		if(state && state.index)
-			this.$.panels.setIndex(state.index)
+			this.$.panels.setIndex(state.index);
 		else
 			this.$.panels.setIndex(0);
 	},
@@ -244,12 +210,19 @@ enyo.kind({
 			this.addRemoveClass("obscured",newValue);
 	},
 
+	receivedAPIError:function(sender, event) {
+		this.$.errorDescription.setContent(event.error.description);
+		this.$.errorPopup.show();
+	},
+
 	showAbout:function() {
 		this.$.aboutPopup.show();
 	},
 
-	receivedAPIError:function(sender, event) {
-		this.$.errorDescription.setContent(event.error.description);
-		this.$.errorPopup.show();
+	toggleAppMenu:function() {
+		if(this.$.appmenu.getShowing())
+			this.$.appmenu.hide();
+		else
+			this.$.appmenu.showAtPosition({top:0, left:0});
 	}
 });
