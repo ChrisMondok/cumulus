@@ -14,7 +14,7 @@ enyo.kind({
 	},
 
 	components:[
-		{kind:"Signals", onBackButton:"onBackGesture", onToggleAppMenu:"toggleAppMenu"},
+		{kind:"Signals", onBackButton:"onBackGesture", onToggleAppMenu:"toggleAppMenu", onSettingsChanged:"settingsChanged"},
 		{content:"Beta", classes:"sash"},
 		{name:"appmenu", kind:"Cumulus.Appmenu", components:[
 			{content:"Preferences", ontap:"pushPreferencesState"},
@@ -224,5 +224,20 @@ enyo.kind({
 			this.$.appmenu.hide();
 		else
 			this.$.appmenu.showAtPosition({top:0, left:0});
+	},
+
+	settingsChanged:function(inSender, settings) {
+		if(this._reloadInterval) {
+			clearInterval(this._reloadInterval);
+			this._reloadInterval = undefined;
+		}
+
+		if(settings.reloadInterval)
+			this._reloadInterval = setInterval(enyo.bind(this,"onReloadInterval"), settings.reloadInterval * 1000 * 60);
+	},
+
+	onReloadInterval:function() {
+		console.log("Reload now");
+		webosCompatibility.showBanner("Reload now.");
 	}
 });

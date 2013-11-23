@@ -156,7 +156,7 @@ enyo.kind({
 	settingsChanged:function() {
 		var settings = this.getSettings();
 
-		enyo.Signals.send("settingsChanged",settings);
+		enyo.Signals.send("onSettingsChanged",settings);
 		
 		this.$.reloadIntervalSlider.setValue(settings.reloadInterval);
 		this.updateReloadIntervalDisplay();
@@ -186,7 +186,7 @@ enyo.kind({
 	actuallyResetEverything:function() {
 		localStorage.clear();
 		this.closeResetEverythingPopup();
-		webosCompatibility.showBanner("Settings saved");
+		webosCompatibility.showBanner("All data erased.");
 		this.loadSettings();
 	},
 
