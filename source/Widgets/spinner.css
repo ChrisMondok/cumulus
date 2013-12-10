@@ -1,0 +1,41 @@
+.cumulus-spinner-bg
+{
+	height:78px;
+	width:78px;
+	position:relative;
+	background-image:url(../../assets/widgets/spinner-bg.png);
+}
+
+.cumulus-spinner-fg
+{
+	-webkit-animation: cumulus-spinner 0.3s linear infinite;
+	animation: cumulus-spinner 0.3s linear infinite;
+	transition: opacity 0.25s linear;
+	position:absolute;
+	left:0px;
+	top:0px;
+	width:100%;
+	height:100%;
+
+	background-image:url(../../assets/widgets/spinner-fg.png);
+}
+
+@-webkit-keyframes cumulus-spinner{
+	from {
+		-webkit-transform: rotate(0deg);
+	}
+
+	to {
+		-webkit-transform: rotate(180deg);
+	}
+}
+
+@keyframes cumulus-spinner{
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(180deg);
+	}
+}

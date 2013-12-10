@@ -8,6 +8,6 @@ enyo.kind({
 	},
 
 	components:[
-		{kind:"onyx.Spinner"}
+		{kind:"Cumulus.Spinner"}
 	]
 });

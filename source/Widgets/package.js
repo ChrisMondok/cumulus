@@ -5,10 +5,12 @@ enyo.depends(
 	"LoadingPopup.js",
 	"CommandMenu.js",
 	"WeatherIcon.js",
+	"Spinner.js",
 	"Map.js",
 
 	"appmenu.css",
 	"divider.css",
 	"commandmenu.css",
-	"map.css"
+	"map.css",
+	"spinner.css"
 );
