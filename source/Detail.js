@@ -207,21 +207,28 @@ enyo.kind({
 
 		var maxPop = 0;
 
-
-		this.setConditions(data.reduce(function(output,value,index,periods) {
+		var conditions = data.reduce(function(output,value,index,periods) {
 
 			maxPop = Math.max(maxPop, value.precipProbability);
 
 			if(output.length) 
+			{
 				output[output.length-1].end = value.time;
+			}
 
 			if(output.length < 1 
 				|| output[output.length-1].summary != value.summary
 				|| output[output.length-1].icon != value.icon)
+			{
 				output.push({summary:value.summary, icon:value.icon, start: value.time, end:value.time + 1000*60*60});
+			}
 			return output;
-			}, [])
-		);
+			},
+		[]);
+
+		conditions[conditions.length - 1].end = data[data.length - 1].time + 1000*60*60;
+
+		this.setConditions(conditions);
 
 		var dsbo = maxPop > this.getPopThreshhold();
 		if(this.$.popDrawer.getOpen() == dsbo || !data.length)
