@@ -3,8 +3,12 @@
 }
 
 .outlook .forecast, .outlook .advisory {
-	border-bottom:1px solid rgba(0,0,0,0.75);
+	border-bottom:1px solid rgba(0,0,0,0.5);
 	border-top:1px solid rgba(255,255,255,1);
+}
+
+.outlook .forecast:active, .outlook .advisory:active, .outlook .advisories-button:active {
+	background-color:rgba(0,0,0,0.2);
 }
 
 .outlook .advisory.title {
@@ -27,8 +31,16 @@
 
 .outlook .advisories-button {
 	text-align:center;
-	background-color: yellow;
-	text:black;
+	background-color:#333;
+	background-image:url(../assets/caution-stripes.png);
+	color: white;
+	background-repeat: repeat-x;
+	padding-bottom:8px;
+	background-position: 0px 100%;
+	
+	-webkit-animation: advisories 1s linear infinite;
+
+	animation: advisories 1s linear infinite;
 }
 
 .outlook .light .icon-container {
@@ -41,4 +53,16 @@
 	background-color:black;
 	padding: 0em 8px;
 	color:white;
+}
+
+@-webkit-keyframes advisories {
+	from { background-position: 0px 100%; }
+
+	to { background-position: 20px 100%; }
+}
+
+@keyframes advisories {
+	from { background-position: 0px 100%; }
+
+	to { background-position: 20px 100%; }
 }

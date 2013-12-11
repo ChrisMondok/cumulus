@@ -39,7 +39,8 @@ enyo.kind({
 			autoDismiss:false,
 			scrimWhenModal:true,
 			components:[
-				{content:"Getting your current location"}
+				{kind:"Cumulus.Spinner", style:"display:inline-block; vertical-align:middle;"},
+				{content:"Locating", fit:true, style:"display:inline-block; vertical-align:middle; padding-right:8px;"}
 			]
 		},
 		{ kind:"Cumulus.AboutPopup" },

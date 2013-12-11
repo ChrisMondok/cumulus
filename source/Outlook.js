@@ -110,7 +110,7 @@ enyo.kind({
 
 	advisoriesChanged:function(old,advisories) {
 		if(advisories.length) {
-			this.$.advisoriesOpener.setContent([advisories.length,$L("advisories")].join(" "));
+			this.$.advisoriesOpener.setContent([advisories.length,$L(advisories.length === 1 ? "advisory" : "advisories")].join(" "));
 			this.$.advisoriesOpener.show();
 			this.$.advisoryRepeater.setCount(advisories.length);
 		}
