@@ -71,7 +71,7 @@ enyo.kind({
 				},
 				{classes:"divider", content:"Conditions"},
 				{name:"conditionRepeater", classes:"group", kind:"Repeater", onSetupItem:"renderCondition", components:[
-					{classes:"row condition nice-padding", components:[
+					{name:"row", classes:"row condition nice-padding", components:[
 						{name:"icon", kind:"Cumulus.WeatherIcon"},
 						{name:"timespan", classes:"title"},
 						{name:"weather"}
@@ -218,7 +218,7 @@ enyo.kind({
 			if(output.length < 1 
 				|| output[output.length-1].summary != value.summary
 				|| output[output.length-1].icon != value.icon)
-				output.push({summary:value.summary, icon:value.icon, start: value.time, end:value.time});
+				output.push({summary:value.summary, icon:value.icon, start: value.time, end:value.time + 1000*60*60});
 			return output;
 			}, [])
 		);
@@ -245,10 +245,12 @@ enyo.kind({
 
 	renderCondition:function(sender,event) {
 		var condition = this.getConditions()[event.index],
-			item = event.item;
+			item = event.item,
+			now = new Date().getTime();
 
 		item.$.weather.setContent(condition.summary);
 		item.$.icon.setIcon(condition.icon);
+		item.$.row.addRemoveClass("current", now >= condition.start && now < condition.end);
 		if(this.getConditions().length == 1)
 			item.$.timespan.setContent($L("All day"));
 		else

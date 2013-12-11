@@ -81,3 +81,10 @@
 .detail .condition .title {
 	color:#F79A42;
 }
+
+.detail .condition.current {
+	background-image:url(../assets/glow.png);
+	background-position:left 50%;
+	background-size:82px 100%;
+	background-repeat: no-repeat;
+}
