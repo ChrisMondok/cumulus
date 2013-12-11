@@ -79,10 +79,8 @@ html, body {
 }
 
 .icon-container {
-	border-radius:4px;
 	display:inline-block;
 
-	background-color:#DFDFDF;
 	line-height:0px;
 
 	border-style: solid;
