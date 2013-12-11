@@ -39,42 +39,45 @@ enyo.kind({
 			{name:"loadingPopup", kind:"Cumulus.LoadingPopup"},
 			{name:"scroller", kind:"Scroller", thumb:false, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
 				{name:"popDrawer", kind:"Drawer", onDrawerAnimationEnd:"popDrawerFinished", components:[
-					{kind:"Cumulus.Divider", content:"Chance of precipitation"},
+					{classes:"divider", content:"Chance of precipitation"},
 					{
 						name:"popGraph",
 						kind:"Cumulus.Graph",
+						classes:"group",
 						key:"precipProbability",
 						min:0, max:1,
 						fillColor:"rgba(132,167,193,0.5)",
 						strokeColor:"rgba(132,167,193,1)"
 					}
 				]},
-				{kind:"Cumulus.Divider", content:"Temperature"},
+				{classes:"divider", content:"Temperature"},
 				{
 					name:"tempGraph",
+					classes:"group",
 					kind:"Cumulus.TemperatureGraph",
 					key:"temperature",
 					fillColor:"rgba(255,0,0,0.25)",
 					strokeColor:"rgba(255,0,0,1)"
 				},
-				{kind:"Cumulus.Divider", content:"Humidity"},
+				{classes:"divider", content:"Humidity"},
 				{
 					name:"humidityGraph",
+					classes:"group",
 					kind:"Cumulus.Graph",
 					key:"humidity",
 					min:0, max:1,
 					fillColor:"rgba(255,255,255,0.25)",
 					strokeColor:"rgba(255,255,255,0.75)"
 				},
-				{kind:"Cumulus.Divider", content:"Conditions"},
-				{name:"conditionRepeater", kind:"Repeater", onSetupItem:"renderCondition", components:[
+				{classes:"divider", content:"Conditions"},
+				{name:"conditionRepeater", classes:"group", kind:"Repeater", onSetupItem:"renderCondition", components:[
 					{classes:"row condition nice-padding", components:[
 						{name:"icon", kind:"Cumulus.WeatherIcon"},
 						{name:"timespan", classes:"title"},
 						{name:"weather"}
 					]}
 				]},
-				{name:"normals", kind:"Cumulus.Normals"},
+				{name:"normals",  kind:"Cumulus.Normals"},
 				{classes:"command-menu-placeholder"}
 			]}
 		]}
