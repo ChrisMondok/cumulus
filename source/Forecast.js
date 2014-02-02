@@ -4,16 +4,15 @@ var roundOrNull = function(value) {
 	if(typeof(value) == 'number')
 		return Math.round(value);
 	return null;
-}
+};
+
 enyo.kind({
 	name: "Cumulus.Forecast",
 
 	classes: "row forecast nice-padding",
 
 	published: {
-		model: null,
-
-		feelsLikeThreshold: 3
+		model: null
 	},
 
 	bindings: [
@@ -32,16 +31,7 @@ enyo.kind({
 		{from: '.model.apparentTemperature', to: '.$.feelsLike.content', transform: roundOrNull},
 
 
-		{from: '.model.time', to: '.$.day.content', transform: function(value, direction, binding) {
-			if(this.model instanceof Cumulus.models.Currently)
-				return $L('now');
-			if(value) {
-				var date = new Date(value);
-
-				return Cumulus.Main.formatDay(date);
-			}
-			return value;
-		}}
+		{from: '.model.timeString', to: '.$.day.content'}
 	],
 
 	components: [
@@ -71,25 +61,6 @@ enyo.kind({
 			{tag: "span", classes: "label", content: "% humidity"}
 		]}
 	],
-
-	dataChanged: function() {
-		return;
-		var data = this.getData();
-		if(data) {
-			
-			this.$.temp.setContent(Math.round(data.temperature));
-			
-			this.$.feelsLike.setContent(Math.round(data.apparentTemperature));
-			this.$.tempRange.setContent([
-				Math.round(data.temperatureMax),
-				Math.round(data.temperatureMin)
-				].join(' / '));
-			this.$.pop.setContent(Math.round(data.precipProbability*100));
-			this.$.humidity.setContent(Math.round(data.humidity*100));
-		}
-
-		this.updateShowing();
-	},
 
 	updateShowing: function() {
 		var data = this.getData();

@@ -47,10 +47,6 @@
 	float:left;
 }
 
-.forecast.primary {
-	min-height:108px;
-}
-
 .forecast.primary .icon-container>img {
 	width:68px;
 	height:68px;

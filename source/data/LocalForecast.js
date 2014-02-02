@@ -11,11 +11,9 @@ enyo.kind({
 	},
 
 	latlng: function() {
-		console.log("Compute latlng");
 		var coords = this.get('coords');
 		if(coords)
 			return [coords.latitude,coords.longitude].join(',');
-		debugger;
 		return null;
 	},
 

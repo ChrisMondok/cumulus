@@ -9,7 +9,8 @@ enyo.kind({
 	computed:{
 		hasTempRange:['temperatureMax', 'temperatureMin', {cached: true}],
 		hasCurrentTemp: ['temperature', {cached: true}],
-		apparentTempIsInteresting: ['temperature', 'apparentTemperature', {cached: true}]
+		apparentTempIsInteresting: ['temperature', 'apparentTemperature', {cached: true}],
+		timeString: ['time', {cached: true}]
 	},
 
 	hasCurrentTemp: function() {
@@ -45,6 +46,18 @@ enyo.kind({
 		hasTempRange: true
 	},
 
+	timeString: function() {
+		var value = this.get('time');
+
+		if(value) {
+			var date = new Date(value);
+
+			return Cumulus.Main.formatDay(date);
+		}
+
+		return value;
+	},
+
 	parse: function(data) {
 		var x = this.inherited(arguments);
 		x.hourly = new Cumulus.collections.Hourly(data.hourly);
@@ -55,11 +68,18 @@ enyo.kind({
 
 enyo.kind({
 	name: 'Cumulus.models.Hourly',
-	kind: 'Cumulus.models.Base'
+	kind: 'Cumulus.models.Base',
+
+	timeString: function() {
+		return $L("TIMESTRING");
+	}
 });
 
 enyo.kind({
 	name: 'Cumulus.models.Currently',
-	kind: 'Cumulus.models.Base'
-});
+	kind: 'Cumulus.models.Base',
 
+	timeString: function() {
+		return $L("now");
+	}
+});
