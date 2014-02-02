@@ -15,7 +15,7 @@ enyo.kind({
 		conditions:null,
 		hourly:null,
 
-		graphAnimator:null,
+		graphAnimator:null
 	},
 
 	handlers:{
@@ -226,7 +226,9 @@ enyo.kind({
 			},
 		[]);
 
-		conditions[conditions.length - 1].end = data[data.length - 1].time + 1000*60*60;
+		if(data.length)
+			conditions[conditions.length - 1].end = data[data.length - 1].time + 1000*60*60;
+
 
 		this.setConditions(conditions);
 

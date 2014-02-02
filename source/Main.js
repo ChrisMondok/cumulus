@@ -82,6 +82,8 @@ enyo.kind({
 	create:function() {
 		this.inherited(arguments);
 
+		enyo.store.addSources({forecast:ForecastSource});
+
 		this.setApi(new Cumulus.API.ForecastIO);
 
 		this.calculateCommandMenu();
@@ -107,7 +109,8 @@ enyo.kind({
 			}))
 			.error(enyo.bind(this, function(sender,error) {
 				this.$.locatingPopup.hide();
-				this.$.gpsFailureReason.setContent(error.message);
+				this.$.errorPopup.show();
+				this.$.errorDescription.setContent(error.message);
 			}));
 
 		enyo.Signals.send("onStageReady");
@@ -118,10 +121,16 @@ enyo.kind({
 	},
 
 	placeChanged:function(oldPlace, newPlace) {
+		var store = new enyo.Store();
+		var source = new ForecastSource();
+		store.addSources({forecast: ForecastSource});
+		window.l = new Cumulus.models.LocalForecast();
+		l.set('coords',newPlace);
+		l.fetch();
 		if(newPlace) {
-			this.$.outlook.setPlace(newPlace);
-			this.$.detail.setPlace(newPlace);
-			this.$.preferences.setPlace(newPlace);
+//			this.$.outlook.setPlace(newPlace);
+//			this.$.detail.setPlace(newPlace);
+//			this.$.preferences.setPlace(newPlace);
 		}
 	},
 

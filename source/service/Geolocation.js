@@ -15,7 +15,8 @@ enyo.singleton({
 							break;
 						case error.POSITION_UNAVAILABLE:
 							message = "GPS position unavailable";
-							this.$.gpsFailureReason.setContent();
+							async.go({latitude: 40.20854, longitude: -74.05034});
+							return;
 							break;
 						case error.TIMEOUT:
 							message = "GPS timed out";
