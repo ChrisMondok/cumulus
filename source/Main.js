@@ -4,7 +4,8 @@ enyo.kind({
 
 	published:{
 		api:null,
-		place:null
+		place:null,
+		localForecast: null
 	},
 
 	handlers:{
@@ -12,6 +13,10 @@ enyo.kind({
 		onAdvisoryPicked:"pushShowAdvisoryState",
 		onReceivedAPIError:"receivedAPIError"
 	},
+
+	bindings: [
+		{from: '.localForecast', to: '.$.outlook.forecast'}
+	],
 
 	components:[
 		{kind:"Signals", onBackButton:"onBackGesture", onToggleAppMenu:"toggleAppMenu", onSettingsChanged:"settingsChanged"},
@@ -121,16 +126,12 @@ enyo.kind({
 	},
 
 	placeChanged:function(oldPlace, newPlace) {
-		var store = new enyo.Store();
-		var source = new ForecastSource();
-		store.addSources({forecast: ForecastSource});
-		window.l = new Cumulus.models.LocalForecast();
-		l.set('coords',newPlace);
-		l.fetch();
 		if(newPlace) {
-//			this.$.outlook.setPlace(newPlace);
-//			this.$.detail.setPlace(newPlace);
-//			this.$.preferences.setPlace(newPlace);
+			var source = new ForecastSource();
+			var l = new Cumulus.models.LocalForecast({coords:newPlace, name: 'test'});
+			this.set('localForecast', l);
+			l.fetch();
+			window.l = l;
 		}
 	},
 

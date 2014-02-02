@@ -1,55 +1,103 @@
+(function() {
+
+var roundOrNull = function(value) {
+	if(typeof(value) == 'number')
+		return Math.round(value);
+	return null;
+}
 enyo.kind({
-	name:"Cumulus.Forecast",
+	name: "Cumulus.Forecast",
 
-	classes:"row forecast nice-padding",
+	classes: "row forecast nice-padding",
 
-	published:{
-		data:{},
+	published: {
+		model: null,
 
-		now:false,
-		hourly:false,
+		now: false,
+		hourly: false,
 
-		showDay:true,
-		showHumidity:false,
-		showTemp:true,
-		showRange:true,
-		showWeather:true,
-		showPop:true,
+		showDay: true,
+		showHumidity: false,
+		showTemp: true,
+		showRange: true,
+		showWeather: true,
+		showPop: true,
 
-		feelsLikeThreshold:3
+		feelsLikeThreshold: 3
 	},
 
-	components:[
-		{name:"icon", kind:"Cumulus.WeatherIcon"},
-		{name:"day", classes:"day title", style:"display:inline-block", content:$L("Loading")},
-		{name:"tempRange", classes:"temp-range", showing:false, content:"? / ?"},
-		{name:"weather", classes:"weather"},
-		{name:"tempNow", showing:false, components:[
-			{tag:"span", name:"temp"},
-			{tag:"span", classes:"label", content:"°F"},
-			{tag:"span", classes:"feels-like", name:"feelsLikeContainer", components:[
-				{tag:null, content:" (feels like "},
-				{tag:"span", classes:"feels-like-value", name:"feelsLike"},
-				{tag:null, content:" )"}
+	bindings: [
+		{from: '.model.summary', to: '.$.summary.content'},
+		{from: '.model.icon', to: '.$.icon.icon'},
+		{from: '.model.precipProbability', to: '.$.pop.content', transform: function(value){return Math.round(100*value);}},
+		{from: '.model.precipProbability', to: '.$.popRow.showing', transform: function(value){return Boolean(value);}},
+		{from: '.model.temperatureMax', to: '.$.tempMax.content', transform: roundOrNull},
+		{from: '.model.temperatureMin', to: '.$.tempMin.content', transform: roundOrNull},
+		{from: '.model.time', to: '.$.day.content', transform: function(value, direction, binding) {
+			if(this.getNow())
+				return $L('now');
+			if(value) {
+				var date = new Date(value);
+
+				if(this.getHourly()) {
+					date.setMinutes(0);
+					date.setSeconds(0);
+					date.setMilliseconds(0);
+					return Cumulus.Main.formatTime(date);
+				}
+				else {
+					return Cumulus.Main.formatDay(date);
+				}
+			}
+			return value;
+		}}
+	],
+
+//	tempRange: function(a,b,c) {
+//		console.log("COMPUTE TEMP RANGE");
+//		var model = this.get('model');
+//		if(!model)
+//			return null;
+//		var high = model.get('temperatureMax'), low = model.get('temperatureMin');
+//
+//		if( high === undefined || low === undefined)
+//			return null;
+//
+//		return [Math.round(high), Math.round(low)].join(' / ');
+//	},
+
+	components: [
+		{name: "icon", kind: "Cumulus.WeatherIcon"},
+		{name: "day", classes: "day title", style: "display: inline-block", content: $L("Loading")},
+		{name: "tempRange", classes: "temp-range", showing: true, components: [
+			{tag: 'span', name: 'tempMax'},
+			{tag: 'span', content: ' / '},
+			{tag: 'span', name: 'tempMin'}
+		]},
+		{name: "summary", classes: "weather"},
+		{name: "tempNow", showing: true, components: [
+			{tag: "span", name: "temp"},
+			{tag: "span", classes: "label", content: "°F"},
+			{tag: "span", classes: "feels-like", name: "feelsLikeContainer", components: [
+				{tag: null, content: " (feels like "},
+				{tag: "span", classes: "feels-like-value", name: "feelsLike"},
+				{tag: null, content: " )"}
 			]}
 		]},
-		{name:"popRow", showing:false, components:[
-			{tag:"span", name:"pop"},
-			{tag:"span", classes:"label", content:"% chance of precipitation"}
+		{name: "popRow", showing: false, components: [
+			{tag: "span", name: "pop"},
+			{tag: "span", classes: "label", content: "% chance of precipitation"}
 		]},
-		{name:"humidityRow", showing:false, components:[
-			{tag:"span", name:"humidity"},
-			{tag:"span", classes:"label", content:"% humidity"}
+		{name: "humidityRow", showing: false, components: [
+			{tag: "span", name: "humidity"},
+			{tag: "span", classes: "label", content: "% humidity"}
 		]}
 	],
 
-	dataChanged:function() {
+	dataChanged: function() {
+		return;
 		var data = this.getData();
 		if(data) {
-			this.$.day.setContent(this.transformDate(data.time));
-			this.$.icon.setIcon(data.icon);
-
-			this.$.weather.setContent(data.summary);
 			
 			this.$.temp.setContent(Math.round(data.temperature));
 			
@@ -65,7 +113,7 @@ enyo.kind({
 		this.updateShowing();
 	},
 
-	updateShowing:function() {
+	updateShowing: function() {
 		var data = this.getData();
 		var showFeelsLike = this.getShowTemp() && data.hasOwnProperty('temperature') && data.hasOwnProperty('apparentTemperature') && Math.abs(data.temperature - data.apparentTemperature) > this.getFeelsLikeThreshold();
 
@@ -82,24 +130,6 @@ enyo.kind({
 
 		this.$.feelsLike.setShowing(showFeelsLike);
 		this.$.feelsLikeContainer.setShowing(showFeelsLike);
-	},
-
-	transformDate:function(value) {
-		if(this.getNow())
-			return $L('now');
-		if(value) {
-			var date = new Date(value);
-
-			if(this.getHourly()) {
-				date.setMinutes(0);
-				date.setSeconds(0);
-				date.setMilliseconds(0);
-				return Cumulus.Main.formatTime(date);
-			}
-			else {
-				return Cumulus.Main.formatDay(date);
-			}
-		}
-		return value;
 	}
 });
+})();

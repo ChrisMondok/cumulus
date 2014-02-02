@@ -11,9 +11,9 @@
 		{"name": "layout/slideable", "path": "../lib/layout/slideable"},
 		{"name": "layout/tree", "path": "../lib/layout/tree"},
 		{"name": "onyx", "path": "../lib/onyx"},
-		{"name": "cumulus/api", "path": "../source/API"},
-		{"name": "cumulus/widgets", "path": "../source/Widgets"},
-		{"name": "cumulus/service", "path": "../source/Service"},
+		{"name": "cumulus/api", "path": "../source/api"},
+		{"name": "cumulus/widgets", "path": "../source/widgets"},
+		{"name": "cumulus/service", "path": "../source/service"},
 		{"name": "cumulus/OS", "path": "../source/OS"}
 	]
 }
