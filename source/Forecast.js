@@ -13,16 +13,6 @@ enyo.kind({
 	published: {
 		model: null,
 
-		now: false,
-		hourly: false,
-
-		showDay: true,
-		showHumidity: false,
-		showTemp: true,
-		showRange: true,
-		showWeather: true,
-		showPop: true,
-
 		feelsLikeThreshold: 3
 	},
 
@@ -31,40 +21,28 @@ enyo.kind({
 		{from: '.model.icon', to: '.$.icon.icon'},
 		{from: '.model.precipProbability', to: '.$.pop.content', transform: function(value){return Math.round(100*value);}},
 		{from: '.model.precipProbability', to: '.$.popRow.showing', transform: function(value){return Boolean(value);}},
+
+		{from: '.model.hasTempRange', to: '.$.tempRange.showing'},
 		{from: '.model.temperatureMax', to: '.$.tempMax.content', transform: roundOrNull},
 		{from: '.model.temperatureMin', to: '.$.tempMin.content', transform: roundOrNull},
+
+		{from: '.model.hasCurrentTemp', to: '.$.tempNow.showing'},
+		{from: '.model.temperature', to: '.$.temp.content', transform: roundOrNull},
+		{from: '.model.apparentTempIsInteresting', to: '.$.feelsLikeContainer.showing'},
+		{from: '.model.apparentTemperature', to: '.$.feelsLike.content', transform: roundOrNull},
+
+
 		{from: '.model.time', to: '.$.day.content', transform: function(value, direction, binding) {
-			if(this.getNow())
+			if(this.model instanceof Cumulus.models.Currently)
 				return $L('now');
 			if(value) {
 				var date = new Date(value);
 
-				if(this.getHourly()) {
-					date.setMinutes(0);
-					date.setSeconds(0);
-					date.setMilliseconds(0);
-					return Cumulus.Main.formatTime(date);
-				}
-				else {
-					return Cumulus.Main.formatDay(date);
-				}
+				return Cumulus.Main.formatDay(date);
 			}
 			return value;
 		}}
 	],
-
-//	tempRange: function(a,b,c) {
-//		console.log("COMPUTE TEMP RANGE");
-//		var model = this.get('model');
-//		if(!model)
-//			return null;
-//		var high = model.get('temperatureMax'), low = model.get('temperatureMin');
-//
-//		if( high === undefined || low === undefined)
-//			return null;
-//
-//		return [Math.round(high), Math.round(low)].join(' / ');
-//	},
 
 	components: [
 		{name: "icon", kind: "Cumulus.WeatherIcon"},

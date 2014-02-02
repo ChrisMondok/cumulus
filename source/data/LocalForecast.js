@@ -6,8 +6,6 @@ enyo.kind({
 
 	url: 'forecast/'+window.forecastIOKey,
 
-	mixins:[ enyo.ComputedSupport ],
-
 	computed:{
 		latlng:['coords',{cached: true}]
 	},

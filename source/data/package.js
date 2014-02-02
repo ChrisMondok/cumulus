@@ -1,5 +1,6 @@
 enyo.depends(
 	"ForecastSource.js",
 	"LocalForecast.js",
-	"Models.js"
+	"Models.js",
+	"Collections.js"
 );
