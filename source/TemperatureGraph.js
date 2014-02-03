@@ -6,10 +6,12 @@ enyo.kind({
 		step:10
 	},
 
-	dataChanged:function() {
+	collectionChanged:function(old, collection) {
 		var key = this.getKey(), step = this.getStep(),
-			data = this.getData() || [],
-			temps = data.map(function(d){return d[key];});
+			temps = [];
+
+		if(collection)
+			temps = collection.map(function(m){return m.get(key);});
 
 		if(temps.length) {
 			var min = temps.reduce(function(a,b){return Math.min(a,b);});

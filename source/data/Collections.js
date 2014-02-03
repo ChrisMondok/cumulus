@@ -9,3 +9,9 @@ enyo.kind({
 	kind: 'enyo.Collection',
 	model: 'Cumulus.models.Hourly'
 });
+
+enyo.kind({
+	name: 'Cumulus.collections.Conditions',
+	kind: 'enyo.Collection',
+	model: 'Cumulus.models.Condition'
+});

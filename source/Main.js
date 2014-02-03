@@ -1,67 +1,66 @@
 enyo.kind({
 	name: "Cumulus.Main",
-	classes:"onyx",
+	classes: "onyx",
 
-	published:{
-		api:null,
-		place:null,
+	published: {
+		api: null,
+		place: null,
 		localForecast: null
 	},
 
-	handlers:{
-		onDayPicked:"pushDayPickedState",
-		onAdvisoryPicked:"pushShowAdvisoryState",
-		onReceivedAPIError:"receivedAPIError"
-	},
-
 	bindings: [
-		{from: '.localForecast', to: '.$.outlook.forecast'}
+		{from: '.localForecast', to: '.$.outlook.forecast'},
+		{from: '.localForecast', to: '.$.detail.forecast'}
 	],
 
-	components:[
-		{kind:"Signals", onBackButton:"onBackGesture", onToggleAppMenu:"toggleAppMenu", onSettingsChanged:"settingsChanged"},
-		{content:"Beta", classes:"sash"},
-		{name:"appmenu", kind:"Cumulus.Appmenu", components:[
-			{content:"Preferences", ontap:"pushPreferencesState"},
-			{content:"About", ontap:"showAbout"}
+	components: [
+		{kind: "Router", useHistory: true, triggerOnStart: false, routes:[
+			{path: 'outlook', handler: 'showOutlook', context: 'owner', default: true},
+			{path: 'detail/:time', handler: 'showDetail', context: 'owner'}
 		]},
-		{name:"panels", kind:"Panels", arrangerKind:"CardArranger", classes:"enyo-fit", draggable:false, onTransitionFinish:"panelIndexChanged", components:[
-			{ name:"outlook", kind:"Cumulus.Outlook" },
-			{ name:"detail", kind:"Cumulus.Detail" },
-			{ name:"advisory", kind:"Cumulus.Advisory" },
-			{ name:"preferences", kind:"Cumulus.Preferences" }
+		{kind: "Signals", onBackButton: "onBackGesture", onToggleAppMenu: "toggleAppMenu", onSettingsChanged: "settingsChanged"},
+		{content: "Beta", classes: "sash"},
+		{name: "appmenu", kind: "Cumulus.Appmenu", components: [
+			{content: "Preferences"},
+			{content: "About", ontap: "showAbout"}
 		]},
-		{name:"commandMenu", kind:"Cumulus.CommandMenu", components:[
-			{name:"backButton", kind:"onyx.IconButton", src:"assets/icons/back.png", ontap:"back"}
+		{name: "panels", kind: "Panels", arrangerKind: "CardArranger", classes: "enyo-fit", draggable: false, onTransitionFinish: "panelIndexChanged", components: [
+			{ name: "outlook", kind: "Cumulus.Outlook" },
+			{ name: "detail", kind: "Cumulus.Detail" },
+			{ name: "advisory", kind: "Cumulus.Advisory" },
+			{ name: "preferences", kind: "Cumulus.Preferences" }
+		]},
+		{name: "commandMenu", kind: "Cumulus.CommandMenu", components: [
+			{name: "backButton", kind: "onyx.IconButton", src: "assets/icons/back.png", ontap: "back"}
 		]},
 		{
-			name:"locatingPopup",
-			kind:"onyx.Popup",
-			centered:true,
-			modal:true,
-			floating:true,
-			scrim:true,
-			autoDismiss:false,
-			scrimWhenModal:true,
-			components:[
-				{kind:"Cumulus.Spinner", style:"display:inline-block; vertical-align:middle;"},
-				{content:"Locating", fit:true, style:"display:inline-block; vertical-align:middle; padding-right:8px;"}
+			name: "locatingPopup",
+			kind: "onyx.Popup",
+			centered: true,
+			modal: true,
+			floating: true,
+			scrim: true,
+			autoDismiss: false,
+			scrimWhenModal: true,
+			components: [
+				{kind: "Cumulus.Spinner", style: "display: inline-block; vertical-align: middle;"},
+				{content: "Locating", fit: true, style: "display: inline-block; vertical-align: middle; padding-right: 8px;"}
 			]
 		},
-		{ kind:"Cumulus.AboutPopup" },
+		{ kind: "Cumulus.AboutPopup" },
 		{
-			name:"errorPopup",
-			kind:"onyx.Popup",
-			centered:true, floating:true, modal:true, scrim:true, scrimWhenModal:true,
-			components:[
-				{tag:"h1", content:"Error"},
-				{name:"errorDescription"}
+			name: "errorPopup",
+			kind: "onyx.Popup",
+			centered: true, floating: true, modal: true, scrim: true, scrimWhenModal: true,
+			components: [
+				{tag: "h1", content: "Error"},
+				{name: "errorDescription"}
 			]
 		}
 	],
 
-	statics:{
-		formatTime:function(date) {
+	statics: {
+		formatTime: function(date) {
 			var hour = date.getHours() % 12;
 			if(!hour)
 				hour = 12;
@@ -69,9 +68,9 @@ enyo.kind({
 			if(minutes < 10)
 				minutes = "0"+minutes;
 			var ampm = ["AM","PM"][Math.floor(date.getHours()/12)];
-			return hour+":"+minutes+" "+ampm;
+			return hour+ ":" +minutes+" "+ampm;
 		},
-		formatDay:function(date) {
+		formatDay: function(date) {
 			date.setHours(0,0,0,0);
 
 			var today = new Date();
@@ -84,25 +83,20 @@ enyo.kind({
 		}
 	},
 
-	create:function() {
+	create: function() {
 		this.inherited(arguments);
 
-		enyo.store.addSources({forecast:ForecastSource});
+		enyo.store.addSources({forecast: ForecastSource});
 
 		this.setApi(new Cumulus.API.ForecastIO);
 
 		this.calculateCommandMenu();
 
-		window.addEventListener('popstate',enyo.bind(this,'stateChanged'));
 		window.INSTANCE = this;
-
-		if(!history.pushState)
-			this.state = [];
 	},
 
-	rendered:function() {
+	rendered: function() {
 		this.inherited(arguments);
-		this.stateChanged();
 
 		onyx.scrim.make().addObserver("showing",this.obscuredChanged, this);
 
@@ -121,41 +115,29 @@ enyo.kind({
 		enyo.Signals.send("onStageReady");
 	},
 
-	apiChanged:function() {
-		this.waterfall("onApiCreated",{api:this.getApi()},this);
+	showOutlook: function() {
+		this.$.panels.selectPanelByName('outlook');
 	},
 
-	placeChanged:function(oldPlace, newPlace) {
+	showDetail: function(time) {
+		this.$.panels.selectPanelByName('detail');
+	},
+
+	apiChanged: function() {
+		this.waterfall("onApiCreated",{api: this.getApi()},this);
+	},
+
+	placeChanged: function(oldPlace, newPlace) {
 		if(newPlace) {
 			var source = new ForecastSource();
-			var l = new Cumulus.models.LocalForecast({coords:newPlace, name: 'test'});
+			var l = new Cumulus.models.LocalForecast({coords: newPlace, name: 'test'});
 			this.set('localForecast', l);
-			l.fetch();
+			l.fetch({success: function(){console.log("DONE")}});
 			window.l = l;
 		}
 	},
 
-	pushState:function(state, title, url) {
-		if(history.pushState)
-			history.pushState(state,title,url);
-		else
-			this.state.push(state);
-		this.stateChanged();
-	},
-
-	pushDayPickedState:function(sender,event) {
-		this.pushState({day:event.day, top:event.top, index:1}, "Hourly Forecast");
-	},
-
-	pushShowAdvisoryState:function(sender,event) {
-		this.pushState({advisory:event.advisory, index:2}, event.advisory.title);
-	},
-
-	pushPreferencesState:function(sender, event) {
-		this.pushState({index:3},"Preferences");
-	},
-
-	onBackGesture:function(sender,event) {
+	onBackGesture: function(sender,event) {
 		if(this.$.panels.getIndex()) {
 			this.back();
 			event.stopPropagation();
@@ -164,48 +146,15 @@ enyo.kind({
 		}
 	},
 
-	back:function(sender,event) {
-		if(history.pushState)
-			history.back();
-		else {
-			this.state.pop();
-			this.stateChanged();
-		}
+	back: function(sender,event) {
+		history.back();
 	},
 
-	stateChanged:function() {
-		var state;
-		if(history.pushState)
-			state = history.state;
-		else
-			state = this.state[this.state.length-1];
-
-		switch(state && state.index || 0) {
-			case 1:
-				this.$.panels.setIndex(1);
-				this.$.detail.setDay(new Date(state.day));
-				break;
-			case 2:
-				this.$.advisory.setAdvisory(state.advisory);
-				break;
-			default:
-				break;
-		}
-
-		if(state && state.index)
-			this.$.panels.setIndex(state.index);
-		else
-			this.$.panels.setIndex(0);
-	},
-
-	panelIndexChanged:function() {
-		if(this.$.panels.getIndex() != 1) {
-			this.$.detail.setDay(null);
-		}
+	panelIndexChanged: function() {
 		this.$.backButton.setDisabled(this.$.panels.getIndex() === 0);
 	},
 
-	calculateCommandMenu:function() {
+	calculateCommandMenu: function() {
 		var needsBackButton = true;
 
 		if(window.PalmSystem)
@@ -214,30 +163,30 @@ enyo.kind({
 		this.addRemoveClass("show-command-menu",needsBackButton); //hide this when there's a native back button
 	},
 
-	obscuredChanged:function(oldValue, newValue, property) {
+	obscuredChanged: function(oldValue, newValue, property) {
 		if(property != "showing")
 			alert("Property is "+property+", not showing!");
 		else
 			this.addRemoveClass("obscured",newValue);
 	},
 
-	receivedAPIError:function(sender, event) {
+	receivedAPIError: function(sender, event) {
 		this.$.errorDescription.setContent(event.error.description);
 		this.$.errorPopup.show();
 	},
 
-	showAbout:function() {
+	showAbout: function() {
 		this.$.aboutPopup.show();
 	},
 
-	toggleAppMenu:function() {
+	toggleAppMenu: function() {
 		if(this.$.appmenu.getShowing())
 			this.$.appmenu.hide();
 		else
-			this.$.appmenu.showAtPosition({top:0, left:0});
+			this.$.appmenu.showAtPosition({top: 0, left: 0});
 	},
 
-	settingsChanged:function(inSender, settings) {
+	settingsChanged: function(inSender, settings) {
 		if(this._reloadInterval) {
 			clearInterval(this._reloadInterval);
 			this._reloadInterval = undefined;
@@ -247,7 +196,7 @@ enyo.kind({
 			this._reloadInterval = setInterval(enyo.bind(this,"onReloadInterval"), settings.reloadInterval * 1000 * 60);
 	},
 
-	onReloadInterval:function() {
+	onReloadInterval: function() {
 		console.log("Reload now");
 		webosCompatibility.showBanner("Reload now.");
 	}

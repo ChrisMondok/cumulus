@@ -4,9 +4,6 @@ enyo.kind({
 
 	published: {
 		api: undefined,
-		daily: undefined,
-		currently: undefined,
-		advisories: undefined,
 		place: undefined,
 		forecast: undefined
 	},
@@ -90,8 +87,8 @@ enyo.kind({
 	},
 
 	pickDay: function(sender,event) {
-		var message = { day: this.getDaily()[event.index].time };
-		this.doDayPicked(message);
+		var time = this.getForecast().get('daily').at(event.index).get('time');
+		window.location.hash = 'detail/'+time;
 	},
 
 	pickAdvisory: function(sender, event) {

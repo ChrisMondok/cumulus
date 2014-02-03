@@ -42,8 +42,11 @@ enyo.kind({
 	name: 'Cumulus.models.Daily',
 	kind: 'Cumulus.models.Base',
 
-	attributes:{
-		hasTempRange: true
+	parse: function(data) {
+		var x = this.inherited(arguments);
+		x.hourly = new Cumulus.collections.Hourly(data.hourly);
+		//TODO: deserialize array into collection, if needed.
+		return x;
 	},
 
 	timeString: function() {
@@ -56,13 +59,6 @@ enyo.kind({
 		}
 
 		return value;
-	},
-
-	parse: function(data) {
-		var x = this.inherited(arguments);
-		x.hourly = new Cumulus.collections.Hourly(data.hourly);
-		//TODO: deserialize array into collection, if needed.
-		return x;
 	}
 });
 
@@ -81,5 +77,20 @@ enyo.kind({
 
 	timeString: function() {
 		return $L("now");
+	}
+});
+
+enyo.kind({
+	name: 'Cumulus.models.Condition',
+	kind: 'enyo.Model',
+
+	mixins:[ enyo.ComputedSupport ],
+
+	computed:{
+		timespan: ['start', 'end', {cached: true}]
+	},
+
+	timespan: function() {
+		return Cumulus.Main.formatTime(new Date(this.get('start'))) + ' - ' + Cumulus.Main.formatTime(new Date(this.get('end')));
 	}
 });

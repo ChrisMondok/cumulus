@@ -4,7 +4,7 @@ enyo.kind({
 	style:"position:relative; height:4em;",
 
 	published:{
-		data:null,
+		collection: null,
 		fillColor:"rgba(255,255,255,0.25)",
 		strokeColor:"rgba(255,255,255,1)",
 		graphColor:"rgba(0,0,0,0.25)",
@@ -23,7 +23,7 @@ enyo.kind({
 
 	_ctx:null,
 
-	_oldData: null,
+	_oldCollection: null,
 
 	components:[
 		{name:"max", style:"position:absolute; left:0px; top:0px;"},
@@ -34,7 +34,7 @@ enyo.kind({
 	create:function() {
 		this.inherited(arguments);
 		this.showLabelsChanged();
-		this.setData(this.getData() || null);
+		this.setCollection(this.getCollection() || null);
 	},
 
 	showLabelsChanged:function(wasShowing, show) {
@@ -62,12 +62,12 @@ enyo.kind({
 		this.sizeCanvas();
 	},
 	
-	dataChanged:function(old, data) {
-		this._oldData = old;
+	collectionChanged:function(old, collection) {
+		this._oldCollection = old;
 
-		if(this.getShowNow() && data && data.length) {
-			var first = new Date(data[0].time),
-				last = new Date(data[data.length - 1].time);
+		if(this.getShowNow() && collection && collection.length) {
+			var first = new Date(collection.at(0).time),
+				last = new Date(collection.at(collection.length - 1).get('time'));
 
 			this.setCurrentPosition((new Date() - first) / (last - first));
 		}
@@ -81,21 +81,20 @@ enyo.kind({
 	},
 
 	getX:function(i) {
-		return this.getBounds().width*(i/(this.getData().length-1));
+		return this.getBounds().width*(i/(this.getCollection().length-1));
 	},
 	
 	getY:function(i) {
-		return this.valueToY(this.getData()[i][this.getKey()]);
+		return this.valueToY(this.getCollection().at(i).get(this.getKey()));
 	},
 
 	getOldY:function(i) {
-		var data = this.getData(),
-			oldData = this._oldData || [],
-			key = this.getKey();
+		var collection = this.getCollection();
 
-		if(data.length != oldData.length)
+		if(!this._oldCollection || collection.length != this._oldCollection.length)
 			return this.valueToY(this.getMin());
-		return this.valueToY(oldData[i][key]);
+
+		return this.valueToY(this._oldCollection.at(i).get(this.getKey()));
 	},
 
 	valueToY:function(value) {
@@ -105,9 +104,9 @@ enyo.kind({
 
 	drawGraphLines:function(animValue) {
 		this._ctx.strokeStyle = this.getGraphColor();
-		var data = this.getData();
+		var collection = this.getCollection();
 
-		var amount = (data.length-1) * animValue;
+		var amount = (collection.length-1) * animValue;
 
 		for(var i = 0; i < amount; i++) {
 			var x = this.getX(i);
@@ -124,16 +123,16 @@ enyo.kind({
 			return;
 
 		var bounds = this.$.canvas.getBounds(),
-			data = this.data,
+			collection = this.collection,
 			ctx = this._ctx,
 			animStep = this.animator ? this.animator.value : 1,
 			currentPercentage = this.currentPosition * bounds.width;
 
 		ctx.clearRect(0,0,bounds.width,bounds.height);
 
-		if(data && data.length) {
+		if(collection && collection.length) {
 			//draw grid
-			if(this._oldData && this._oldData.length == data.length)
+			if(this._oldCollection && this._oldCollection.length == collection.length)
 				this.drawGraphLines(1);
 			else
 				this.drawGraphLines(animStep);
@@ -142,7 +141,7 @@ enyo.kind({
 			ctx.fillStyle = this.fillColor;
 			ctx.strokeStyle = this.strokeColor;
 			ctx.beginPath();
-			for(var i in data)
+			for(var i = 0; i < collection.length; i++)
 				ctx.lineTo(this.getX(i),animStep*this.getY(i)+(1-animStep)*this.getOldY(i)); 
 			ctx.stroke();
 			ctx.lineTo(bounds.width,bounds.height);

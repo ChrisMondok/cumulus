@@ -57,7 +57,7 @@ enyo.kind({
 			if(hour.time < day.time)
 				nextDay();
 			else {
-				day.hourly.push(hour);
+				day.hourly.unshift(hour);
 				nextHour();
 			}
 		}
