@@ -23,7 +23,8 @@ enyo.kind({
 		{from: '.model.precipProbability', to: '.$.popDrawer.open', transform: function(p){return p > 0.1;}},
 		{from: '.model', to: '.$.normals.model'},
 		{from: '.conditions', to: '.$.conditionRepeater.collection'},
-		{from: '.forecast.daily', to: '.$.dayCarousel.collection'}
+		{from: '.forecast.daily', to: '.$.dayCarousel.collection'},
+		{from: '.model', to: '.$.dayCarousel.model', oneWay: false}
 	],
 
 	components:[
@@ -31,15 +32,10 @@ enyo.kind({
 			{path:'detail/:time', handler: 'routeHandler', context: 'owner'}
 		]},
 		{classes: 'today', components:[
-			{name: 'dayCarousel', kind: 'DataRepeater', containerOptions:{
-					kind: 'enyo.Panels',
-					style:"height: 40px",
-					arrangerKind: 'CarouselArranger',
-					onTransitionFinish: 'dayCarouselChanged'
-				}, components:[
-				{components:[
+			{name: 'dayCarousel', kind: 'Cumulus.DataCarousel', style:"height: 80px", components:[
+				{classes: 'enyo-fit', components:[
 					{name: 'day', classes:'title'},
-					{name: 'summary'}
+					{name: 'summary', classes: 'summary'}
 				], bindings:[
 					{from: '.model.timeString', to: '.$.day.content'},
 					{from: '.model.summary', to: '.$.summary.content'}
@@ -105,18 +101,6 @@ enyo.kind({
 	create:function() {
 		this.inherited(arguments);
 
-//		var today = new Date();
-//		today.setHours(0,0,0,0);
-//
-//		for(var i = 0; i < 7; i++) {
-//			var day = this.$.dayCarousel.createComponent({
-//				classes:"title",
-//				content:Cumulus.Main.formatDay(new Date(today.getTime() + 24*60*60*1000*i))
-//			});
-//			day.render();
-//		}
-//		this.$.dayCarousel.reflow();
-//
 		this.setGraphAnimator(
 			this.createComponent({name:"animator", kind:"Animator", onStep:"drawGraphs", duration:750})
 		);
@@ -134,28 +118,11 @@ enyo.kind({
 		this.$.humidityGraph.drawGraph();
 	},
 
-	setupCarouselItem:function(repeater, event) {
-		var today = new Date();
-		event.item.$.day.setContent(
-			Cumulus.Main.formatDay(new Date(today.getTime() + 24*60*60*1000*event.index))
-		);
-
-		return true;
-	},
-	dayCarouselChanged:function(carousel, event) {
-		console.log("Day carousel changed!");
-//		if(event.fromIndex == event.toIndex)
-//			return;
-//
-//		var today = new Date();
-//		today.setHours(0,0,0,0);
-//		var newDay = today.getTime() + event.toIndex * 24*60*60*1000;
-//		this.setDay(new Date(newDay));
-	},
-
-	modelChanged: function() {
-		this.getGraphAnimator().play();
-		this.set('conditions', this.calculateConditions());
+	modelChanged: function(old, model) {
+		if(this.getGraphAnimator())
+			this.getGraphAnimator().play();
+		if(model)
+			this.set('conditions', this.calculateConditions());
 	},
 
 	calculateConditions:function() {
