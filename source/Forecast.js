@@ -60,25 +60,6 @@ enyo.kind({
 			{tag: "span", name: "humidity"},
 			{tag: "span", classes: "label", content: "% humidity"}
 		]}
-	],
-
-	updateShowing: function() {
-		var data = this.getData();
-		var showFeelsLike = this.getShowTemp() && data.hasOwnProperty('temperature') && data.hasOwnProperty('apparentTemperature') && Math.abs(data.temperature - data.apparentTemperature) > this.getFeelsLikeThreshold();
-
-		this.$.day.setShowing(data && this.getShowDay());
-		this.$.weather.setShowing(data && this.getShowWeather() && data.hasOwnProperty('summary'));
-
-		this.$.popRow.setShowing(data && this.getShowPop() && data.precipProbability);
-
-		this.$.humidityRow.setShowing(data && this.getShowHumidity() && data.hasOwnProperty('humidity'));
-
-		this.$.tempRange.setShowing(this.getShowRange() && data.hasOwnProperty('temperatureMax'));
-
-		this.$.tempNow.setShowing(this.getShowTemp() && data.hasOwnProperty('temperature'));
-
-		this.$.feelsLike.setShowing(showFeelsLike);
-		this.$.feelsLikeContainer.setShowing(showFeelsLike);
-	}
+	]
 });
 })();

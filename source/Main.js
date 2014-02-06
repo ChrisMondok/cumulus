@@ -61,6 +61,9 @@ enyo.kind({
 
 	statics: {
 		formatTime: function(date) {
+			if (typeof date == 'number')
+				date = new Date(date);
+
 			var hour = date.getHours() % 12;
 			if(!hour)
 				hour = 12;
@@ -71,6 +74,9 @@ enyo.kind({
 			return hour+ ":" +minutes+" "+ampm;
 		},
 		formatDay: function(date) {
+			if (typeof date == 'number')
+				date = new Date(date);
+
 			date.setHours(0,0,0,0);
 
 			var today = new Date();
