@@ -94,6 +94,17 @@ enyo.kind({
 		]}
 	],
 
+	observers:{
+		updateTitle: ['showing', 'model']
+	},
+
+	updateTitle: function() {
+		if(this.showing && this.model) {
+			var dayName = this.model.get('timeString');
+			document.title = 'Forecast for '+ dayName[0].toUpperCase() + dayName.slice(1);
+		}
+	},
+
 	routeHandler: function(time) {
 		this.setModel(enyo.store.findLocal(Cumulus.models.Daily, {time: time}));
 	},

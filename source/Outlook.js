@@ -93,5 +93,11 @@ enyo.kind({
 
 	pickAdvisory: function(sender, event) {
 		this.doAdvisoryPicked({advisory: this.getAdvisories()[event.index]});
+	},
+
+	showingChanged: function() {
+		this.inherited(arguments);
+		if(this.showing)
+			document.title = "Weekly forecast";
 	}
 });
