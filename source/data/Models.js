@@ -32,8 +32,12 @@ enyo.kind({
 
 	parse: function(data) {
 		var x = this.inherited(arguments);
-		if(x.time < 1000000000000)
-			x.time *= 1000;
+		for(var key in x) {
+			if(key == 'time' || (key.lastIndexOf('Time') == key.length - 4)) {
+				if(x[key] < 1000000000000)
+					x[key] *= 1000;
+			}
+		}
 		return x;
 	}
 });

@@ -20,9 +20,9 @@ enyo.kind({
 		{from: '.model.hourly', to: '.$.popGraph.collection'},
 		{from: '.model.hourly', to: '.$.tempGraph.collection'},
 		{from: '.model.hourly', to: '.$.humidityGraph.collection'},
-		{from: '.conditions', to: '.$.conditionRepeater.collection'},
 		{from: '.model.precipProbability', to: '.$.popDrawer.open', transform: function(p){return p > 0.1;}},
-
+		{from: '.model', to: '.$.normals.model'},
+		{from: '.conditions', to: '.$.conditionRepeater.collection'},
 		{from: '.forecast.daily', to: '.$.dayCarousel.collection'}
 	],
 
@@ -46,10 +46,6 @@ enyo.kind({
 				]}
 			]}
 		]},
-//		{classes:"today", components:[
-//			{name:"dayCarousel", kind:"Panels", onTransitionFinish:"dayCarouselChanged", classes:"title-carousel", arrangerKind:"CarouselArranger"},
-//			{name:"summary", classes:"summary"}
-//		]},
 		{fit:true, style:"position:relative", components:[
 			{name:"loadingPopup", kind:"Cumulus.LoadingPopup"},
 			{name:"scroller", kind:"Scroller", thumb:false, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
