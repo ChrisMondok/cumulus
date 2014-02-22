@@ -3,7 +3,6 @@ enyo.kind({
 	classes: "onyx",
 
 	published: {
-		api: null,
 		place: null,
 		localForecast: null
 	},
@@ -93,8 +92,6 @@ enyo.kind({
 		this.inherited(arguments);
 
 		enyo.store.addSources({forecast: ForecastSource});
-
-		this.setApi(new Cumulus.API.ForecastIO);
 
 		this.calculateCommandMenu();
 
