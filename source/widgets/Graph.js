@@ -14,7 +14,6 @@ enyo.kind({
 		nowColor:"#f79a42",
 
 		showLabels:false,
-		showNow:true,
 
 		currentPosition:undefined,
 
@@ -61,18 +60,28 @@ enyo.kind({
 		this._ctx = this.$.canvas.hasNode().getContext('2d');
 		this.sizeCanvas();
 	},
+
+	calculateCurrentPosition: function() {
+		var x = undefined,
+			collection = this.getCollection();
+
+		if(collection && collection.length) {
+			var now = new Date().getTime(),
+				first = collection.at(0).get('time'),
+				last = collection.at(collection.length - 1).get('time');
+
+			var x = (now - first) / (last - first);
+			if(x < 0 || x > 1)
+				x = undefined;
+		}
+
+		this.setCurrentPosition(x);
+	},
 	
 	collectionChanged:function(old, collection) {
 		this._oldCollection = old;
 
-		if(this.getShowNow() && collection && collection.length) {
-			var first = new Date(collection.at(0).time),
-				last = new Date(collection.at(collection.length - 1).get('time'));
-
-			this.setCurrentPosition((new Date() - first) / (last - first));
-		}
-		else
-			this.setCurrentPosition(undefined);
+		this.calculateCurrentPosition();
 
 		this.$.min.setContent(this.getMin());
 		this.$.max.setContent(this.getMax());
@@ -125,8 +134,7 @@ enyo.kind({
 		var bounds = this.$.canvas.getBounds(),
 			collection = this.collection,
 			ctx = this._ctx,
-			animStep = this.animator ? this.animator.value : 1,
-			currentPercentage = this.currentPosition * bounds.width;
+			animStep = this.animator ? this.animator.value : 1;
 
 		ctx.clearRect(0,0,bounds.width,bounds.height);
 
@@ -149,7 +157,8 @@ enyo.kind({
 			ctx.fill();
 
 			//draw now
-			if(currentPercentage !== undefined) {
+			if(this.currentPosition !== undefined) {
+				var currentPercentage = this.currentPosition * bounds.width;
 				ctx.strokeStyle = this.getNowColor();
 				ctx.fillStyle = this.getNowColor();
 				ctx.beginPath();
