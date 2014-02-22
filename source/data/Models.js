@@ -39,6 +39,14 @@ enyo.kind({
 			}
 		}
 		return x;
+	},
+
+	getUrl: function() {
+		var base = this.inherited(arguments);
+		var time = this.get('time');
+		if(time)
+			return [base,time].join(',');
+		return base;
 	}
 });
 
@@ -49,6 +57,7 @@ enyo.kind({
 	parse: function(data) {
 		var x = this.inherited(arguments);
 		x.hourly = new Cumulus.collections.Hourly(data.hourly);
+		x.hourly.set('time',x.time);
 		//TODO: deserialize array into collection, if needed.
 		return x;
 	},
