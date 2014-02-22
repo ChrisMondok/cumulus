@@ -15,12 +15,13 @@ enyo.kind({
 	components: [
 		{kind: "Router", useHistory: true, triggerOnStart: false, routes:[
 			{path: 'outlook', handler: 'showOutlook', context: 'owner', default: true},
-			{path: 'detail/:time', handler: 'showDetail', context: 'owner'}
+			{path: 'detail/:time', handler: 'showDetail', context: 'owner'},
+			{path: 'preferences', handler: 'showPreferences', context: 'owner'}
 		]},
 		{kind: "Signals", onBackButton: "onBackGesture", onToggleAppMenu: "toggleAppMenu", onSettingsChanged: "settingsChanged"},
 		{content: "Beta", classes: "sash"},
 		{name: "appmenu", kind: "Cumulus.Appmenu", components: [
-			{content: "Preferences"},
+			{content: "Preferences", ontap: 'routeToPreferences'},
 			{content: "About", ontap: "showAbout"}
 		]},
 		{name: "panels", kind: "Panels", arrangerKind: "CardArranger", classes: "enyo-fit", draggable: false, onTransitionFinish: "panelIndexChanged", components: [
@@ -96,6 +97,8 @@ enyo.kind({
 		this.calculateCommandMenu();
 
 		window.INSTANCE = this;
+
+		this.$.router.trigger();
 	},
 
 	rendered: function() {
@@ -126,6 +129,10 @@ enyo.kind({
 		this.$.panels.selectPanelByName('detail');
 	},
 
+	showPreferences: function() {
+		this.$.panels.selectPanelByName('preferences');
+	},
+
 	apiChanged: function() {
 		this.waterfall("onApiCreated",{api: this.getApi()},this);
 	},
@@ -147,6 +154,10 @@ enyo.kind({
 			event.preventDefault();
 			return -1;
 		}
+	},
+
+	routeToPreferences: function() {
+		window.location.hash = 'preferences';
 	},
 
 	back: function(sender,event) {
