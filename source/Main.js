@@ -10,7 +10,9 @@ enyo.kind({
 
 	bindings: [
 		{from: '.localForecast', to: '.$.outlook.forecast'},
-		{from: '.localForecast', to: '.$.detail.forecast'}
+		{from: '.localForecast', to: '.$.detail.forecast'},
+		{from: '.api', to:'.$.outlook.$.minutelyForecast.api'},
+		{from: '.place', to:'.$.outlook.$.minutelyForecast.place'}
 	],
 
 	components: [
@@ -134,10 +136,6 @@ enyo.kind({
 
 	showPreferences: function() {
 		this.$.panels.selectPanelByName('preferences');
-	},
-
-	apiChanged: function() {
-		this.waterfall("onApiCreated",{api: this.getApi()},this);
 	},
 
 	placeChanged: function(oldPlace, newPlace) {

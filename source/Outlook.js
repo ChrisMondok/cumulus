@@ -30,7 +30,8 @@ enyo.kind({
 
 	bindings:[
 		{from:'.forecast.daily', to: '.$.dayRepeater.collection'},
-		{from:'.forecast.currently', to: '.$.currentConditions.model'}
+		{from:'.forecast.currently', to: '.$.currentConditions.model'},
+		{from: '.api', to: '.$.minutelyForecast.api'}
 	],
 
 	components: [
