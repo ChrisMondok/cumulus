@@ -10,9 +10,7 @@ enyo.kind({
 		model: null,
 
 		conditions:null,
-		hourly:null,
-
-		graphAnimator:null
+		hourly:null
 	},
 
 	bindings:[
@@ -45,7 +43,7 @@ enyo.kind({
 		{fit:true, style:"position:relative", components:[
 			{name:"loadingPopup", kind:"Cumulus.LoadingPopup"},
 			{name:"scroller", kind:"Scroller", thumb:false, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
-				{name:"popDrawer", kind:"Drawer", components:[
+				{name:"popDrawer", animated: false, kind:"Drawer", components:[
 					{classes:"divider", content:"Chance of precipitation"},
 					{
 						name:"popGraph",
@@ -89,7 +87,8 @@ enyo.kind({
 					]}
 				]},
 				{name:"normals",  kind:"Cumulus.Normals"},
-				{classes:"command-menu-placeholder"}
+				{classes:"command-menu-placeholder"},
+				{name:"animator", kind:"Animator", onStep:"drawGraphs", duration:750}
 			]}
 		]}
 	],
@@ -99,7 +98,7 @@ enyo.kind({
 	},
 
 	updateTitle: function() {
-		if(this.showing && this.model) {
+		if(this.showing && this.model instanceof Cumulus.models.Base) {
 			var dayName = this.model.get('timeString');
 			document.title = 'Forecast for '+ dayName[0].toUpperCase() + dayName.slice(1);
 		}
@@ -112,12 +111,9 @@ enyo.kind({
 	create:function() {
 		this.inherited(arguments);
 
-		this.setGraphAnimator(
-			this.createComponent({name:"animator", kind:"Animator", onStep:"drawGraphs", duration:750})
-		);
-	},
+		window.DETAIL = this;
 
-	graphAnimatorChanged:function(oldAnimator, animator) {
+		var animator = this.$.animator;
 		this.$.popGraph.setAnimator(animator);
 		this.$.tempGraph.setAnimator(animator);
 		this.$.humidityGraph.setAnimator(animator);
@@ -130,9 +126,8 @@ enyo.kind({
 	},
 
 	modelChanged: function(old, model) {
-		if(this.getGraphAnimator())
-			this.getGraphAnimator().play();
-		if(model)
+		this.$.animator.play();
+		if(model instanceof Cumulus.models.Base)
 			this.set('conditions', this.calculateConditions());
 	},
 
