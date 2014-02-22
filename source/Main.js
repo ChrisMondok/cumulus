@@ -142,7 +142,7 @@ enyo.kind({
 			var source = new ForecastSource();
 			var l = new Cumulus.models.LocalForecast({coords: newPlace, name: 'test'});
 			this.set('localForecast', l);
-			l.fetch({success: function(){console.log("DONE")}});
+			l.fetch({params:{extend:"hourly"}, success: function(){console.log("DONE")}});
 			window.l = l;
 		}
 	},
