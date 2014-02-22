@@ -94,7 +94,8 @@ enyo.kind({
 	},
 	
 	getY:function(i) {
-		return this.valueToY(this.getCollection().at(i).get(this.getKey()));
+		return this.valueToY(this.getCollection().at(i).attributes[this.key]);
+		//return this.valueToY(this.getCollection().at(i).get(this.getKey()));
 	},
 
 	getOldY:function(i) {
@@ -103,12 +104,36 @@ enyo.kind({
 		if(!this._oldCollection || collection.length != this._oldCollection.length)
 			return this.valueToY(this.getMin());
 
-		return this.valueToY(this._oldCollection.at(i).get(this.getKey()));
+		return this.valueToY(this._oldCollection.at(i).attributes[this.key]);
+		//return this.valueToY(this._oldCollection.at(i).get(this.getKey()));
 	},
 
 	valueToY:function(value) {
 		var min = this.getMin(), max = this.getMax();
 		return this.getBounds().height * (1 - (value-min)/(max-min));
+	},
+
+	perfTest: function() {
+		var runs = 10000;
+		var t;
+
+		console.time('getters');
+		for(var i = 0; i < runs; i++)
+			for(var c = 0; c < this.collection.length; c++)
+				t = this.collection.at(c).get('time');
+		console.timeEnd('getters');
+
+		console.time('hybrid');
+		for(var i = 0; i < runs; i++)
+			for(var c = 0; c < this.collection.length; c++)
+				t = this.collection.at(c).attributes.time;
+		console.timeEnd('hybrid');
+
+		console.time('direct');
+		for(var i = 0; i < runs; i++)
+			for(var c = 0; c < this.collection.length; c++)
+				t = this.collection.records[c].attributes.time;
+		console.timeEnd('direct');
 	},
 
 	drawGraphLines:function(animValue) {
