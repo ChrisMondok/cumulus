@@ -99,6 +99,6 @@ enyo.kind({
 	showingChanged: function() {
 		this.inherited(arguments);
 		if(this.showing)
-			document.title = "Weekly forecast";
+			enyo.Signals.send('onTitleChanged', {title:"Weekly Forecast"});
 	}
 });

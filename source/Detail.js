@@ -100,7 +100,8 @@ enyo.kind({
 	updateTitle: function() {
 		if(this.showing && this.model instanceof Cumulus.models.Base) {
 			var dayName = this.model.get('timeString');
-			document.title = 'Forecast for '+ dayName[0].toUpperCase() + dayName.slice(1);
+			var title = dayName[0].toUpperCase() + dayName.slice(1)+"'s Forecast";
+			enyo.Signals.send('onTitleChanged', {title:title});
 		}
 	},
 

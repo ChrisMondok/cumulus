@@ -17,11 +17,11 @@ enyo.kind({
 
 	components: [
 		{kind: "Router", useHistory: true, triggerOnStart: false, routes:[
-			{path: 'outlook', handler: 'showOutlook', context: 'owner', default: true},
+			{path: 'outlook', handler: 'showOutlook', context: 'owner', "default": true},
 			{path: 'detail/:time', handler: 'showDetail', context: 'owner'},
 			{path: 'preferences', handler: 'showPreferences', context: 'owner'}
 		]},
-		{kind: "Signals", onBackButton: "onBackGesture", onToggleAppMenu: "toggleAppMenu", onSettingsChanged: "settingsChanged"},
+		{kind: "Signals", onBackButton: "onBackGesture", onToggleAppMenu: "toggleAppMenu", onSettingsChanged: "settingsChanged", onTitleChanged:"titleChanged"},
 		{content: "Beta", classes: "sash"},
 		{name: "appmenu", kind: "Cumulus.Appmenu", components: [
 			{content: "Preferences", ontap: 'routeToPreferences'},
@@ -143,9 +143,13 @@ enyo.kind({
 			var source = new ForecastSource();
 			var l = new Cumulus.models.LocalForecast({coords: newPlace, name: 'test'});
 			this.set('localForecast', l);
-			l.fetch({params:{extend:"hourly"}, success: function(){console.log("DONE")}});
+			l.fetch({params:{extend:"hourly"}, success: function(){console.log("DONE");}});
 			window.l = l;
 		}
+	},
+
+	titleChanged: function(sender, event) {
+		document.title = event.title;
 	},
 
 	onBackGesture: function(sender,event) {
