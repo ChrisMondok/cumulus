@@ -46,7 +46,7 @@ enyo.kind({
 			{name: "minutelyForecastDrawer", kind: "Drawer", classes: "minutely-forecast-drawer", open: false, components: [
 				{name: "minutelyForecast", kind: "Cumulus.MinutelyForecast"}
 			]},
-			{name: "dayRepeater", kind: "DataRepeater", classes: "light", onSetupItem: "renderDay", components: [
+			{name: "dayRepeater", kind: "DataRepeater", selection: false, classes: "light", onSetupItem: "renderDay", components: [
 					{kind: "Cumulus.Forecast", ontap: "pickDay"}
 				], bindings: [
 					{from: '.model', to: '.$.model'}

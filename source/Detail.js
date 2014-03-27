@@ -77,7 +77,7 @@ enyo.kind({
 					strokeColor:"rgba(255,255,255,0.75)"
 				},
 				{classes:"divider", content:"Conditions"},
-				{name: "conditionRepeater", kind: "DataRepeater", classes: "group", components: [
+				{name: "conditionRepeater", kind: "DataRepeater", selection: false, classes: "group", components: [
 					{classes:'row condition nice-padding', components:[
 						{name:"icon", kind:"Cumulus.WeatherIcon"},
 						{name:"timespan", classes:"title"},
