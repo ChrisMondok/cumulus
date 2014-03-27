@@ -3,6 +3,7 @@ enyo.kind({
 	kind: 'enyo.Model',
 	defaultSource: 'forecast',
 	primaryKey: 'time',
+	readOnly: true,
 
 	mixins:[ enyo.ComputedSupport ],
 
@@ -105,5 +106,74 @@ enyo.kind({
 
 	timespan: function() {
 		return Cumulus.Main.formatTime(new Date(this.get('start'))) + ' - ' + Cumulus.Main.formatTime(new Date(this.get('end')));
+	}
+});
+
+enyo.kind({
+	name: 'Cumulus.models.Settings',
+	kind: 'enyo.Model',
+	defaultSource: 'localStorage',
+	includeKeys:['reloadInterval', 'places', 'useGPS', 'usePlace'],
+
+	statics:{
+		defaultSettings:{
+			reloadInterval: 0,
+			places:[
+				{name: 'Neptune', latitude:40.220391, longitude:-74.012082},
+				{name: 'Long Valley', latitude:40.78225, longitude:-74.776936}
+			],
+			useGPS: true
+		}
+	},
+
+	observers:{
+		useGPSChanged: ['useGPS']
+	},
+
+	useGPSChanged: function(old, useGPS) {
+		if(useGPS || this.get('places').length == 0)
+			this.set('usePlace', -1);
+		else
+			this.set('usePlace', 0);
+	},
+
+	constructor: function() {
+		this.inherited(arguments);
+
+		var saveIfDirty = function() {
+			if(this.dirty)
+				this.commit();
+		}.bind(this);
+
+		var observer = function(old, value, property) {
+			enyo.job(this.euid + '-save', saveIfDirty, 1000);
+		}
+
+		this.includeKeys.forEach(function(key) {
+			this.addObserver(key, observer, this);
+		}, this);
+
+		this.silence();
+		this.set('id', 'settings');
+		this.dirty = false;
+		this.unsilence();
+	},
+
+	parse: function(data) {
+		if(data) {
+			for(var key in data) {
+				if(data[key] instanceof Array)
+					data[key] = new enyo.Collection(data[key]);
+			}
+
+			return data;
+		}
+	},
+
+	didFail: function(command, record, options, result) {
+		//We can't just use "defaults" here, since places is a collection (not an array).
+		this.setObject(this.parse(this.ctor.defaultSettings));
+		this.dirty = false;
+		this.isNew = true;
 	}
 });

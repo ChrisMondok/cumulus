@@ -11,9 +11,30 @@ enyo.kind({
 	bindings: [
 		{from: '.localForecast', to: '.$.outlook.forecast'},
 		{from: '.localForecast', to: '.$.detail.forecast'},
+		{from: '.settings.useGPS', to:'.useGPS'},
+		{from: '.settings.usePlace', to: '.usePlace'},
+		{from: '.settings', to: '.$.preferences.settings'},
+		{from: '.place', to: '.$.preferences.currentLocation'},
+
+		//TODO: delete these
 		{from: '.api', to:'.$.outlook.$.minutelyForecast.api'},
 		{from: '.place', to:'.$.outlook.$.minutelyForecast.place'}
 	],
+
+	observers:{
+		relocate: ['useGPS', 'usePlace']
+	},
+
+	relocate: function() {
+		if(this.get('useGPS')) {
+			this.geolocate();
+		}
+		else {
+			var place = this.settings.get('usePlace');
+			if(typeof(place) == 'number')
+				this.setPlace(this.settings.get('places').at(this.settings.get('usePlace')));
+		}
+	},
 
 	components: [
 		{kind: "Router", useHistory: true, triggerOnStart: false, routes:[
@@ -48,6 +69,21 @@ enyo.kind({
 			components: [
 				{kind: "Cumulus.Spinner", style: "display: inline-block; vertical-align: middle;"},
 				{content: "Locating", fit: true, style: "display: inline-block; vertical-align: middle; padding-right: 8px;"}
+			]
+		},
+		{
+			name: "locationErrorPopup",
+			kind: "onyx.Popup",
+			centered: true,
+			modal: true,
+			floating: true,
+			scrim: true,
+			autoDismiss: false,
+			scrimWhenModal: true,
+			components: [
+				{name:"locationErrorReason", content:"Geolocation Error"},
+				{kind:"onyx.Button", content:"Retry", classes:"onyx-dark", ontap:"geolocate", style:"display:block; width: 100%; margin-top:1ex;"},
+				{name:"useSavedLocationButton", kind:"onyx.Button", content:"Use a saved location", ontap:"useSavedLocation", classes:"onyx-dark", style:"display:block; width:100%; margin-top:1ex;" }
 			]
 		},
 		{ kind: "Cumulus.AboutPopup" },
@@ -95,15 +131,21 @@ enyo.kind({
 	create: function() {
 		this.inherited(arguments);
 
-		enyo.store.addSources({forecast: ForecastSource});
+		enyo.store.addSources({forecast: ForecastSource, localStorage: Cumulus.LocalStorageSource});
+
+		var settings = new Cumulus.models.Settings();
+		settings.fetch();
+		this.set('settings', settings);
 
 		this.setApi(new Cumulus.API.ForecastIO);
-
-		this.calculateCommandMenu();
 
 		window.INSTANCE = this;
 
 		this.$.router.trigger();
+	},
+
+	getSetting: function(setting) {
+		return this.$.preferences.settings.get(setting);
 	},
 
 	rendered: function() {
@@ -111,6 +153,11 @@ enyo.kind({
 
 		onyx.scrim.make().addObserver("showing",this.obscuredChanged, this);
 
+		enyo.Signals.send("onStageReady");
+	},
+
+	geolocate: function() {
+		this.$.locationErrorPopup.hide();
 		this.$.locatingPopup.show();
 		Service.Geolocation.getLocation()
 			.response(enyo.bind(this, function(sender,response) {
@@ -119,11 +166,9 @@ enyo.kind({
 			}))
 			.error(enyo.bind(this, function(sender,error) {
 				this.$.locatingPopup.hide();
-				this.$.errorPopup.show();
-				this.$.errorDescription.setContent(error.message);
+				this.$.locationErrorReason.setContent(error.reason);
+				this.$.locationErrorPopup.show();
 			}));
-
-		enyo.Signals.send("onStageReady");
 	},
 
 	showOutlook: function() {
@@ -141,7 +186,7 @@ enyo.kind({
 	placeChanged: function(oldPlace, newPlace) {
 		if(newPlace) {
 			var source = new ForecastSource();
-			var l = new Cumulus.models.LocalForecast({coords: newPlace, name: 'test'});
+			var l = new Cumulus.models.LocalForecast({location: newPlace, name: 'test'});
 			this.set('localForecast', l);
 			l.fetch({params:{extend:"hourly"}, success: function(){console.log("DONE");}});
 			window.l = l;
@@ -159,6 +204,13 @@ enyo.kind({
 			event.preventDefault();
 			return -1;
 		}
+	},
+
+	useSavedLocation: function() {
+		this.$.locationErrorPopup.hide();
+		this.routeToPreferences();
+
+		setTimeout(this.settings.set.bind(this.settings, 'useGPS', false), 750);
 	},
 
 	routeToPreferences: function() {

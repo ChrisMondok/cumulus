@@ -38,13 +38,13 @@
 		defaultSource: 'forecast',
 
 		computed:{
-			latlng:['coords',{cached: true}]
+			latlng:['location',{cached: true}]
 		},
 
 		latlng: function() {
-			var coords = this.get('coords');
-			if(coords)
-				return [coords.latitude,coords.longitude].join(',');
+			var loc = this.get('location');
+			if(loc)
+				return [loc.get('latitude'),loc.get('longitude')].join(',');
 			return null;
 		},
 

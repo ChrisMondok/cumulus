@@ -21,3 +21,12 @@
 .prefs-scroller .groupbox .onyx-button {
 	margin-top:1em;
 }
+
+.two-button-radio-group button {
+	width: 50%;
+	box-sizing: border-box;
+}
+
+.selection-enabled .selected {
+	background-color: white;
+}

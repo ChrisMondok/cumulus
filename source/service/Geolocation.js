@@ -6,27 +6,27 @@ enyo.singleton({
 
 		if(navigator.geolocation)
 			navigator.geolocation.getCurrentPosition(
-				function(position) {async.go(position.coords);},
+				function(position) {
+					async.go(new enyo.Model( enyo.mixin(enyo.only(['latitude', 'longitude'], position.coords, {name: 'Geolocation'})) ));
+				},
 				function(error) {
-					var message = "";
+					var reason = "";
 					switch(error.code) {
 						case error.PERMISSION_DENIED:
-							message = "GPS permission denied";
+							reason = "GPS permission denied";
 							break;
 						case error.POSITION_UNAVAILABLE:
-							message = "GPS position unavailable";
-							async.go({latitude: 40.20854, longitude: -74.05034});
-							return;
+							reason = "GPS position unavailable";
 							break;
 						case error.TIMEOUT:
-							message = "GPS timed out";
+							reason = "GPS timed out";
 							break;
 						default:
-							message = "Unknown geolocation error";
+							reason = "Unknown geolocation error";
 							break;
 					}
 					
-					async.fail({message:error.message, code:error.code});
+					async.fail({message:error.message, reason:reason, code:error.code});
 				}
 			);
 		else
