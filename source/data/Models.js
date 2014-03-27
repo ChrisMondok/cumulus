@@ -57,7 +57,7 @@ enyo.kind({
 
 	parse: function(data) {
 		var x = this.inherited(arguments);
-		x.hourly = new Cumulus.collections.Hourly(data.hourly);
+		x.hourly = this.store.createCollection(Cumulus.collections.Hourly, data.hourly);
 		x.hourly.set('time',x.time);
 		//TODO: deserialize array into collection, if needed.
 		return x;

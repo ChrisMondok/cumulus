@@ -10,7 +10,9 @@ enyo.kind({
 		model: null,
 
 		conditions:null,
-		hourly:null
+		hourly:null,
+
+		store: null
 	},
 
 	bindings:[
@@ -151,6 +153,6 @@ enyo.kind({
 				conditions.push({ summary: summary, icon: icon, start: time, end: time + 1000*60*60 });
 		}
 
-		return new Cumulus.collections.Conditions(conditions);
+		return this.get('store').createCollection(Cumulus.collections.Conditions, conditions);
 	}
 });

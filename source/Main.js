@@ -5,7 +5,8 @@ enyo.kind({
 	published: {
 		api: null,
 		place: null,
-		localForecast: null
+		localForecast: null,
+		store: null
 	},
 
 	bindings: [
@@ -15,6 +16,7 @@ enyo.kind({
 		{from: '.settings.usePlace', to: '.usePlace'},
 		{from: '.settings', to: '.$.preferences.settings'},
 		{from: '.place', to: '.$.preferences.currentLocation'},
+		{from: '.store', to: '.$.detail.store'},
 
 		//TODO: delete these
 		{from: '.api', to:'.$.outlook.$.minutelyForecast.api'},
@@ -53,9 +55,6 @@ enyo.kind({
 			{ name: "detail", kind: "Cumulus.Detail" },
 			{ name: "advisory", kind: "Cumulus.Advisory" },
 			{ name: "preferences", kind: "Cumulus.Preferences" }
-		]},
-		{name: "commandMenu", kind: "Cumulus.CommandMenu", components: [
-			{name: "backButton", kind: "onyx.IconButton", src: "assets/icons/back.png", ontap: "back"}
 		]},
 		{
 			name: "locatingPopup",
@@ -131,9 +130,8 @@ enyo.kind({
 	create: function() {
 		this.inherited(arguments);
 
-		enyo.store.addSources({forecast: ForecastSource, localStorage: Cumulus.LocalStorageSource});
-
 		var settings = new Cumulus.models.Settings();
+		enyo.store.addSources({localStorage: Cumulus.LocalStorageSource});
 		settings.fetch();
 		this.set('settings', settings);
 
@@ -142,6 +140,14 @@ enyo.kind({
 		window.INSTANCE = this;
 
 		this.$.router.trigger();
+	},
+
+	createStore: function() {
+		var store = new enyo.Store();
+		store.addSources({forecast: ForecastSource});
+		this.set('store', store);
+
+		return store;
 	},
 
 	getSetting: function(setting) {
@@ -185,11 +191,10 @@ enyo.kind({
 
 	placeChanged: function(oldPlace, newPlace) {
 		if(newPlace) {
-			var source = new ForecastSource();
-			var l = new Cumulus.models.LocalForecast({location: newPlace, name: 'test'});
+			var store = this.createStore();
+			var l = store.createRecord(Cumulus.models.LocalForecast,{location: newPlace, name: 'test'});
 			this.set('localForecast', l);
 			l.fetch({params:{extend:"hourly"}, success: function(){console.log("DONE");}});
-			window.l = l;
 		}
 	},
 
@@ -221,19 +226,6 @@ enyo.kind({
 		history.back();
 	},
 
-	panelIndexChanged: function() {
-		this.$.backButton.setDisabled(this.$.panels.getIndex() === 0);
-	},
-
-	calculateCommandMenu: function() {
-		var needsBackButton = true;
-
-		if(window.PalmSystem)
-			needsBackButton = !JSON.parse(window.PalmSystem.deviceInfo).keyboardAvailable;
-
-		this.addRemoveClass("show-command-menu",needsBackButton); //hide this when there's a native back button
-	},
-
 	obscuredChanged: function(oldValue, newValue, property) {
 		if(property != "showing")
 			alert("Property is "+property+", not showing!");
@@ -243,6 +235,8 @@ enyo.kind({
 
 	receivedAPIError: function(sender, event) {
 		this.$.errorDescription.setContent(event.error.description);
+		alert("Got an error");
+		alert(JSON.stringify(event.error));
 		this.$.errorPopup.show();
 	},
 

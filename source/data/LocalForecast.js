@@ -58,12 +58,12 @@
 		},
 
 		parse: function(data) {
-			data.currently = data.currently && new Cumulus.models.Currently(data.currently) || null;
+			data.currently = data.currently && this.store.createRecord(Cumulus.models.Currently, data.currently) || null;
 			if(data.hourly && data.daily) {
 				parseHours(data);
 				delete data.hourly;
 			}
-			data.daily = new Cumulus.collections.Daily(data.daily && data.daily.data || []);
+			data.daily = this.store.createCollection(Cumulus.collections.Daily, data.daily && data.daily.data || []);
 			return data;
 		}
 	});
