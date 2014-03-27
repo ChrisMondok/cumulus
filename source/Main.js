@@ -228,17 +228,12 @@ enyo.kind({
 		history.back();
 	},
 
-	obscuredChanged: function(oldValue, newValue, property) {
-		if(property != "showing")
-			alert("Property is "+property+", not showing!");
-		else
-			this.addRemoveClass("obscured",newValue);
+	obscuredChanged: function(oldValue, newValue) {
+		this.addRemoveClass("obscured",newValue);
 	},
 
 	receivedAPIError: function(sender, event) {
 		this.$.errorDescription.setContent(event.error.description);
-		alert("Got an error");
-		alert(JSON.stringify(event.error));
 		this.$.errorPopup.show();
 	},
 
@@ -251,20 +246,5 @@ enyo.kind({
 			this.$.appmenu.hide();
 		else
 			this.$.appmenu.showAtPosition({top: 0, left: 0});
-	},
-
-	settingsChanged: function(inSender, settings) {
-		if(this._reloadInterval) {
-			clearInterval(this._reloadInterval);
-			this._reloadInterval = undefined;
-		}
-
-		if(settings.reloadInterval)
-			this._reloadInterval = setInterval(enyo.bind(this,"onReloadInterval"), settings.reloadInterval * 1000 * 60);
-	},
-
-	onReloadInterval: function() {
-		console.log("Reload now");
-		webosCompatibility.showBanner("Reload now.");
 	}
 });
