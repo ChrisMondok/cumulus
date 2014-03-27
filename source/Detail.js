@@ -89,7 +89,7 @@ enyo.kind({
 					]}
 				]},
 				{name:"normals",  kind:"Cumulus.Normals"},
-				{classes:"command-menu-placeholder"},
+
 				{name:"animator", kind:"Animator", onStep:"drawGraphs", duration:750}
 			]}
 		]}

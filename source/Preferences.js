@@ -95,7 +95,6 @@ enyo.kind({
 				{name: 'clearCacheButton', kind: 'onyx.Button', classes: 'onyx-negative row-button', content: 'Reset Cache'},
 				{kind: 'onyx.Button', classes: 'onyx-negative row-button', content: 'Reset Everything', ontap: 'promptResetEverything'}
 			]},
-			{classes: 'command-menu-placeholder'},
 
 			{name: 'resetEverythingPopup', kind: 'onyx.Popup', controlClasses: 'with-vertical-margin', centered:true, scrim:true, floating:true, modal:true, components:[
 				{content:$L('This action cannot be undone')},

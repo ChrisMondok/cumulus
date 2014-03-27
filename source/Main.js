@@ -44,7 +44,6 @@ enyo.kind({
 			{path: 'detail/:time', handler: 'showDetail', context: 'owner'},
 			{path: 'preferences', handler: 'showPreferences', context: 'owner'}
 		]},
-		{kind: "Signals", onBackButton: "onBackGesture", onToggleAppMenu: "toggleAppMenu", onSettingsChanged: "settingsChanged", onTitleChanged:"titleChanged"},
 		{content: "Beta", classes: "sash"},
 		{name: "appmenu", kind: "Cumulus.Appmenu", components: [
 			{content: "Preferences", ontap: 'routeToPreferences'},
@@ -94,6 +93,12 @@ enyo.kind({
 				{tag: "h1", content: "Error"},
 				{name: "errorDescription"}
 			]
+		},
+		{kind: "Signals",
+			onBackButton: "onBackButton",
+			onAppMenu: "toggleAppMenu",
+			onSettingsChanged: "settingsChanged",
+			onTitleChanged:"titleChanged"
 		}
 	],
 
@@ -158,8 +163,6 @@ enyo.kind({
 		this.inherited(arguments);
 
 		onyx.scrim.make().addObserver("showing",this.obscuredChanged, this);
-
-		enyo.Signals.send("onStageReady");
 	},
 
 	geolocate: function() {
@@ -202,12 +205,11 @@ enyo.kind({
 		document.title = event.title;
 	},
 
-	onBackGesture: function(sender,event) {
+	onBackButton: function(sender,event) {
 		if(this.$.panels.getIndex()) {
 			this.back();
 			event.stopPropagation();
 			event.preventDefault();
-			return -1;
 		}
 	},
 
