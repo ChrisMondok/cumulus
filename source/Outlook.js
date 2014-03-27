@@ -51,8 +51,7 @@ enyo.kind({
 				], bindings: [
 					{from: '.model', to: '.$.model'}
 				]
-			},
-			{classes: "command-menu-placeholder"}
+			}
 		]},
 		{name: "loadingPopup", kind: "Cumulus.LoadingPopup"}
 	],
