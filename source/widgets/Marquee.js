@@ -3,7 +3,12 @@ enyo.kind({
 	classes: 'marquee-container',
 
 	published:{
-		speed: 32
+		speed: 32,
+		active: true
+	},
+
+	observers:{
+		triggerPlayback: ['offset', 'active']
 	},
 
 	create: function() {
@@ -25,10 +30,9 @@ enyo.kind({
 		this.startJob('animate', 'animate', 2000);
 	},
 
-	offsetChanged: function(oldOffset, offset) {
-		if(offset) {
+	triggerPlayback: function() {
+		if(this.get('offset') && this.get('active'))
 			this.animate();
-		}
 		else
 			this.rewind();
 	},
@@ -38,16 +42,19 @@ enyo.kind({
 		enyo.dom.transform(this.$.client, {translate: -this.get('offset')+"px, 0px"});
 	},
 
-	adjustTransitionDuration: function() {
+	adjustTransitionDuration: function(duration) {
 		//enyo.dom.transition doesn't take webOS into account? FOR SHAME!
-		this.$.client.applyStyle('-webkit-transition-duration', (this.get('offset')/this.get('speed'))+'s');
-		this.$.client.applyStyle('-moz-transition-duration', (this.get('offset')/this.get('speed'))+'s');
-		this.$.client.applyStyle('transition-duration', (this.get('offset')/this.get('speed'))+'s');
+		if(duration === undefined)
+			duration = (this.get('offset')/this.get('speed'))+'s';
+		if(typeof('duration') == 'number')
+			duration += 's';
+		this.$.client.applyStyle('-webkit-transition-duration', duration);
+		this.$.client.applyStyle('-moz-transition-duration', duration);
+		this.$.client.applyStyle('transition-duration', duration);
 	},
 
 	rewind: function() {
-		console.log("REWIND");
-		this.adjustTransitionDuration();
+		this.adjustTransitionDuration('0s');
 		enyo.dom.transform(this.$.client, {translate: "0px, 0px"});
 	}
 });
