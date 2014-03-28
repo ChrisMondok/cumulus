@@ -35,7 +35,9 @@ enyo.kind({
 			{name: 'dayCarousel', kind: 'cumulus.DataCarousel', style:"height: 80px", components:[
 				{classes: 'enyo-fit', components:[
 					{name: 'day', classes:'title'},
-					{name: 'summary', classes: 'summary'}
+					{kind: 'cumulus.widgets.Marquee', classes: 'summary', components:[
+						{name: 'summary'}
+					]}
 				], bindings:[
 					{from: '.model.timeString', to: '.$.day.content'},
 					{from: '.model.summary', to: '.$.summary.content'}
