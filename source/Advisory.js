@@ -63,8 +63,8 @@ enyo.kind({
 	},
 
 	formatDate:function(date) {
-		var day = Cumulus.Main.formatDay(date),
-			time = Cumulus.Main.formatTime(date);
+		var day = Cumulus.Utils.formatDay(date),
+			time = Cumulus.Utils.formatTime(date);
 
 		if(day == $L("today"))
 			return time;

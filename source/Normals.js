@@ -2,8 +2,8 @@ enyo.kind({
 	name:"Cumulus.Normals",
 
 	bindings:[
-		{from: '.model.sunriseTime', to: '.$.sunrise.content', transform: Cumulus.Main.formatTime},
-		{from: '.model.sunsetTime', to: '.$.sunset.content', transform: Cumulus.Main.formatTime}
+		{from: '.model.sunriseTime', to: '.$.sunrise.content', transform: Cumulus.Utils.formatTime},
+		{from: '.model.sunsetTime', to: '.$.sunset.content', transform: Cumulus.Utils.formatTime}
 	],
 
 	create: function() {

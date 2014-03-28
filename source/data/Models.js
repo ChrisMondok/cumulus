@@ -69,7 +69,7 @@ enyo.kind({
 		if(value) {
 			var date = new Date(value);
 
-			return Cumulus.Main.formatDay(date);
+			return Cumulus.Utils.formatDay(date);
 		}
 
 		return value;
@@ -105,7 +105,7 @@ enyo.kind({
 	},
 
 	timespan: function() {
-		return Cumulus.Main.formatTime(new Date(this.get('start'))) + ' - ' + Cumulus.Main.formatTime(new Date(this.get('end')));
+		return Cumulus.Utils.formatTime(new Date(this.get('start'))) + ' - ' + Cumulus.Utils.formatTime(new Date(this.get('end')));
 	}
 });
 

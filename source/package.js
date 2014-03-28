@@ -7,6 +7,8 @@ enyo.depends(
 	"api",
 	"data",
 
+	"app.js",
+	"Utils.js",
 	"Main.js",
 	"Outlook.js",
 	"Preferences.js",

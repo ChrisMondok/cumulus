@@ -32,6 +32,7 @@ enyo.kind({
 	},
 
 	bindings:[
+		{from: '.app.settings', to: '.settings'},
 		{from: '.settings.places', to: '.$.locationRepeater.collection'},
 		{from: '.settings.useGPS', to: '.$.gpsGroup.active', oneWay: false, transform: function(value, direction) {
 			if(direction == "source")

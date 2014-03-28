@@ -17,11 +17,10 @@
 	</head>
 	<body class="enyo-unselectable">
 		<script>
-			if (!window.Cumulus) {
+			if (window.enyo === undefined) {
 				alert('No application build found, redirecting to debug.html.');
 				location = 'debug.html';
 			}
-			new Cumulus.Main().renderInto(document.body);
 		</script>
 	</body>
 </html>
