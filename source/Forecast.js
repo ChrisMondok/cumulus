@@ -7,7 +7,7 @@ var roundOrNull = function(value) {
 };
 
 enyo.kind({
-	name: "Cumulus.Forecast",
+	name: "cumulus.Forecast",
 
 	classes: "row forecast nice-padding",
 
@@ -35,7 +35,7 @@ enyo.kind({
 	],
 
 	components: [
-		{name: "icon", kind: "Cumulus.WeatherIcon"},
+		{name: "icon", kind: "cumulus.WeatherIcon"},
 		{name: "day", classes: "day title", style: "display: inline-block", content: $L("Loading")},
 		{name: "tempRange", classes: "temp-range", showing: true, components: [
 			{tag: 'span', name: 'tempMax'},

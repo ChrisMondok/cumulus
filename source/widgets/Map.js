@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Cumulus.Map",
+	name:"cumulus.Map",
 	classes:"map",
 
 	published:{
@@ -114,7 +114,7 @@ enyo.kind({
 
 			ctx.beginPath();
 			ctx.moveTo(bounds.width/2,bounds.height/2);
-			ctx.lineTo.apply(ctx,Cumulus.Map.lerp(animator.value,[bounds.width/2,bounds.height/2],coords));
+			ctx.lineTo.apply(ctx,cumulus.Map.lerp(animator.value,[bounds.width/2,bounds.height/2],coords));
 			ctx.stroke();
 			ctx.closePath();
 		}
@@ -182,7 +182,7 @@ enyo.kind({
 			coords = this.getCoords(place),
 			item = event.item,
 			bounds = this.$.canvas.getBounds(),
-			halfCoords = Cumulus.Map.lerp(0.5,[bounds.width/2,bounds.height/2],coords);
+			halfCoords = cumulus.Map.lerp(0.5,[bounds.width/2,bounds.height/2],coords);
 		
 		if(!window.ITEMS)
 			window.ITEMS = [];

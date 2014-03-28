@@ -1,5 +1,5 @@
 enyo.kind({
-	name: 'Cumulus.DataCarousel',
+	name: 'cumulus.DataCarousel',
 	kind: 'DataRepeater',
 	selection: false,
 

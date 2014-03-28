@@ -1,5 +1,5 @@
 enyo.kind({
-	name: 'Cumulus.Preferences',
+	name: 'cumulus.Preferences',
 	classes: 'preferences onyx',
 
 	statics:{
@@ -38,7 +38,7 @@ enyo.kind({
 			if(direction == "source")
 				return this.$.gpsGroup.controlAtIndex(value ? 0 : 1);
 			else
-				return this.$.gpsGroup.active.indexInContainer() == 0;
+				return this.$.gpsGroup.active.indexInContainer() === 0;
 		}},
 		{from: '.settings.useGPS', to: '.$.locationDrawer.open', kind: 'enyo.InvertBooleanBinding'},
 		{from: '.settings.useGPS', to: '.$.savePlaceDrawer.open', kind: 'enyo.BooleanBinding'},

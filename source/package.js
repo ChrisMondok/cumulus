@@ -1,7 +1,7 @@
 enyo.depends(
 	"$lib/layout",
 	"$lib/onyx",
-	"OS",
+	"os",
 	"service",
 	"widgets",
 	"api",

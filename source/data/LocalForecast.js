@@ -32,8 +32,8 @@
 	};
 
 	enyo.kind({
-		name: 'Cumulus.models.LocalForecast',
-		kind: 'Cumulus.models.Base',
+		name: 'cumulus.models.LocalForecast',
+		kind: 'cumulus.models.Base',
 		primaryKey: 'latlng',
 		defaultSource: 'forecast',
 
@@ -58,12 +58,12 @@
 		},
 
 		parse: function(data) {
-			data.currently = data.currently && this.store.createRecord(Cumulus.models.Currently, data.currently) || null;
+			data.currently = data.currently && this.store.createRecord(cumulus.models.Currently, data.currently) || null;
 			if(data.hourly && data.daily) {
 				parseHours(data);
 				delete data.hourly;
 			}
-			data.daily = this.store.createCollection(Cumulus.collections.Daily, data.daily && data.daily.data || []);
+			data.daily = this.store.createCollection(cumulus.collections.Daily, data.daily && data.daily.data || []);
 			return data;
 		}
 	});

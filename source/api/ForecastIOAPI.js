@@ -5,7 +5,7 @@ var defaultLifetimes = {
 	alerts: 6*60*60*1000 // 6 hours
 };
 enyo.kind({
-	name:"Cumulus.API.ForecastIO",
+	name:"cumulus.api.ForecastIO",
 	published:{
 		url:"https://api.forecast.io",
 		key:undefined

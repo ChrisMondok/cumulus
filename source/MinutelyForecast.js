@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Cumulus.MinutelyForecast",
+	name:"cumulus.MinutelyForecast",
 	classes:"minutely-forecast",
 
 	published:{
@@ -171,7 +171,7 @@ enyo.kind({
 
 
 		if (maxPrecipIntensity < 0.5)
-			this._graphLineIncrement = 0.25
+			this._graphLineIncrement = 0.25;
 		else if (maxPrecipIntensity < 1)
 			this._graphLineIncrement = 0.5;
 		else

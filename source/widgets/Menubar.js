@@ -1,5 +1,5 @@
 enyo.kind({
-	name: 'Cumulus.widgets.Menubar',
+	name: 'cumulus.widgets.Menubar',
 	kind: 'enyo.ToolDecorator',
 
 	classes: 'menubar'

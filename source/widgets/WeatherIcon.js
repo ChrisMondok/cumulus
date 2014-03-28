@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Cumulus.WeatherIcon",
+	name:"cumulus.WeatherIcon",
 	
 	classes:"icon-container",
 

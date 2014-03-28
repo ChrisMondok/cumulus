@@ -1,5 +1,5 @@
 enyo.kind({
-	name: "Cumulus.Main",
+	name: "cumulus.Main",
 	classes: "onyx",
 
 	published: {
@@ -45,15 +45,15 @@ enyo.kind({
 			{path: 'preferences', handler: 'showPreferences', context: 'owner'}
 		]},
 		{content: "Beta", classes: "sash"},
-		{name: "appmenu", kind: "Cumulus.Appmenu", components: [
+		{name: "appmenu", kind: "cumulus.Appmenu", components: [
 			{content: "Preferences", ontap: 'routeToPreferences'},
 			{content: "About", ontap: "showAbout"}
 		]},
 		{name: "panels", kind: "Panels", arrangerKind: "CardArranger", classes: "enyo-fit", draggable: false, onTransitionFinish: "panelIndexChanged", components: [
-			{ name: "outlook", kind: "Cumulus.Outlook" },
-			{ name: "detail", kind: "Cumulus.Detail" },
-			{ name: "advisory", kind: "Cumulus.Advisory" },
-			{ name: "preferences", kind: "Cumulus.Preferences" }
+			{ name: "outlook", kind: "cumulus.Outlook" },
+			{ name: "detail", kind: "cumulus.Detail" },
+			{ name: "advisory", kind: "cumulus.Advisory" },
+			{ name: "preferences", kind: "cumulus.Preferences" }
 		]},
 		{
 			name: "locatingPopup",
@@ -65,7 +65,7 @@ enyo.kind({
 			autoDismiss: false,
 			scrimWhenModal: true,
 			components: [
-				{kind: "Cumulus.Spinner", style: "display: inline-block; vertical-align: middle;"},
+				{kind: "cumulus.Spinner", style: "display: inline-block; vertical-align: middle;"},
 				{content: "Locating", fit: true, style: "display: inline-block; vertical-align: middle; padding-right: 8px;"}
 			]
 		},
@@ -84,7 +84,7 @@ enyo.kind({
 				{name:"useSavedLocationButton", kind:"onyx.Button", content:"Use a saved location", ontap:"useSavedLocation", classes:"onyx-dark", style:"display:block; width:100%; margin-top:1ex;" }
 			]
 		},
-		{ kind: "Cumulus.AboutPopup" },
+		{ kind: "cumulus.AboutPopup" },
 		{
 			name: "errorPopup",
 			kind: "onyx.Popup",
@@ -107,7 +107,7 @@ enyo.kind({
 
 		console.log("CREATE");
 
-		this.setApi(new Cumulus.API.ForecastIO);
+		this.setApi(new cumulus.api.ForecastIO);
 
 		window.INSTANCE = this;
 
@@ -162,7 +162,7 @@ enyo.kind({
 	placeChanged: function(oldPlace, newPlace) {
 		if(newPlace) {
 			var store = this.createStore();
-			var l = store.createRecord(Cumulus.models.LocalForecast,{location: newPlace, name: 'test'});
+			var l = store.createRecord(cumulus.models.LocalForecast,{location: newPlace, name: 'test'});
 			this.set('localForecast', l);
 			l.fetch({params:{extend:"hourly"}, success: function(){console.log("DONE");}});
 		}

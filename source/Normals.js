@@ -1,9 +1,9 @@
 enyo.kind({
-	name:"Cumulus.Normals",
+	name:"cumulus.Normals",
 
 	bindings:[
-		{from: '.model.sunriseTime', to: '.$.sunrise.content', transform: Cumulus.Utils.formatTime},
-		{from: '.model.sunsetTime', to: '.$.sunset.content', transform: Cumulus.Utils.formatTime}
+		{from: '.model.sunriseTime', to: '.$.sunrise.content', transform: cumulus.Utils.formatTime},
+		{from: '.model.sunsetTime', to: '.$.sunset.content', transform: cumulus.Utils.formatTime}
 	],
 
 	create: function() {

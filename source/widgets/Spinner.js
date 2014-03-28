@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Cumulus.Spinner",
+	name:"cumulus.Spinner",
 	classes:"cumulus-spinner-bg",
 
 	components:[

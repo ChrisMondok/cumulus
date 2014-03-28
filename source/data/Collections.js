@@ -1,23 +1,23 @@
 enyo.kind({
-	name: 'Cumulus.collections.Base',
+	name: 'cumulus.collections.Base',
 	kind: 'enyo.Collection',
 	defaultSource: 'forecast'
 });
 
 enyo.kind({
-	name:'Cumulus.collections.Daily',
-	kind: 'Cumulus.collections.Base',
-	model: 'Cumulus.models.Daily'
+	name:'cumulus.collections.Daily',
+	kind: 'cumulus.collections.Base',
+	model: 'cumulus.models.Daily'
 });
 
 enyo.kind({
-	name: 'Cumulus.collections.Hourly',
-	kind: 'Cumulus.collections.Base',
-	model: 'Cumulus.models.Hourly'
+	name: 'cumulus.collections.Hourly',
+	kind: 'cumulus.collections.Base',
+	model: 'cumulus.models.Hourly'
 });
 
 enyo.kind({
-	name: 'Cumulus.collections.Conditions',
-	kind: 'Cumulus.collections.Base',
-	model: 'Cumulus.models.Condition'
+	name: 'cumulus.collections.Conditions',
+	kind: 'cumulus.collections.Base',
+	model: 'cumulus.models.Condition'
 });

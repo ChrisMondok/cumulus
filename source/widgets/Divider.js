@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Cumulus.Divider",
+	name:"cumulus.Divider",
 	kind:"FittableColumns",
 	noStretch:true,
 

@@ -1,5 +1,5 @@
 enyo.kind({
-	name: "Cumulus.Outlook",
+	name: "cumulus.Outlook",
 	classes: "outlook",
 
 	published: {
@@ -42,18 +42,18 @@ enyo.kind({
 				]}
 			]},
 			{name: "advisoriesOpener", classes: "advisories-button", showing: false, ontap: "toggleAdvisoriesDrawer"},
-			{name: "currentConditions", kind: "Cumulus.Forecast", classes: "primary dark", now: true, showHumidity: true, ontap: "toggleMinutely"},
+			{name: "currentConditions", kind: "cumulus.Forecast", classes: "primary dark", now: true, showHumidity: true, ontap: "toggleMinutely"},
 			{name: "minutelyForecastDrawer", kind: "Drawer", classes: "minutely-forecast-drawer", open: false, components: [
-				{name: "minutelyForecast", kind: "Cumulus.MinutelyForecast"}
+				{name: "minutelyForecast", kind: "cumulus.MinutelyForecast"}
 			]},
 			{name: "dayRepeater", kind: "DataRepeater", selection: false, classes: "light", onSetupItem: "renderDay", components: [
-					{kind: "Cumulus.Forecast", ontap: "pickDay"}
+					{kind: "cumulus.Forecast", ontap: "pickDay"}
 				], bindings: [
 					{from: '.model', to: '.$.model'}
 				]
 			}
 		]},
-		{name: "loadingPopup", kind: "Cumulus.LoadingPopup"}
+		{name: "loadingPopup", kind: "cumulus.LoadingPopup"}
 	],
 
 	apiChanged: function() {

@@ -1,5 +1,5 @@
 enyo.kind({
-	name: 'Cumulus.models.Base',
+	name: 'cumulus.models.Base',
 	kind: 'enyo.Model',
 	defaultSource: 'forecast',
 	primaryKey: 'time',
@@ -52,12 +52,12 @@ enyo.kind({
 });
 
 enyo.kind({
-	name: 'Cumulus.models.Daily',
-	kind: 'Cumulus.models.Base',
+	name: 'cumulus.models.Daily',
+	kind: 'cumulus.models.Base',
 
 	parse: function(data) {
 		var x = this.inherited(arguments);
-		x.hourly = this.store.createCollection(Cumulus.collections.Hourly, data.hourly);
+		x.hourly = this.store.createCollection(cumulus.collections.Hourly, data.hourly);
 		x.hourly.set('time',x.time);
 		//TODO: deserialize array into collection, if needed.
 		return x;
@@ -69,7 +69,7 @@ enyo.kind({
 		if(value) {
 			var date = new Date(value);
 
-			return Cumulus.Utils.formatDay(date);
+			return cumulus.Utils.formatDay(date);
 		}
 
 		return value;
@@ -77,8 +77,8 @@ enyo.kind({
 });
 
 enyo.kind({
-	name: 'Cumulus.models.Hourly',
-	kind: 'Cumulus.models.Base',
+	name: 'cumulus.models.Hourly',
+	kind: 'cumulus.models.Base',
 
 	timeString: function() {
 		return $L("TIMESTRING");
@@ -86,8 +86,8 @@ enyo.kind({
 });
 
 enyo.kind({
-	name: 'Cumulus.models.Currently',
-	kind: 'Cumulus.models.Base',
+	name: 'cumulus.models.Currently',
+	kind: 'cumulus.models.Base',
 
 	timeString: function() {
 		return $L("now");
@@ -95,7 +95,7 @@ enyo.kind({
 });
 
 enyo.kind({
-	name: 'Cumulus.models.Condition',
+	name: 'cumulus.models.Condition',
 	kind: 'enyo.Model',
 
 	mixins:[ enyo.ComputedSupport ],
@@ -105,12 +105,12 @@ enyo.kind({
 	},
 
 	timespan: function() {
-		return Cumulus.Utils.formatTime(new Date(this.get('start'))) + ' - ' + Cumulus.Utils.formatTime(new Date(this.get('end')));
+		return cumulus.Utils.formatTime(new Date(this.get('start'))) + ' - ' + cumulus.Utils.formatTime(new Date(this.get('end')));
 	}
 });
 
 enyo.kind({
-	name: 'Cumulus.models.Settings',
+	name: 'cumulus.models.Settings',
 	kind: 'enyo.Model',
 	defaultSource: 'localStorage',
 	includeKeys:['reloadInterval', 'places', 'useGPS', 'usePlace'],

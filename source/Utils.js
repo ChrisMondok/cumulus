@@ -1,5 +1,5 @@
 enyo.singleton({
-	name:"Cumulus.Utils",
+	name:"cumulus.Utils",
 
 	formatTime: function(date) {
 		if (typeof date == 'number')

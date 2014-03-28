@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Cumulus.Detail",
+	name:"cumulus.Detail",
 	kind:"FittableRows",
 
 	classes:"detail",
@@ -32,7 +32,7 @@ enyo.kind({
 			{path:'detail/:time', handler: 'routeHandler', context: 'owner'}
 		]},
 		{classes: 'today', components:[
-			{name: 'dayCarousel', kind: 'Cumulus.DataCarousel', style:"height: 80px", components:[
+			{name: 'dayCarousel', kind: 'cumulus.DataCarousel', style:"height: 80px", components:[
 				{classes: 'enyo-fit', components:[
 					{name: 'day', classes:'title'},
 					{name: 'summary', classes: 'summary'}
@@ -43,13 +43,13 @@ enyo.kind({
 			]}
 		]},
 		{fit:true, style:"position:relative", components:[
-			{name:"loadingPopup", kind:"Cumulus.LoadingPopup"},
+			{name:"loadingPopup", kind:"cumulus.LoadingPopup"},
 			{name:"scroller", kind:"Scroller", thumb:false, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
 				{name:"popDrawer", animated: false, kind:"Drawer", components:[
 					{classes:"divider", content:"Chance of precipitation"},
 					{
 						name:"popGraph",
-						kind:"Cumulus.Graph",
+						kind:"cumulus.Graph",
 						classes:"group",
 						key:"precipProbability",
 						min:0, max:1,
@@ -61,7 +61,7 @@ enyo.kind({
 				{
 					name:"tempGraph",
 					classes:"group",
-					kind:"Cumulus.TemperatureGraph",
+					kind:"cumulus.TemperatureGraph",
 					key:"temperature",
 					fillColor:"rgba(255,0,0,0.25)",
 					strokeColor:"rgba(255,0,0,1)"
@@ -70,7 +70,7 @@ enyo.kind({
 				{
 					name:"humidityGraph",
 					classes:"group",
-					kind:"Cumulus.Graph",
+					kind:"cumulus.Graph",
 					key:"humidity",
 					min:0, max:1,
 					fillColor:"rgba(255,255,255,0.25)",
@@ -79,7 +79,7 @@ enyo.kind({
 				{classes:"divider", content:"Conditions"},
 				{name: "conditionRepeater", kind: "DataRepeater", selection: false, classes: "group", components: [
 					{classes:'row condition nice-padding', components:[
-						{name:"icon", kind:"Cumulus.WeatherIcon"},
+						{name:"icon", kind:"cumulus.WeatherIcon"},
 						{name:"timespan", classes:"title"},
 						{name:"summary", content: 'summary'}
 					], bindings:[
@@ -88,7 +88,7 @@ enyo.kind({
 						{from: '.model.timespan', to: '.$.timespan.content'}
 					]}
 				]},
-				{name:"normals",  kind:"Cumulus.Normals"},
+				{name:"normals",  kind:"cumulus.Normals"},
 
 				{name:"animator", kind:"Animator", onStep:"drawGraphs", duration:750}
 			]}
@@ -100,7 +100,7 @@ enyo.kind({
 	},
 
 	updateTitle: function() {
-		if(this.showing && this.model instanceof Cumulus.models.Base) {
+		if(this.showing && this.model instanceof cumulus.models.Base) {
 			var dayName = this.model.get('timeString');
 			var title = dayName[0].toUpperCase() + dayName.slice(1)+"'s Forecast";
 			enyo.Signals.send('onTitleChanged', {title:title});
@@ -108,7 +108,7 @@ enyo.kind({
 	},
 
 	routeHandler: function(time) {
-		this.setModel(enyo.store.findLocal(Cumulus.models.Daily, {time: time}));
+		this.setModel(this.store.findLocal(cumulus.models.Daily, {time: time}));
 	},
 
 	create:function() {
@@ -130,7 +130,8 @@ enyo.kind({
 
 	modelChanged: function(old, model) {
 		this.$.animator.play();
-		if(model instanceof Cumulus.models.Base)
+		window.M = model;
+		if(model instanceof cumulus.models.Base)
 			this.set('conditions', this.calculateConditions());
 	},
 
@@ -153,6 +154,6 @@ enyo.kind({
 				conditions.push({ summary: summary, icon: icon, start: time, end: time + 1000*60*60 });
 		}
 
-		return this.get('store').createCollection(Cumulus.collections.Conditions, conditions);
+		return this.get('store').createCollection(cumulus.collections.Conditions, conditions);
 	}
 });

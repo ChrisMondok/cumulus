@@ -1,5 +1,5 @@
 enyo.kind({
-	name: 'Cumulus.LocalStorageSource',
+	name: 'cumulus.LocalStorageSource',
 	kind: 'enyo.LocalStorageSource',
 
 	fetch: function(record, options) {

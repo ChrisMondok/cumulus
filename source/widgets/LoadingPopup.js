@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Cumulus.LoadingPopup",
+	name:"cumulus.LoadingPopup",
 	kind:"Popup",
 	
 	published:{
@@ -8,6 +8,6 @@ enyo.kind({
 	},
 
 	components:[
-		{kind:"Cumulus.Spinner"}
+		{kind:"cumulus.Spinner"}
 	]
 });

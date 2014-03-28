@@ -1,5 +1,5 @@
 enyo.kind({
-	name:"Cumulus.Advisory",
+	name:"cumulus.Advisory",
 	classes:"cumulus-advisory",
 	kind:"Scroller",
 	touch:true,
@@ -63,8 +63,8 @@ enyo.kind({
 	},
 
 	formatDate:function(date) {
-		var day = Cumulus.Utils.formatDay(date),
-			time = Cumulus.Utils.formatTime(date);
+		var day = cumulus.Utils.formatDay(date),
+			time = cumulus.Utils.formatTime(date);
 
 		if(day == $L("today"))
 			return time;
