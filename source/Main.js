@@ -105,8 +105,6 @@ enyo.kind({
 	create: function() {
 		this.inherited(arguments);
 
-		console.log("CREATE");
-
 		this.setApi(new cumulus.api.ForecastIO);
 
 		window.INSTANCE = this;

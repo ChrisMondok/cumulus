@@ -114,7 +114,6 @@ enyo.kind({
 	],
 
 	usePlaceChanged: function(oldPlace, newPlace) {
-		console.log("Use place is now "+newPlace);
 		if(typeof(oldPlace) == 'number')
 			this.$.locationRepeater.deselect(oldPlace);
 
