@@ -14,6 +14,6 @@
 		{"name": "cumulus/api", "path": "../source/api"},
 		{"name": "cumulus/widgets", "path": "../source/widgets"},
 		{"name": "cumulus/service", "path": "../source/service"},
-		{"name": "cumulus/OS", "path": "../source/OS"}
+		{"name": "cumulus/os", "path": "../source/os"}
 	]
 }
