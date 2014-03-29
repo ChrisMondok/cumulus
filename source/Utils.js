@@ -28,5 +28,11 @@ enyo.singleton({
 			return $L("today");
 		else
 			return $L(['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][date.getDay()]);
+	},
+	
+	formatNumber: function(value) {
+		if(typeof(value) == 'number')
+			return Math.round(value);
+		return null;
 	}
 });
