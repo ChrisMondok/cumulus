@@ -16,15 +16,14 @@ enyo.kind({
 	},
 
 	bindings:[
-		{from: '.model.summary', to: '.$.summary.content'},
+		{from: '.forecast.daily', to: '.$.dayCarousel.collection'},
+		{from: '.model', to: '.$.dayCarousel.model', oneWay: false},
 		{from: '.model.hourly', to: '.$.popGraph.collection'},
 		{from: '.model.hourly', to: '.$.tempGraph.collection'},
 		{from: '.model.hourly', to: '.$.humidityGraph.collection'},
 		{from: '.model.precipProbability', to: '.$.popDrawer.open', transform: function(p){return p > 0.1;}},
 		{from: '.model', to: '.$.normals.model'},
-		{from: '.conditions', to: '.$.conditionRepeater.collection'},
-		{from: '.forecast.daily', to: '.$.dayCarousel.collection'},
-		{from: '.model', to: '.$.dayCarousel.model', oneWay: false}
+		{from: '.conditions', to: '.$.conditionRepeater.collection'}
 	],
 
 	components:[
@@ -40,6 +39,7 @@ enyo.kind({
 					]}
 				], bindings:[
 					{from: '.model.timeString', to: '.$.day.content'},
+					{from: '.owner.showing', to: '.$.marquee.active'},
 					{from: '.model.summary', to: '.$.summary.content'}
 				]}
 			]}
