@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "cumulus.Main",
-	classes: "onyx",
+	classes: "onyx main",
 
 	published: {
 		api: null,
@@ -44,7 +44,6 @@ enyo.kind({
 			{path: 'detail/:time', handler: 'showDetail', context: 'owner'},
 			{path: 'preferences', handler: 'showPreferences', context: 'owner'}
 		]},
-		{content: "Beta", classes: "sash"},
 		{name: "appmenu", kind: "cumulus.Appmenu", components: [
 			{content: "Preferences", ontap: 'routeToPreferences'},
 			{content: "About", ontap: "showAbout"}
@@ -210,6 +209,6 @@ enyo.kind({
 		if(this.$.appmenu.getShowing())
 			this.$.appmenu.hide();
 		else
-			this.$.appmenu.showAtPosition({top: 0, left: 0});
+			this.$.appmenu.show();
 	}
 });

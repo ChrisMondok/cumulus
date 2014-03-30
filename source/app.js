@@ -17,9 +17,17 @@ enyo.kind({
 });
 
 enyo.ready(function() {
-	if (['androidChrome', 'androidFirefox'].indexOf(enyo.platform.platformName) != -1) {
+	var view = 'cumulus.Main';
+
+	if (['androidChrome', 'androidFirefox', 'android'].indexOf(enyo.platform.platformName) != -1) {
 		enyo.Scroller.prototype.strategyKind = 'ScrollStrategy';
+		view = 'cumulus.os.AndroidMain';
 	}
-	new cumulus.Application({name: 'app', view: 'cumulus.Main'});
+
+	if (enyo.platform.webos) {
+		view = 'cumulus.os.WebOSMain';
+	}
+
+	new cumulus.Application({name: 'app', view: view});
 });
 

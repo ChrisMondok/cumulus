@@ -1,13 +1,9 @@
-/*
-	Put anything you reference with "url()" in ../assets/
-	This way, you can minify your application, and just remove the "source" folder for production
-*/
-
 html, body {
 	background-color:black;
 }
 
-#main {
+.main {
+	position: relative;
 	-moz-transition: -moz-transform 0.25s ease;
 	-ms-transition: -ms-transform 0.25s ease;
 	-webkit-transition: -webkit-transform 0.25s ease;
@@ -19,7 +15,7 @@ html, body {
 	transform:scale(1);
 }
 
-#main.obscured {
+.main.obscured {
 	-moz-transform:scale(0.9);
 	-ms-transform:scale(0.9);
 	-webkit-transform:scale(0.9);
@@ -36,7 +32,6 @@ html, body {
 .nice-margin {
 	margin:15px;
 }
-
 
 .dark {
 	color:#DFDFDF;

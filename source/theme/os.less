@@ -1,0 +1,104 @@
+.appmenu {
+	z-index: 10000;
+}
+.android {
+	@menubar-height: 48px;
+
+	.appmenu {
+		position: absolute;
+		top: 0;
+		right: 0px;
+		width: 200px;
+		background-color: #222222;
+		border-radius: 2px;
+
+		button {
+			display: block;
+			width: 100%;
+
+			text-align: left;
+			color: white;
+			background-color: transparent;
+
+			border-width: 1px 0px 1px 0px;
+			border-color: #4e4e4e;
+			border-style: solid;
+
+			padding: 16px;
+			margin: 0;
+
+			&:first-of-type {
+				border-radius: 2px 2px 0 0;
+			}
+
+			&:last-of-type {
+				border-radius: 0 0 2px 2px;
+				border-bottom-color: #1f1f1f;
+			}
+		}
+	}
+
+	.menubar {
+		background-color: black;
+		color: white;
+		height: @menubar-height;
+		line-height: @menubar-height;
+
+		.onyx-icon {
+			height: 32px;
+		}
+	}
+}
+
+.webOS {
+	@appmenu-width: 278px;
+	@appmenu-side-border-width: 28px;
+
+	.appmenu {
+		position: absolute;
+		left: -6px;
+		top: -2px;
+		width: @appmenu-width;
+
+		border-style: solid;
+		border-width: 30px @appmenu-side-border-width 25px @appmenu-side-border-width;
+		box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+
+		-moz-border-image: url(../../assets/appmenu.png) 30 28 25 28 stretch;
+		-webkit-border-image: url(../../assets/appmenu.png) 30 28 25 28 stretch;
+		-o-border-image: url(../../assets/appmenu.png) 30 28 25 28 stretch;
+		border-image: url(../../assets/appmenu.png) 30 28 25 28 fill stretch;
+
+		font-size:18px;
+
+		button {
+			display: block;
+
+			color: white;
+			border: none;
+			text-align: left;
+			background-color: transparent;
+			width: @appmenu-width - 2*@appmenu-side-border-width;
+			padding: 1rem 54px 1rem 0;
+			margin: 0;
+
+			border-style: solid;
+			border-width: 1px 0px;
+			-moz-border-image: url(../../assets/appmenu-divider.png) 1 stretch;
+			-webkit-border-image: url(../../assets/appmenu-divider.png) 1 stretch;
+			-o-border-image: url(../../assets/appmenu-divider.png) 1 stretch;
+			border-image: url(../../assets/appmenu-divider.png) 1 fill stretch;
+
+			&:first-of-type {
+				border-top-width: 0;
+				margin-top: -27px;
+			}
+
+			&:last-of-type {
+				border-bottom-width: 0;
+				margin-bottom: -15px;
+			}
+		}
+	}
+}

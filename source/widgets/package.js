@@ -8,7 +8,6 @@ enyo.depends(
 	"Menubar.js",
 	"Marquee.js",
 
-	"appmenu.css",
 	"map.css",
 	"spinner.css"
 );

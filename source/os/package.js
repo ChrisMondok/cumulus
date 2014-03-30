@@ -1,4 +1,6 @@
 enyo.depends(
-	"notifications.js",
-	"events.js"
+	'AndroidMain.js',
+	'WebOSMain.js',
+	'notifications.js',
+	'events.js'
 );
