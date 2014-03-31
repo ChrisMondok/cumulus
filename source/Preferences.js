@@ -10,7 +10,7 @@ enyo.kind({
 	bindings:[
 		{from: '.app.settings', to: '.settings'},
 		{from: '.settings.places', to: '.$.locationRepeater.collection'},
-		{from: '.settings.usePlace', to: '.usePlace'},
+		{from: '.settings.usePlace', to: '.usePlace', oneWay: false},
 		{from: '.usePlace', to: '.$.gpsGroup.active', oneWay: false, allowUndefined: false, transform: function(value, direction, binding) {
 			if(direction == "source")
 				return this.$.gpsGroup.controlAtIndex(value == -1 ? 0 : 1);
@@ -26,6 +26,12 @@ enyo.kind({
 			return interval ?
 				[interval,$L("minutes")].join(' ') :
 				$L("Manually");
+		}},
+		{from: '.$.locationRepeater.selected', to: '.usePlace', allowUndefined:false, transform: function(selection) {
+			if(selection) {
+				var index = this.get('settings').get('places').indexOf(selection);
+				return index;
+			}
 		}}
 	],
 
