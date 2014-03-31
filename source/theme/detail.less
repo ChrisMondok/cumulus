@@ -1,90 +1,89 @@
-.detail .today {
-	z-index:2;
-	position:relative;
+.detail {
+	.today {
+		z-index:2;
+		position:relative;
 
-	margin-bottom:-6px;
-	border-style: solid;
-	border-width: 0px 0px 6px;
-	-moz-border-image: url(../../assets/drop-shadow.png) 6 repeat;
-	-webkit-border-image: url(../../assets/drop-shadow.png) 6 repeat;
-	-o-border-image: url(../../assets/drop-shadow.png) 6 repeat;
-	border-image: url(../../assets/drop-shadow.png) 6 fill repeat;
-}
+		margin-bottom:-6px;
+		border-style: solid;
+		border-width: 0px 0px 6px;
+		-moz-border-image: url(../../assets/drop-shadow.png) 6 repeat;
+		-webkit-border-image: url(../../assets/drop-shadow.png) 6 repeat;
+		-o-border-image: url(../../assets/drop-shadow.png) 6 repeat;
+		border-image: url(../../assets/drop-shadow.png) 6 fill repeat;
 
-.detail .today .title {
-	font-size:24px;
-	line-height:24px;
-	padding:16px 16px 0px 16px;
-}
+		.title {
+			font-size:24px;
+			line-height:24px;
+			padding:16px 16px 0px 16px;
+		}
+	}
 
-.detail .title-carousel {
-	width:100%;
-	height:40px;
-}
+	.day-carousel {
+		width:100%;
+		height:80px;
+	}
 
-.detail .summary {
-	margin:0rem 1rem 1rem 1rem;
-}
+	.summary {
+		margin:0rem 1rem 1rem 1rem;
+	}
 
-.detail .scroller {
-	z-index:1;
-}
+	.scroller {
+		z-index:1;
+		padding: 0.5em 0 0 0;
+	}
 
-.detail .scroller .divider:first-of-type {
-	margin-top:0.5em;
-}
+	.tide-table {
+		width:100%;
+		table-layout:fixed;
+		text-align:center;
+	}
 
-.detail .tide-table {
-	width:100%;
-	table-layout:fixed;
-	text-align:center;
-}
+	.sunmoon {
+		text-align:center;
 
-.detail .sunmoon {
-	text-align:center;
-}
+		.sunrise, .sunset {
+			line-height:48px;
+			padding-left:48px;
+			background-position:16px center;
+			background-repeat:no-repeat;
+		}
 
-.detail .sunmoon .sunrise, .detail .sunmoon .sunset {
-	line-height:48px;
-	padding-left:48px;
-	background-position:16px center;
-	background-repeat:no-repeat;
-}
+		.sunrise {
+			background-image:url(../../assets/icons/sunrise.png);
+		}
 
-.detail .sunmoon .sunrise {
-	background-image:url(../../assets/icons/sunrise.png);
-}
+		.sunset {
+			background-image:url(../../assets/icons/sunset.png);
+		}
+	}
 
-.detail .sunmoon .sunset {
-	background-image:url(../../assets/icons/sunset.png);
-}
+	.condition {
+		border-bottom:1px solid rgba(0,0,0,0.75);
+		border-top:1px solid rgba(255,255,255,0.25);
+		color:#DFDFDF;
+		overflow:hidden;
 
-.detail .condition {
-	border-bottom:1px solid rgba(0,0,0,0.75);
-	border-top:1px solid rgba(255,255,255,0.25);
-	color:#DFDFDF;
-	overflow:hidden;
-}
+		&:first-of-type {
+			border-top:none;
+		}
 
-.detail .condition:first-of-type {
-	border-top:none;
-}
+		&:last-of-type {
+			border-bottom:none;
+		}
 
-.detail .condition:last-of-type {
-	border-bottom:none;
-}
+		&.current {
+			background-image:url(../../assets/glow.png);
+			background-position:left 50%;
+			background-size:82px 100%;
+			background-repeat: no-repeat;
+		}
 
-.detail .condition .icon-container {
-	float:right;
-}
+		.icon-container {
+			float:right;
+		}
 
-.detail .condition .title {
-	color:#F79A42;
-}
-
-.detail .condition.current {
-	background-image:url(../../assets/glow.png);
-	background-position:left 50%;
-	background-size:82px 100%;
-	background-repeat: no-repeat;
+		.title {
+			color:#F79A42;
+		}
+	}
 }
