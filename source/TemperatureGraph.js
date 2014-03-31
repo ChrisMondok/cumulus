@@ -43,7 +43,7 @@ enyo.kind({
 			var y = this.valueToY(i);
 			this._ctx.beginPath();
 			this._ctx.moveTo(0,this.valueToY(i));
-			this._ctx.lineTo(this.$.canvas.getBounds().width * amount,this.valueToY(i));
+			this._ctx.lineTo(this._canvasBounds.width * amount,this.valueToY(i));
 			this._ctx.stroke();
 			this._ctx.closePath();
 		}
@@ -54,7 +54,7 @@ enyo.kind({
 			this._ctx.beginPath();
 			var f = this.valueToY(32);
 			this._ctx.moveTo(0, f);
-			this._ctx.lineTo(this.$.canvas.getBounds().width * amount, f);
+			this._ctx.lineTo(this._canvasBounds.width * amount, f);
 			this._ctx.stroke();
 			this._ctx.closePath();
 		}
@@ -69,6 +69,6 @@ enyo.kind({
 		var min = cumulus.Utils.lerp(oldMin, this.min, step);
 		var max = cumulus.Utils.lerp(oldMax, this.max, step);
 
-		return this.getBounds().height * (1 - (value-min)/(max-min));
+		return this._canvasBounds.height * (1 - (value-min)/(max-min));
 	}
 });

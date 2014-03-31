@@ -52,7 +52,7 @@ enyo.kind({
 		if(!this._ctx)
 			return;
 
-		var bounds = this.$.canvas.getBounds(),
+		var bounds = this._canvasBounds,
 			values = this.arrayOfValues,
 			ctx = this._ctx,
 			animStep = this.animator ? this.animator.value : 1;
@@ -109,7 +109,7 @@ enyo.kind({
 			var x = this.getX(i);
 			this._ctx.beginPath();
 			this._ctx.moveTo(x,0);
-			this._ctx.lineTo(x,this.getBounds().height);
+			this._ctx.lineTo(x,this._canvasBounds.height);
 			this._ctx.stroke();
 			this._ctx.closePath();
 		}
@@ -142,7 +142,7 @@ enyo.kind({
 	},
 	
 	getX:function(i) {
-		return this.getBounds().width*(i/(this.get('arrayOfValues').length-1));
+		return this._canvasBounds.width*(i/(this.get('arrayOfValues').length-1));
 	},
 	
 	getY:function(i) {
@@ -161,7 +161,7 @@ enyo.kind({
 	valueToY:function(value) {
 		var step = this.animator ? this.animator.value : 1;
 
-		return this.getBounds().height * (1 - (value-this.min)/(this.max-this.min));
+		return this._canvasBounds.height * (1 - (value-this.min)/(this.max-this.min));
 	},
 
 	arrayOfValuesChanged:function(old, array) {
@@ -183,7 +183,7 @@ enyo.kind({
 
 	sizeCanvas:function() {
 		var canvas = this.$.canvas;
-		var bounds = canvas.getBounds();
+		var bounds = this._canvasBounds = canvas.getBounds();
 
 		canvas.setAttribute("height",bounds.height);
 		canvas.setAttribute("width",bounds.width);
