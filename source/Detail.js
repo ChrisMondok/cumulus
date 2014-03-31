@@ -92,7 +92,7 @@ enyo.kind({
 				]},
 				{name:"normals",  kind:"cumulus.Normals"},
 
-				{name:"animator", kind:"Animator", onStep:"drawGraphs", duration:750}
+				{name:"animator", kind:"Animator", onStep:"drawGraphs", easingFunction: enyo.easing.quadInOut, duration:750}
 			]}
 		]}
 	],
