@@ -121,7 +121,8 @@ enyo.kind({
 			places:[
 				{name: 'Neptune', latitude:40.220391, longitude:-74.012082},
 				{name: 'Long Valley', latitude:40.78225, longitude:-74.776936}
-			]
+			],
+			usePlace: -1
 		}
 	},
 
@@ -135,7 +136,7 @@ enyo.kind({
 
 		var observer = function(old, value, property) {
 			enyo.job(this.euid + '-save', saveIfDirty, 1000);
-		}
+		};
 
 		this.includeKeys.forEach(function(key) {
 			this.addObserver(key, observer, this);
@@ -145,13 +146,6 @@ enyo.kind({
 		this.set('id', 'settings');
 		this.dirty = false;
 		this.unsilence();
-	},
-
-	usePlaceChanged: function(old, u) {
-		if( u === null )
-		{
-			debugger
-		}
 	},
 
 	parse: function(data) {
