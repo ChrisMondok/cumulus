@@ -160,19 +160,12 @@ enyo.kind({
 
 	valueToY:function(value) {
 		var step = this.animator ? this.animator.value : 1;
-		var oldMin = isNaN(this._oldMin) ? this.min : this._oldMin;
-		var oldMax = isNaN(this._oldMax) ? this.max : this._oldMax;
 
-		var min = cumulus.Utils.lerp(oldMin, this.min, step);
-		var max = cumulus.Utils.lerp(oldMax, this.max, step);
-
-		return this.getBounds().height * (1 - (value-min)/(max-min));
+		return this.getBounds().height * (1 - (value-this.min)/(this.max-this.min));
 	},
 
 	arrayOfValuesChanged:function(old, array) {
 		this._oldArrayOfValues = old;
-		this._oldMin = this.get('min');
-		this._oldMax = this.get('max');
 
 		this.calculateCurrentPosition();
 
