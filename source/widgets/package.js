@@ -7,6 +7,7 @@ enyo.depends(
 	"Map.js",
 	"Menubar.js",
 	"Marquee.js",
+	"DataCarousel.js",
 
 	"map.css",
 	"spinner.css"

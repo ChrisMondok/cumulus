@@ -1,6 +1,7 @@
 enyo.kind({
-	name: 'cumulus.DataCarousel',
+	name: 'cumulus.widgets.DataCarousel',
 	kind: 'DataRepeater',
+	classes: 'data-carousel',
 	selection: false,
 
 	arrangerKind: 'CarouselArranger',

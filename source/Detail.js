@@ -31,7 +31,7 @@ enyo.kind({
 			{path:'detail/:time', handler: 'routeHandler', context: 'owner'}
 		]},
 		{classes: 'today', components:[
-			{name: 'dayCarousel', kind: 'cumulus.DataCarousel', style:"height: 80px", components:[
+			{name: 'dayCarousel', classes:'day-carousel', kind: 'cumulus.widgets.DataCarousel', style:"height: 80px", components:[
 				{classes: 'enyo-fit', components:[
 					{name: 'day', classes:'title'},
 					{kind: 'cumulus.widgets.Marquee', classes: 'summary', components:[
