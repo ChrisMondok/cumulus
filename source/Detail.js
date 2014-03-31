@@ -18,9 +18,18 @@ enyo.kind({
 	bindings:[
 		{from: '.forecast.daily', to: '.$.dayCarousel.collection'},
 		{from: '.model', to: '.$.dayCarousel.model', oneWay: false},
+
 		{from: '.model.hourly', to: '.$.popGraph.collection'},
 		{from: '.model.hourly', to: '.$.tempGraph.collection'},
 		{from: '.model.hourly', to: '.$.humidityGraph.collection'},
+
+		{from: '.model.sunriseTime', to: '.$.popGraph.sunriseTime'},
+		{from: '.model.sunsetTime', to: '.$.popGraph.sunsetTime'},
+		{from: '.model.sunriseTime', to: '.$.tempGraph.sunriseTime'},
+		{from: '.model.sunsetTime', to: '.$.tempGraph.sunsetTime'},
+		{from: '.model.sunriseTime', to: '.$.humidityGraph.sunriseTime'},
+		{from: '.model.sunsetTime', to: '.$.humidityGraph.sunsetTime'},
+
 		{from: '.model.precipProbability', to: '.$.popDrawer.open', transform: function(p){return p > 0.1;}},
 		{from: '.model', to: '.$.normals.model'},
 		{from: '.conditions', to: '.$.conditionRepeater.collection'}

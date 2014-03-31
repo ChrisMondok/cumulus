@@ -11,6 +11,7 @@ enyo.kind({
 		fillColor:"rgba(255,255,255,0.25)",
 		strokeColor:"rgba(255,255,255,1)",
 		graphColor:"rgba(0,0,0,0.25)",
+		nightColor:"rgba(0,0,0,0.2)",
 		key:"",
 		min:0,
 		max:100,
@@ -116,7 +117,28 @@ enyo.kind({
 	},
 
 	drawBackground: function() {
+		if(this.sunriseTime && this.sunsetTime) {
+			var sunriseX = this.timeToX(this.sunriseTime) * this._canvasBounds.width;
+			var sunsetX = this.timeToX(this.sunsetTime) * this._canvasBounds.width;
 
+			this._ctx.fillStyle = this.nightColor;
+			this._ctx.beginPath();
+			this._ctx.moveTo(0, 0);
+			this._ctx.lineTo(sunriseX, 0);
+			this._ctx.lineTo(sunriseX, this._canvasBounds.height);
+			this._ctx.lineTo(0, this._canvasBounds.height);
+			this._ctx.closePath();
+			this._ctx.fill();
+
+			this._ctx.fillStyle = this.nightColor;
+			this._ctx.beginPath();
+			this._ctx.moveTo(this._canvasBounds.width, 0);
+			this._ctx.lineTo(sunsetX, 0);
+			this._ctx.lineTo(sunsetX, this._canvasBounds.height);
+			this._ctx.lineTo(this._canvasBounds.width, this._canvasBounds.height);
+			this._ctx.closePath();
+			this._ctx.fill();
+		}
 	},
 
 	timeToX: function(time) {
