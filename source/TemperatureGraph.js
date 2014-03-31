@@ -6,16 +6,12 @@ enyo.kind({
 		step:10
 	},
 
-	collectionChanged:function(old, collection) {
-		var key = this.getKey(), step = this.getStep(),
-			temps = [];
+	arrayOfValuesChanged:function(old, array) {
+		var step = this.getStep();
 
-		if(collection)
-			temps = collection.map(function(m){return m.get(key);});
-
-		if(temps.length) {
-			var min = temps.reduce(function(a,b){return Math.min(a,b);});
-			var max = temps.reduce(function(a,b){return Math.max(a,b);});
+		if(array && array.length) {
+			var min = array.reduce(function(a,b){return Math.min(a,b);});
+			var max = array.reduce(function(a,b){return Math.max(a,b);});
 
 			this.setMin(Math.floor((min-1)/step)*step);
 			this.setMax(Math.ceil((max+1)/step)*step);
