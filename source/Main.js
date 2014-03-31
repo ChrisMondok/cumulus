@@ -15,6 +15,8 @@ enyo.kind({
 		{from: '.app.settings', to: '.settings'},
 		{from: '.store', to: '.$.detail.store'},
 		{from: '.app.preferredLocation', to: '.place'},
+		{from: '.app.preferredLocation', to: '.$.locationErrorPopup.showing', transform: function(g) {return g === null;}},
+		{from: '.app.geolocationError', to: '.$.locationErrorReason.content', transform: function(e) {return e ? e.reason : '';}},
 
 		//TODO: delete these
 		{from: '.api', to:'.$.outlook.$.minutelyForecast.api'},
@@ -69,8 +71,9 @@ enyo.kind({
 			scrimWhenModal: true,
 			components: [
 				{tag: 'header', name: 'locationErrorReason', content:"Geolocation Error"},
-				{tag: 'footer', components:[
-					{name:'useSavedLocationButton', kind:'onyx.Button', content:"Use a saved location", ontap:'useSavedLocation', classes:'onyx-dark'}
+				{tag: 'footer', defaultKind: 'onyx.Button', controlClasses: 'onyx-dark', components:[
+					{content: "Retry", ontap:'retryGeolocation'},
+					{content:"Use a saved location", ontap:'useSavedLocation'}
 				]}
 			]
 		},
@@ -147,13 +150,11 @@ enyo.kind({
 		var store = this.createStore();
 		
 		if(place) {
-			console.log("Fetching weather");
 			var l = store.createRecord(cumulus.models.LocalForecast,{location: this.get('place'), name: 'test'});
-			l.fetch({params:{extend:"hourly"}, success: function(){console.log("DONE");}});
+			l.fetch({params:{extend:"hourly"}});
 			this.set('localForecast', l);
 		}
 		else {
-			console.log("No place, not fetching weather");
 			this.set('localForecast', null);
 		}
 	},
@@ -171,6 +172,11 @@ enyo.kind({
 			if(event.preventDefault) 
 				event.preventDefault();
 		}
+	},
+
+	retryGeolocation: function() {
+		this.$.locationErrorPopup.hide();
+		app.geolocate();
 	},
 
 	useSavedLocation: function() {
