@@ -139,7 +139,7 @@ enyo.kind({
 	},
 
 	placeChanged: function(oldPlace, newPlace) {
-		this.startJob('reload', 'reload', 100);
+		this.startJob('reload', 'reload', 500);
 	},
 
 	reload: function() {
