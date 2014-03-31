@@ -15,16 +15,15 @@ enyo.kind({
 		preferredLocation: ['usePlace', 'geolocation', {cached: true}]
 	},
 
-	preferredLocation: function() {
+	preferredLocation: function(old, n, prop) {
 		if(this.get('usePlace') == -1)
 			return this.get('geolocation');
 		else {
 			var settings = this.get('settings');
-			if(settings) {
+			if(settings)
 				return this.get('settings').get('places').at(this.get('usePlace'));
-			}
 		}
-		return null;
+		return undefined;
 	},
 
 	start: function() {
@@ -57,14 +56,14 @@ enyo.kind({
 enyo.ready(function() {
 	var view = 'cumulus.Main';
 
-	if (['androidChrome', 'androidFirefox', 'android', 'touch'].some(function(p) { return p in enyo.platform; })) {
+	if (['androidChrome', 'androidFirefox', 'android'].some(function(p) { return p in enyo.platform; })) {
 		enyo.Scroller.prototype.strategyKind = 'ScrollStrategy';
 		enyo.dom.addBodyClass('android');
 		view = 'cumulus.os.AndroidMain';
 	}
 
 	if (enyo.platform.webos) {
-		enyo.dom.addBodyClass('webos');
+		enyo.dom.addBodyClass('webOS');
 		view = 'cumulus.os.WebOSMain';
 	}
 
