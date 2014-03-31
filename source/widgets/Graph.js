@@ -5,6 +5,9 @@ enyo.kind({
 
 	published:{
 		collection: null,
+		sunrise: null,
+		sunset: null,
+
 		fillColor:"rgba(255,255,255,0.25)",
 		strokeColor:"rgba(255,255,255,1)",
 		graphColor:"rgba(0,0,0,0.25)",
@@ -15,12 +18,12 @@ enyo.kind({
 
 		showLabels:false,
 
-		currentPosition:undefined,
-
 		animator:null
 	},
 
 	_ctx:null,
+
+	_currentPosition: null,
 
 	_oldCollection: null,
 
@@ -30,16 +33,18 @@ enyo.kind({
 		{name:"canvas", style:"width:100%; height:100%", tag:"canvas"}
 	],
 
-	create:function() {
-		this.inherited(arguments);
-		this.showLabelsChanged();
-		this.setCollection(this.getCollection() || null);
-	},
-
-	showLabelsChanged:function(wasShowing, show) {
-		this.$.max.setShowing(show);
-		this.$.min.setShowing(show);
-	},
+	bindings:[
+		{from: '.showLabels', to: '.$.max.showing'},
+		{from: '.showLabels', to: '.$.min.showing'},
+		{from: '.collection', to: '.arrayOfValues', transform: function(collection) {
+			if(collection) {
+				var key = this.get('key');
+				return collection.raw().map(function(d){return d[key];});
+			}
+			else
+				return [];
+		}}
+	],
 
 	resizeHandler:function() {
 		this.inherited(arguments);
@@ -61,25 +66,30 @@ enyo.kind({
 		this.sizeCanvas();
 	},
 
-	calculateCurrentPosition: function() {
-		var x = undefined,
-			collection = this.getCollection();
+	timeToX: function(time) {
+		var collection = this.getCollection();
+		var x = undefined;
 
 		if(collection && collection.length) {
-			var now = new Date().getTime(),
-				first = collection.at(0).get('time'),
+			var first = collection.at(0).get('time'),
 				last = collection.at(collection.length - 1).get('time');
 
-			var x = (now - first) / (last - first);
-			if(x < 0 || x > 1)
-				x = undefined;
+			x = (time - first) / (last - first);
 		}
 
-		this.setCurrentPosition(x);
+		return x;
+	},
+
+	calculateCurrentPosition: function() {
+		var x = this.timeToX(new Date().getTime());
+		if(x < 0 || x > 1)
+			x = undefined;
+
+		this._currentPosition = x;
 	},
 	
-	collectionChanged:function(old, collection) {
-		this._oldCollection = old;
+	arrayOfValuesChanged:function(old, array) {
+		this._oldArrayOfValues = old;
 
 		this.calculateCurrentPosition();
 
@@ -90,22 +100,20 @@ enyo.kind({
 	},
 
 	getX:function(i) {
-		return this.getBounds().width*(i/(this.getCollection().length-1));
+		return this.getBounds().width*(i/(this.get('arrayOfValues').length-1));
 	},
 	
 	getY:function(i) {
-		return this.valueToY(this.getCollection().at(i).attributes[this.key]);
-		//return this.valueToY(this.getCollection().at(i).get(this.getKey()));
+		return this.valueToY(this.get('arrayOfValues')[i]);
 	},
 
 	getOldY:function(i) {
-		var collection = this.getCollection();
+		var array = this.get('arrayOfValues');
 
-		if(!this._oldCollection || collection.length != this._oldCollection.length)
+		if(!this._oldArrayOfValues || array.length != this._oldArrayOfValues.length)
 			return this.valueToY(this.getMin());
 
-		return this.valueToY(this._oldCollection.at(i).attributes[this.key]);
-		//return this.valueToY(this._oldCollection.at(i).get(this.getKey()));
+		return this.valueToY(this._oldArrayOfValues[i]);
 	},
 
 	valueToY:function(value) {
@@ -115,25 +123,32 @@ enyo.kind({
 
 	perfTest: function() {
 		var runs = 10000;
-		var t;
+		var t, i, c;
 
 		console.time('getters');
-		for(var i = 0; i < runs; i++)
-			for(var c = 0; c < this.collection.length; c++)
+		for(i = 0; i < runs; i++) {
+			for(c = 0; c < this.collection.length; c++)
 				t = this.collection.at(c).get('time');
+		}
 		console.timeEnd('getters');
 
 		console.time('hybrid');
-		for(var i = 0; i < runs; i++)
-			for(var c = 0; c < this.collection.length; c++)
+		for(i = 0; i < runs; i++) {
+			for(c = 0; c < this.collection.length; c++)
 				t = this.collection.at(c).attributes.time;
+		}
 		console.timeEnd('hybrid');
 
 		console.time('direct');
-		for(var i = 0; i < runs; i++)
-			for(var c = 0; c < this.collection.length; c++)
+		for(i = 0; i < runs; i++) {
+			for(c = 0; c < this.collection.length; c++)
 				t = this.collection.records[c].attributes.time;
+		}
 		console.timeEnd('direct');
+	},
+
+	drawBackground: function() {
+
 	},
 
 	drawGraphLines:function(animValue) {
@@ -157,15 +172,16 @@ enyo.kind({
 			return;
 
 		var bounds = this.$.canvas.getBounds(),
-			collection = this.collection,
+			values = this.arrayOfValues,
 			ctx = this._ctx,
 			animStep = this.animator ? this.animator.value : 1;
 
 		ctx.clearRect(0,0,bounds.width,bounds.height);
 
-		if(collection && collection.length) {
+		if(values && values.length) {
 			//draw grid
-			if(this._oldCollection && this._oldCollection.length == collection.length)
+			this.drawBackground(animStep);
+			if(this._oldArrayOfValues && this._oldArrayOfValues.length == values.length)
 				this.drawGraphLines(1);
 			else
 				this.drawGraphLines(animStep);
@@ -174,7 +190,7 @@ enyo.kind({
 			ctx.fillStyle = this.fillColor;
 			ctx.strokeStyle = this.strokeColor;
 			ctx.beginPath();
-			for(var i = 0; i < collection.length; i++)
+			for(var i = 0; i < values.length; i++)
 				ctx.lineTo(this.getX(i),animStep*this.getY(i)+(1-animStep)*this.getOldY(i)); 
 			ctx.stroke();
 			ctx.lineTo(bounds.width,bounds.height);
@@ -182,8 +198,8 @@ enyo.kind({
 			ctx.fill();
 
 			//draw now
-			if(this.currentPosition !== undefined) {
-				var currentPercentage = this.currentPosition * bounds.width;
+			if(this._currentPosition !== undefined) {
+				var currentPercentage = this._currentPosition * bounds.width;
 				ctx.strokeStyle = this.getNowColor();
 				ctx.fillStyle = this.getNowColor();
 				ctx.beginPath();
