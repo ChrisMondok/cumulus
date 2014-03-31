@@ -43,129 +43,10 @@ enyo.kind({
 			}
 			else
 				return [];
-		}}
+		}},
+		{from: '.min', to: '.$.min.content'},
+		{from: '.max', to: '.$.max.content'}
 	],
-
-	resizeHandler:function() {
-		this.inherited(arguments);
-		this.sizeCanvas();
-		this.drawGraph();
-	},
-
-	sizeCanvas:function() {
-		var canvas = this.$.canvas;
-		var bounds = canvas.getBounds();
-
-		canvas.setAttribute("height",bounds.height);
-		canvas.setAttribute("width",bounds.width);
-	},
-
-	rendered:function() {
-		this.inherited(arguments);
-		this._ctx = this.$.canvas.hasNode().getContext('2d');
-		this.sizeCanvas();
-	},
-
-	timeToX: function(time) {
-		var collection = this.getCollection();
-		var x = undefined;
-
-		if(collection && collection.length) {
-			var first = collection.at(0).get('time'),
-				last = collection.at(collection.length - 1).get('time');
-
-			x = (time - first) / (last - first);
-		}
-
-		return x;
-	},
-
-	calculateCurrentPosition: function() {
-		var x = this.timeToX(new Date().getTime());
-		if(x < 0 || x > 1)
-			x = undefined;
-
-		this._currentPosition = x;
-	},
-	
-	arrayOfValuesChanged:function(old, array) {
-		this._oldArrayOfValues = old;
-
-		this.calculateCurrentPosition();
-
-		this.$.min.setContent(this.getMin());
-		this.$.max.setContent(this.getMax());
-
-		this.drawGraph();
-	},
-
-	getX:function(i) {
-		return this.getBounds().width*(i/(this.get('arrayOfValues').length-1));
-	},
-	
-	getY:function(i) {
-		return this.valueToY(this.get('arrayOfValues')[i]);
-	},
-
-	getOldY:function(i) {
-		var array = this.get('arrayOfValues');
-
-		if(!this._oldArrayOfValues || array.length != this._oldArrayOfValues.length)
-			return this.valueToY(this.getMin());
-
-		return this.valueToY(this._oldArrayOfValues[i]);
-	},
-
-	valueToY:function(value) {
-		var min = this.getMin(), max = this.getMax();
-		return this.getBounds().height * (1 - (value-min)/(max-min));
-	},
-
-	perfTest: function() {
-		var runs = 10000;
-		var t, i, c;
-
-		console.time('getters');
-		for(i = 0; i < runs; i++) {
-			for(c = 0; c < this.collection.length; c++)
-				t = this.collection.at(c).get('time');
-		}
-		console.timeEnd('getters');
-
-		console.time('hybrid');
-		for(i = 0; i < runs; i++) {
-			for(c = 0; c < this.collection.length; c++)
-				t = this.collection.at(c).attributes.time;
-		}
-		console.timeEnd('hybrid');
-
-		console.time('direct');
-		for(i = 0; i < runs; i++) {
-			for(c = 0; c < this.collection.length; c++)
-				t = this.collection.records[c].attributes.time;
-		}
-		console.timeEnd('direct');
-	},
-
-	drawBackground: function() {
-
-	},
-
-	drawGraphLines:function(animValue) {
-		this._ctx.strokeStyle = this.getGraphColor();
-		var collection = this.getCollection();
-
-		var amount = (collection.length-1) * animValue;
-
-		for(var i = 0; i < amount; i++) {
-			var x = this.getX(i);
-			this._ctx.beginPath();
-			this._ctx.moveTo(x,0);
-			this._ctx.lineTo(x,this.getBounds().height);
-			this._ctx.stroke();
-			this._ctx.closePath();
-		}
-	},
 
 	drawGraph:function() {
 		if(!this._ctx)
@@ -216,6 +97,109 @@ enyo.kind({
 				ctx.stroke();
 			}
 		}
+	},
 
-	}
+	drawGraphLines:function(animValue) {
+		this._ctx.strokeStyle = this.getGraphColor();
+		var collection = this.getCollection();
+
+		var amount = (collection.length-1) * animValue;
+
+		for(var i = 0; i < amount; i++) {
+			var x = this.getX(i);
+			this._ctx.beginPath();
+			this._ctx.moveTo(x,0);
+			this._ctx.lineTo(x,this.getBounds().height);
+			this._ctx.stroke();
+			this._ctx.closePath();
+		}
+	},
+
+	drawBackground: function() {
+
+	},
+
+	timeToX: function(time) {
+		var collection = this.getCollection();
+		var x = undefined;
+
+		if(collection && collection.length) {
+			var first = collection.at(0).get('time'),
+				last = collection.at(collection.length - 1).get('time');
+
+			x = (time - first) / (last - first);
+		}
+
+		return x;
+	},
+
+	calculateCurrentPosition: function() {
+		var x = this.timeToX(new Date().getTime());
+		if(x < 0 || x > 1)
+			x = undefined;
+
+		this._currentPosition = x;
+	},
+	
+	getX:function(i) {
+		return this.getBounds().width*(i/(this.get('arrayOfValues').length-1));
+	},
+	
+	getY:function(i) {
+		return this.valueToY(this.get('arrayOfValues')[i]);
+	},
+
+	getOldY:function(i) {
+		var array = this.get('arrayOfValues');
+
+		if(!this._oldArrayOfValues || array.length != this._oldArrayOfValues.length)
+			return this.valueToY(this.getMin());
+
+		return this.valueToY(this._oldArrayOfValues[i]);
+	},
+
+	valueToY:function(value) {
+		var step = this.animator ? this.animator.value : 1;
+		var oldMin = isNaN(this._oldMin) ? this.min : this._oldMin;
+		var oldMax = isNaN(this._oldMax) ? this.max : this._oldMax;
+
+		var min = cumulus.Utils.lerp(oldMin, this.min, step);
+		var max = cumulus.Utils.lerp(oldMax, this.max, step);
+
+		return this.getBounds().height * (1 - (value-min)/(max-min));
+	},
+
+	arrayOfValuesChanged:function(old, array) {
+		this._oldArrayOfValues = old;
+		this._oldMin = this.get('min');
+		this._oldMax = this.get('max');
+
+		this.calculateCurrentPosition();
+
+		this.$.min.setContent(this.getMin());
+		this.$.max.setContent(this.getMax());
+
+		this.drawGraph();
+	},
+
+	resizeHandler:function() {
+		this.inherited(arguments);
+		this.sizeCanvas();
+		this.drawGraph();
+	},
+
+	sizeCanvas:function() {
+		var canvas = this.$.canvas;
+		var bounds = canvas.getBounds();
+
+		canvas.setAttribute("height",bounds.height);
+		canvas.setAttribute("width",bounds.width);
+	},
+
+	rendered:function() {
+		this.inherited(arguments);
+		this._ctx = this.$.canvas.hasNode().getContext('2d');
+		this.sizeCanvas();
+	},
+
 });

@@ -7,6 +7,8 @@ enyo.kind({
 	},
 
 	arrayOfValuesChanged:function(old, array) {
+		this.inherited(arguments);
+
 		var step = this.getStep();
 
 		if(array && array.length) {
@@ -20,8 +22,6 @@ enyo.kind({
 		}
 		else
 			this.setShowLabels(false);
-
-		this.inherited(arguments);
 	},
 
 	drawGraphLines:function(animStep) {

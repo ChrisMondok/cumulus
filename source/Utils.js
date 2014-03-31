@@ -1,6 +1,10 @@
 enyo.singleton({
 	name:"cumulus.Utils",
 
+	lerp: function(a, b, i) {
+		return b*i + a*(1-i);
+	},
+
 	getGeoDistance:function(latitude, longitude, targetlat, targetlon) {
 
 		var degToRad = function(degrees) {
