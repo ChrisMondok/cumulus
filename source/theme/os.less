@@ -1,16 +1,43 @@
-.appmenu {
-	z-index: 10000;
-}
 .android {
 	@menubar-height: 48px;
+	@appmenu-radius: 3px;
+	@menubar-background: #222222;
+	@popup-shadow: 0px 0px 17px fadeout(black, 50%);
+
+	main {
+		top: @menubar-height;
+	}
+
+	.menubar, .appmenu, .onyx-popup {
+		background-color: @menubar-background;
+		border-left: none;
+		border-right: none;
+		border-top: 1px solid lighten(@menubar-background, 8%);
+		border-bottom: 1px solid darken(@menubar-background, 3%); // #1b1b1b;
+	}
+
+	.menubar {
+		height: @menubar-height;
+		line-height: @menubar-height;
+
+		color: white;
+
+		box-sizing: border-box;
+
+		.onyx-icon {
+			height: 32px;
+		}
+	}
 
 	.appmenu {
 		position: absolute;
-		top: 0;
-		right: 0px;
+		top: @menubar-height;
+		right: 4px;
 		width: 200px;
-		background-color: #222222;
-		border-radius: 2px;
+
+		box-shadow: @popup-shadow;
+
+		border-radius: @appmenu-radius;
 
 		button {
 			display: block;
@@ -20,34 +47,37 @@
 			color: white;
 			background-color: transparent;
 
-			border-width: 1px 0px 1px 0px;
-			border-color: #4e4e4e;
-			border-style: solid;
+			border: none;
+			border-bottom: 1px solid lighten(@menubar-background, 17%);
 
 			padding: 16px;
 			margin: 0;
 
 			&:first-of-type {
-				border-radius: 2px 2px 0 0;
+				border-radius: @appmenu-radius @appmenu-radius 0 0;
 			}
 
 			&:last-of-type {
-				border-radius: 0 0 2px 2px;
-				border-bottom-color: #1f1f1f;
+				border-radius: 0 0 @appmenu-radius @appmenu-radius;
+				border-bottom: none;
 			}
 		}
 	}
 
-	.menubar {
-		background-color: black;
-		color: white;
-		height: @menubar-height;
-		line-height: @menubar-height;
+	.onyx-popup {
+		background-color: @menubar-background;
+		border-radius: 0;
+		box-shadow: @popup-shadow;
 
-		.onyx-icon {
-			height: 32px;
+		padding: 8px;
+
+		header {
+			padding: 1em;
+			margin: -8px -8px 8px -8px;
+			border-bottom: 1px solid currentcolor;
 		}
 	}
+
 }
 
 .webOS {

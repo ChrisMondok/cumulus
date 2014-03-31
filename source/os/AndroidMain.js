@@ -1,11 +1,14 @@
 enyo.kind({
 	name: 'cumulus.os.AndroidMain',
-	kind: 'FittableRows',
+	kind: 'cumulus.Main',
 
 	classes: 'android',
 
-	components:[
-		{kind: 'cumulus.widgets.AndroidMenubar'},
-		{kind: 'cumulus.Main', fit: true}
-	]
-})
+	initComponents: function() {
+		this.createChrome([
+			{kind: 'cumulus.widgets.AndroidMenubar'},
+			{name: 'client'}
+		]);
+		this.inherited(arguments);
+	}
+});

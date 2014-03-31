@@ -3,6 +3,7 @@ enyo.kind({
 	kind: 'enyo.Popup',
 	defaultKind: 'enyo.Button',
 	modal: true,
+	floating: true,
 
 	classes: 'appmenu',
 

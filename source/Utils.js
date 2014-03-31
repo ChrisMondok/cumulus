@@ -1,6 +1,26 @@
 enyo.singleton({
 	name:"cumulus.Utils",
 
+	getGeoDistance:function(latitude, longitude, targetlat, targetlon) {
+
+		var degToRad = function(degrees) {
+			return (degrees/180)*Math.PI;
+		};
+
+		var earthRadius = 6371,
+			lat1 = degToRad(latitude),
+			lon1 = degToRad(longitude),
+			lat2 = degToRad(targetlat),
+			lon2 = degToRad(targetlon),
+			dLat = lat2 - lat1,
+			dLon = lon2 - lon1;
+
+		var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)*Math.sin(dLon/2);
+		var c = 2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+		var distanceInKm = earthRadius*c;
+		return Math.round(distanceInKm*62.1371)/100;
+	},
+
 	formatTime: function(date) {
 		if (typeof date == 'number')
 			date = new Date(date);

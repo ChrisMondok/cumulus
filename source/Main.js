@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "cumulus.Main",
-	classes: "onyx main",
+	classes: "onyx obscurable",
 
 	published: {
 		api: null,
@@ -12,43 +12,33 @@ enyo.kind({
 	bindings: [
 		{from: '.localForecast', to: '.$.outlook.forecast'},
 		{from: '.localForecast', to: '.$.detail.forecast'},
-		{from: '.settings.useGPS', to:'.useGPS'},
-		{from: '.settings.usePlace', to: '.usePlace'},
 		{from: '.app.settings', to: '.settings'},
-		{from: '.place', to: '.$.preferences.currentLocation'},
 		{from: '.store', to: '.$.detail.store'},
+		{from: '.app.preferredLocation', to: '.place'},
 
 		//TODO: delete these
 		{from: '.api', to:'.$.outlook.$.minutelyForecast.api'},
 		{from: '.place', to:'.$.outlook.$.minutelyForecast.place'}
 	],
 
-	observers:{
-		relocate: ['useGPS', 'usePlace']
-	},
 
-	relocate: function() {
-		if(this.get('useGPS')) {
-			this.geolocate();
-		}
-		else {
-			var place = this.settings.get('usePlace');
-			if(typeof(place) == 'number')
-				this.setPlace(this.settings.get('places').at(this.settings.get('usePlace')));
-		}
+	initComponents: function() {
+		this.createChrome([
+			{name: "appmenu", kind: "cumulus.Appmenu", components: [
+				{content: "Preferences", ontap: 'routeToPreferences'},
+				{content: "About", ontap: "routeToAbout"}
+			]}
+		]);
+		this.inherited(arguments);
 	},
 
 	components: [
 		{kind: "Router", useHistory: true, triggerOnStart: false, routes:[
-			{path: 'outlook', handler: 'showOutlook', context: 'owner', "default": true},
-			{path: 'detail/:time', handler: 'showDetail', context: 'owner'},
-			{path: 'preferences', handler: 'showPreferences', context: 'owner'}
+			{path: 'outlook', handler: 'routeHandler', context: 'owner', "default": true},
+			{path: 'detail/:time', handler: 'routeHandler', context: 'owner'},
+			{path: 'preferences', handler: 'routeHandler', context: 'owner'}
 		]},
-		{name: "appmenu", kind: "cumulus.Appmenu", components: [
-			{content: "Preferences", ontap: 'routeToPreferences'},
-			{content: "About", ontap: "showAbout"}
-		]},
-		{name: "panels", kind: "Panels", arrangerKind: "CardArranger", classes: "enyo-fit", draggable: false, onTransitionFinish: "panelIndexChanged", components: [
+		{name: "panels", kind: "Panels", tag:'main', arrangerKind: "CardArranger",  draggable: false, onTransitionFinish: "panelIndexChanged", components: [
 			{ name: "outlook", kind: "cumulus.Outlook" },
 			{ name: "detail", kind: "cumulus.Detail" },
 			{ name: "advisory", kind: "cumulus.Advisory" },
@@ -65,7 +55,7 @@ enyo.kind({
 			scrimWhenModal: true,
 			components: [
 				{kind: "cumulus.Spinner", style: "display: inline-block; vertical-align: middle;"},
-				{content: "Locating", fit: true, style: "display: inline-block; vertical-align: middle; padding-right: 8px;"}
+				{content: "Locating", style: "display: inline-block; vertical-align: middle; padding-right: 8px;"}
 			]
 		},
 		{
@@ -78,12 +68,12 @@ enyo.kind({
 			autoDismiss: false,
 			scrimWhenModal: true,
 			components: [
-				{name:"locationErrorReason", content:"Geolocation Error"},
-				{kind:"onyx.Button", content:"Retry", classes:"onyx-dark", ontap:"geolocate", style:"display:block; width: 100%; margin-top:1ex;"},
-				{name:"useSavedLocationButton", kind:"onyx.Button", content:"Use a saved location", ontap:"useSavedLocation", classes:"onyx-dark", style:"display:block; width:100%; margin-top:1ex;" }
+				{tag: 'header', name: 'locationErrorReason', content:"Geolocation Error"},
+				{tag: 'footer', components:[
+					{name:'useSavedLocationButton', kind:'onyx.Button', content:"Use a saved location", ontap:'useSavedLocation', classes:'onyx-dark'}
+				]}
 			]
 		},
-		{ kind: "cumulus.AboutPopup" },
 		{
 			name: "errorPopup",
 			kind: "onyx.Popup",
@@ -119,6 +109,12 @@ enyo.kind({
 		return store;
 	},
 
+	getPopups: function() {
+		return this.getComponents().filter(function(cmp) {
+			return cmp instanceof enyo.Popup;
+		});
+	},
+
 	getSetting: function(setting) {
 		return this.$.preferences.settings.get(setting);
 	},
@@ -129,39 +125,36 @@ enyo.kind({
 		onyx.scrim.make().addObserver("showing",this.obscuredChanged, this);
 	},
 
-	geolocate: function() {
-		this.$.locationErrorPopup.hide();
-		this.$.locatingPopup.show();
-		Service.Geolocation.getLocation()
-			.response(enyo.bind(this, function(sender,response) {
-				this.$.locatingPopup.hide();
-				this.setPlace(response);
-			}))
-			.error(enyo.bind(this, function(sender,error) {
-				this.$.locatingPopup.hide();
-				this.$.locationErrorReason.setContent(error.reason);
-				this.$.locationErrorPopup.show();
-			}));
+	showGeolocationError: function() {
+		this.$.locatingPopup.hide();
+		this.$.locationErrorPopup.show();
 	},
 
-	showOutlook: function() {
-		this.$.panels.selectPanelByName('outlook');
-	},
+	routeHandler: function(a, b, c) {
+		var panels = this.$.panels.getPanels().map(function(p){return p.get('name');});
+		var path = this.$.router.get('location').split('/')[0] || 'outlook';
 
-	showDetail: function(time) {
-		this.$.panels.selectPanelByName('detail');
-	},
-
-	showPreferences: function() {
-		this.$.panels.selectPanelByName('preferences');
+		if(panels.indexOf(path) != -1)
+			this.$.panels.selectPanelByName(path);
 	},
 
 	placeChanged: function(oldPlace, newPlace) {
-		if(newPlace) {
-			var store = this.createStore();
-			var l = store.createRecord(cumulus.models.LocalForecast,{location: newPlace, name: 'test'});
-			this.set('localForecast', l);
+		this.startJob('reload', 'reload', 100);
+	},
+
+	reload: function() {
+		var place = this.get('place');
+		var store = this.createStore();
+		
+		if(place) {
+			console.log("Fetching weather");
+			var l = store.createRecord(cumulus.models.LocalForecast,{location: this.get('place'), name: 'test'});
 			l.fetch({params:{extend:"hourly"}, success: function(){console.log("DONE");}});
+			this.set('localForecast', l);
+		}
+		else {
+			console.log("No place, not fetching weather");
+			this.set('localForecast', null);
 		}
 	},
 
@@ -171,9 +164,12 @@ enyo.kind({
 
 	onBackButton: function(sender,event) {
 		if(this.$.panels.getIndex()) {
-			this.back();
-			event.stopPropagation();
-			event.preventDefault();
+			history.back();
+
+			if(event.stopPropagation)
+				event.stopPropagation();
+			if(event.preventDefault) 
+				event.preventDefault();
 		}
 	},
 
@@ -181,15 +177,15 @@ enyo.kind({
 		this.$.locationErrorPopup.hide();
 		this.routeToPreferences();
 
-		setTimeout(this.settings.set.bind(this.settings, 'useGPS', false), 750);
+		setTimeout(this.settings.set.bind(this.settings, 'usePlace', 0), 750);
 	},
 
 	routeToPreferences: function() {
 		window.location.hash = 'preferences';
 	},
 
-	back: function(sender,event) {
-		history.back();
+	routeToAbout: function() {
+		window.location.hash = 'about';
 	},
 
 	obscuredChanged: function(oldValue, newValue) {
@@ -199,10 +195,6 @@ enyo.kind({
 	receivedAPIError: function(sender, event) {
 		this.$.errorDescription.setContent(event.error.description);
 		this.$.errorPopup.show();
-	},
-
-	showAbout: function() {
-		this.$.aboutPopup.show();
 	},
 
 	toggleAppMenu: function() {

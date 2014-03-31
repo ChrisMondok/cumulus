@@ -67,10 +67,6 @@ enyo.kind({
 		this.$.minutelyForecastDrawer.setOpen(!this.$.minutelyForecastDrawer.getOpen());
 	},
 
-	dailyChanged: function(oldValue, newValue) {
-		debugger;
-	},
-
 	advisoriesChanged: function(old,advisories) {
 	//	if(advisories.length) {
 	//		this.$.advisoriesOpener.setContent([advisories.length,$L(advisories.length === 1 ? "advisory" : "advisories")].join(" "));

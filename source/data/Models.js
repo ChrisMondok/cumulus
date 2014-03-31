@@ -113,7 +113,7 @@ enyo.kind({
 	name: 'cumulus.models.Settings',
 	kind: 'enyo.Model',
 	defaultSource: 'localStorage',
-	includeKeys:['reloadInterval', 'places', 'useGPS', 'usePlace'],
+	includeKeys:['reloadInterval', 'places', 'usePlace'],
 
 	statics:{
 		defaultSettings:{
@@ -121,20 +121,8 @@ enyo.kind({
 			places:[
 				{name: 'Neptune', latitude:40.220391, longitude:-74.012082},
 				{name: 'Long Valley', latitude:40.78225, longitude:-74.776936}
-			],
-			useGPS: true
+			]
 		}
-	},
-
-	observers:{
-		useGPSChanged: ['useGPS']
-	},
-
-	useGPSChanged: function(old, useGPS) {
-		if(useGPS || this.get('places').length == 0)
-			this.set('usePlace', -1);
-		else
-			this.set('usePlace', 0);
 	},
 
 	constructor: function() {
@@ -157,6 +145,13 @@ enyo.kind({
 		this.set('id', 'settings');
 		this.dirty = false;
 		this.unsilence();
+	},
+
+	usePlaceChanged: function(old, u) {
+		if( u === null )
+		{
+			debugger
+		}
 	},
 
 	parse: function(data) {

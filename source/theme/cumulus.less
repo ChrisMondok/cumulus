@@ -2,8 +2,24 @@ html, body {
 	background-color:black;
 }
 
-.main {
-	position: relative;
+main, main.enyo-arranger {
+	position: absolute;
+}
+
+main {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+}
+
+button {
+	color: black;
+	background-color: white;
+}
+
+.obscurable {
 	-moz-transition: -moz-transform 0.25s ease;
 	-ms-transition: -ms-transform 0.25s ease;
 	-webkit-transition: -webkit-transform 0.25s ease;
@@ -13,16 +29,16 @@ html, body {
 	-ms-transform:scale(1);
 	-webkit-transform:scale(1);
 	transform:scale(1);
-}
 
-.main.obscured {
-	-moz-transform:scale(0.9);
-	-ms-transform:scale(0.9);
-	-webkit-transform:scale(0.9);
-	transform:scale(0.9);
+	&.obscured {
+		-moz-transform:scale(0.9);
+		-ms-transform:scale(0.9);
+		-webkit-transform:scale(0.9);
+		transform:scale(0.9);
 
-	-webkit-filter:blur(3px);
-	filter: url(../../assets/filters.svg#blur);
+		-webkit-filter:blur(3px);
+		filter: url(../../assets/filters.svg#blur);
+	}
 }
 
 .nice-padding {
@@ -68,11 +84,6 @@ html, body {
 	transform:rotate(45deg);
 }
 
-.main-panel
-{
-	width:320px;
-}
-
 .icon-container {
 	display:inline-block;
 
@@ -97,17 +108,28 @@ html, body {
 	color:#235B86;
 }
 
-.onyx-popup .title {
-	color:#F79A42;
+.onyx-popup {
+	header {
+		color:#F79A42;
+	}
+
+	footer {
+		button {
+			display:block; width:100%; margin-top:1ex;
+		}
+	}
+
+	a {
+		color:white;
+		margin-top:0.5em;
+		margin-bottom:0.5em;
+		display:block;
+	}
 }
 
 h1 {
 	text-shadow: 0px -1px rgba(0,0,0,0.5), 0px 1px rgba(255,255,255,0.5);
 	color:rgba(0,0,0,0.5);
-}
-
-.onyx-popup h1 {
-	color:rgba(255,255,255,0.5);
 }
 
 .onyx-button.row-button {
@@ -119,14 +141,6 @@ h1 {
 .with-vertical-margin {
 	margin-top: 15px;
 	margin-bottom:15px;
-}
-
-.onyx-popup a
-{
-	color:white;
-	margin-top:0.5em;
-	margin-bottom:0.5em;
-	display:block;
 }
 
 .divider {
