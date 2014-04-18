@@ -23,5 +23,8 @@ install-webos: deploy/$(IPK)
 run-webos: install-webos
 	palm-launch $(APPID)
 
+run-android: deploy/cumulus
+	cd cordova; cordova run android;
+
 clean:
 	rm -rf deploy/* build/*
