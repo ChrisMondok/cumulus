@@ -3,6 +3,7 @@
 		handleCtrlTilde();
 		handleEscape();
 		handleWebosEvents();
+		handleCordovaEvents();
 
 		if(window.PalmSystem)
 			PalmSystem.stageReady();
@@ -21,6 +22,17 @@
 			if(event.ctrlKey && event.keyCode == 192)
 				enyo.Signals.send('onAppMenu');
 		});
+	};
+
+	handleCordovaEvents = function() {
+		if(window.cordova) {
+			document.addEventListener('menubutton', function() {
+				enyo.Signals.send('onAppMenu');
+			}, false);
+			document.addEventListener('backbutton', function() {
+				enyo.Signals.send('onBackButton');
+			});
+		}
 	};
 
 	var handleWebosEvents = function() {
