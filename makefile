@@ -20,5 +20,8 @@ webos: deploy/$(IPK)
 install-webos: deploy/$(IPK)
 	palm-install deploy/$(IPK)
 
+run-webos: install-webos
+	palm-launch $(APPID)
+
 clean:
 	rm -rf deploy/* build/*
