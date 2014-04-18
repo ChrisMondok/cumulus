@@ -1,5 +1,5 @@
 ant-build
 ant-gen
-assets
+assets/www/
 local.properties
 platform_www
