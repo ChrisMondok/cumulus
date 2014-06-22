@@ -26,8 +26,6 @@ enyo.kind({
 
 	_currentPosition: null,
 
-	_oldCollection: null,
-
 	components:[
 		{name:"max", style:"position:absolute; left:0px; top:0px;"},
 		{name:"min", style:"position:absolute; left:0px; bottom:0px;"},
@@ -37,66 +35,95 @@ enyo.kind({
 	bindings:[
 		{from: '.showLabels', to: '.$.max.showing'},
 		{from: '.showLabels', to: '.$.min.showing'},
-		{from: '.collection', to: '.arrayOfValues', transform: function(collection) {
-			if(collection) {
-				var key = this.get('key');
-				return collection.raw().map(function(d){return d[key];});
-			}
-			else
-				return [];
+		{from: '.collection', to: '._values', transform: function(collection) {
+			var raw = collection ? collection.raw() : [];
+			var keys = this.get('keys');
+			return keys.map(function(k) {
+				return raw.map(function(d) {return d[k];} );
+			});
 		}},
 		{from: '.min', to: '.$.min.content'},
 		{from: '.max', to: '.$.max.content'}
 	],
 
+	hasValues: function() {
+		return this.keys && this._values && Boolean(this._values[0].length);
+	},
+
+	hasOldValues: function() {
+		return this.keys && this._oldValues && Boolean(this._oldValues[0].length);
+	},
+
+	numberOfValuesHasChanged: function() {
+		if(typeof(this._oldValues) != typeof(this._values))
+			return true;
+		return this._values[0].length != this._oldValues[0].length;
+	},
+
+	getAnimStep: function() {
+		return this.animator ? this.animator.value : 1;
+	},
+
+	drawValues:function(key) {
+		var animStep = this.getAnimStep();	
+		var values = this._values[key];
+		var ctx = this._ctx;
+		var bounds = this._canvasBounds;
+
+		ctx.fillStyle = this.fillColor;
+		ctx.strokeStyle = this.strokeColor;
+		ctx.beginPath();
+		for(var i = 0; i < values.length; i++)
+			ctx.lineTo(this.getX(i),animStep*this.getY(key,i)+(1-animStep)*this.getOldY(key,i)); 
+		ctx.stroke();
+		ctx.lineTo(bounds.width,bounds.height);
+		ctx.lineTo(0,bounds.height);
+		ctx.fill();
+	},
+
 	drawGraph:function() {
 		if(!this._ctx)
 			return;
 
-		var bounds = this._canvasBounds,
-			values = this.arrayOfValues,
-			ctx = this._ctx,
-			animStep = this.animator ? this.animator.value : 1;
+		var ctx = this._ctx;
+		var animStep = this.getAnimStep();
 
-		ctx.clearRect(0,0,bounds.width,bounds.height);
+		ctx.clearRect(0,0,this._canvasBounds.width,this._canvasBounds.height);
 
-		if(values && values.length) {
-			//draw grid
+		if(this.hasValues()) {
 			this.drawBackground(animStep);
-			if(this._oldArrayOfValues && this._oldArrayOfValues.length == values.length)
-				this.drawGraphLines(1);
-			else
+			if(this.numberOfValuesHasChanged())
 				this.drawGraphLines(animStep);
+			else
+				this.drawGraphLines(1);
 
-			//draw graph
-			ctx.fillStyle = this.fillColor;
-			ctx.strokeStyle = this.strokeColor;
+			this.drawValues(0);
+
+			this.drawNow();
+		}
+	},
+
+	drawNow: function() {
+		var ctx = this._ctx;
+		var animStep = this.getAnimStep();
+		var bounds = this._canvasBounds;
+
+		if(this._currentPosition !== undefined) {
+			var currentPercentage = this._currentPosition * bounds.width;
+			ctx.strokeStyle = this.getNowColor();
+			ctx.fillStyle = this.getNowColor();
 			ctx.beginPath();
-			for(var i = 0; i < values.length; i++)
-				ctx.lineTo(this.getX(i),animStep*this.getY(i)+(1-animStep)*this.getOldY(i)); 
-			ctx.stroke();
-			ctx.lineTo(bounds.width,bounds.height);
-			ctx.lineTo(0,bounds.height);
+			ctx.moveTo(currentPercentage, 5);
+			ctx.lineTo(currentPercentage+5, 0);
+			ctx.lineTo(currentPercentage-5, 0);
+			ctx.lineTo(currentPercentage, 5);
+
+			ctx.lineTo(currentPercentage, (bounds.height - 5)*animStep);
+			ctx.lineTo(currentPercentage - 5, (bounds.height - 5)*animStep+5);
+			ctx.lineTo(currentPercentage + 5, (bounds.height - 5)*animStep+5);
+			ctx.lineTo(currentPercentage, (bounds.height - 5)*animStep);
 			ctx.fill();
-
-			//draw now
-			if(this._currentPosition !== undefined) {
-				var currentPercentage = this._currentPosition * bounds.width;
-				ctx.strokeStyle = this.getNowColor();
-				ctx.fillStyle = this.getNowColor();
-				ctx.beginPath();
-				ctx.moveTo(currentPercentage, 5);
-				ctx.lineTo(currentPercentage+5, 0);
-				ctx.lineTo(currentPercentage-5, 0);
-				ctx.lineTo(currentPercentage, 5);
-
-				ctx.lineTo(currentPercentage, (bounds.height - 5)*animStep);
-				ctx.lineTo(currentPercentage - 5, (bounds.height - 5)*animStep+5);
-				ctx.lineTo(currentPercentage + 5, (bounds.height - 5)*animStep+5);
-				ctx.lineTo(currentPercentage, (bounds.height - 5)*animStep);
-				ctx.fill();
-				ctx.stroke();
-			}
+			ctx.stroke();
 		}
 	},
 
@@ -164,20 +191,21 @@ enyo.kind({
 	},
 	
 	getX:function(i) {
-		return this._canvasBounds.width*(i/(this.get('arrayOfValues').length-1));
+		return this._canvasBounds.width*(i/(this._values[0].length-1));
 	},
 	
-	getY:function(i) {
-		return this.valueToY(this.get('arrayOfValues')[i]);
+	getY:function(key, i) {
+		var y = this.valueToY(this.get('_values')[key][i]);
+		return y;
 	},
 
-	getOldY:function(i) {
-		var array = this.get('arrayOfValues');
+	getOldY:function(key, i) {
+		var array = this.get('_values')[key][i];
 
-		if(!this._oldArrayOfValues || array.length != this._oldArrayOfValues.length)
+		if(this.numberOfValuesHasChanged())
 			return this.valueToY(this.getMin());
 
-		return this.valueToY(this._oldArrayOfValues[i]);
+		return this.valueToY(this._oldValues[key][i]);
 	},
 
 	valueToY:function(value) {
@@ -186,13 +214,16 @@ enyo.kind({
 		return this._canvasBounds.height * (1 - (value-this.min)/(this.max-this.min));
 	},
 
-	arrayOfValuesChanged:function(old, array) {
-		this._oldArrayOfValues = old;
+	_valuesChanged:function(old, array) {
+		if(old)
+			this._oldValues = old;
+		else {
+			this._oldValues = this.keys.map(function(k) {
+				return [];
+			});
+		}
 
 		this.calculateCurrentPosition();
-
-		this.$.min.setContent(this.getMin());
-		this.$.max.setContent(this.getMax());
 
 		this.drawGraph();
 	},

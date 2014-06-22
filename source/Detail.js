@@ -62,7 +62,7 @@ enyo.kind({
 						name:"popGraph",
 						kind:"cumulus.Graph",
 						classes:"group",
-						key:"precipProbability",
+						keys:["precipProbability"],
 						min:0, max:1,
 						fillColor:"rgba(132,167,193,0.5)",
 						strokeColor:"rgba(132,167,193,1)"
@@ -73,7 +73,7 @@ enyo.kind({
 					name:"tempGraph",
 					classes:"group",
 					kind:"cumulus.TemperatureGraph",
-					key:"temperature",
+					keys:["temperature","apparentTemperature"],
 					fillColor:"rgba(255,0,0,0.25)",
 					strokeColor:"rgba(255,0,0,1)"
 				},
@@ -82,7 +82,7 @@ enyo.kind({
 					name:"humidityGraph",
 					classes:"group",
 					kind:"cumulus.Graph",
-					key:"humidity",
+					keys:["humidity"],
 					min:0, max:1,
 					fillColor:"rgba(255,255,255,0.25)",
 					strokeColor:"rgba(255,255,255,0.75)"
