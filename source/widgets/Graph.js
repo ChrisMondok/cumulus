@@ -8,11 +8,11 @@ enyo.kind({
 		sunrise: null,
 		sunset: null,
 
-		fillColor:"rgba(255,255,255,0.25)",
-		strokeColor:"rgba(255,255,255,1)",
+		fillColors:["rgba(255,255,255,0.25)"],
+		strokeColors:["rgba(255,255,255,1)"],
 		graphColor:"rgba(0,0,0,0.25)",
 		nightColor:"rgba(0,0,0,0.2)",
-		key:"",
+		keys:"",
 		min:0,
 		max:100,
 		nowColor:"#f79a42",
@@ -69,16 +69,25 @@ enyo.kind({
 		var values = this._values[key];
 		var ctx = this._ctx;
 		var bounds = this._canvasBounds;
+		var fillColor = this.fillColors[key];
+		var color = this.strokeColors[key];
 
-		ctx.fillStyle = this.fillColor;
-		ctx.strokeStyle = this.strokeColor;
 		ctx.beginPath();
+
 		for(var i = 0; i < values.length; i++)
 			ctx.lineTo(this.getX(i),animStep*this.getY(key,i)+(1-animStep)*this.getOldY(key,i)); 
-		ctx.stroke();
-		ctx.lineTo(bounds.width,bounds.height);
-		ctx.lineTo(0,bounds.height);
-		ctx.fill();
+		
+		if(color) {
+			ctx.strokeStyle = color;
+			ctx.stroke();
+		}
+
+		if(fillColor) {
+			ctx.lineTo(bounds.width,bounds.height);
+			ctx.lineTo(0,bounds.height);
+			ctx.fillStyle = fillColor;
+			ctx.fill();
+		}
 	},
 
 	drawGraph:function() {
@@ -97,7 +106,8 @@ enyo.kind({
 			else
 				this.drawGraphLines(1);
 
-			this.drawValues(0);
+			for(var i = 0; i < this._values.length; i++)
+				this.drawValues(i, !i);
 
 			this.drawNow();
 		}

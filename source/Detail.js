@@ -21,14 +21,11 @@ enyo.kind({
 
 		{from: '.model.hourly', to: '.$.popGraph.collection'},
 		{from: '.model.hourly', to: '.$.tempGraph.collection'},
-		{from: '.model.hourly', to: '.$.humidityGraph.collection'},
 
 		{from: '.model.sunriseTime', to: '.$.popGraph.sunriseTime'},
 		{from: '.model.sunsetTime', to: '.$.popGraph.sunsetTime'},
 		{from: '.model.sunriseTime', to: '.$.tempGraph.sunriseTime'},
 		{from: '.model.sunsetTime', to: '.$.tempGraph.sunsetTime'},
-		{from: '.model.sunriseTime', to: '.$.humidityGraph.sunriseTime'},
-		{from: '.model.sunsetTime', to: '.$.humidityGraph.sunsetTime'},
 
 		{from: '.model.precipProbability', to: '.$.popDrawer.open', transform: function(p){return p > 0.1;}},
 		{from: '.model', to: '.$.normals.model'},
@@ -56,6 +53,15 @@ enyo.kind({
 		{fit:true, style:"position:relative", components:[
 			{name:"loadingPopup", kind:"cumulus.LoadingPopup"},
 			{name:"scroller", kind:"Scroller", thumb:false, horizontal:"hidden", classes:"scroller dark enyo-fit", components:[
+				{classes:"divider", content:"Temperature"},
+				{
+					name:"tempGraph",
+					classes:"group",
+					kind:"cumulus.TemperatureGraph",
+					keys:["temperature","apparentTemperature"],
+					fillColors:["rgba(255,0,0,0.25)", null],
+					strokeColors:["rgba(255,0,0,1)","rgba(255,128,128,1)"]
+				},
 				{name:"popDrawer", animated: false, kind:"Drawer", components:[
 					{classes:"divider", content:"Chance of precipitation"},
 					{
@@ -64,29 +70,10 @@ enyo.kind({
 						classes:"group",
 						keys:["precipProbability"],
 						min:0, max:1,
-						fillColor:"rgba(132,167,193,0.5)",
-						strokeColor:"rgba(132,167,193,1)"
+						fillColors:["rgba(132,167,193,0.5)"],
+						strokeColors:["rgba(132,167,193,1)"]
 					}
 				]},
-				{classes:"divider", content:"Temperature"},
-				{
-					name:"tempGraph",
-					classes:"group",
-					kind:"cumulus.TemperatureGraph",
-					keys:["temperature","apparentTemperature"],
-					fillColor:"rgba(255,0,0,0.25)",
-					strokeColor:"rgba(255,0,0,1)"
-				},
-				{classes:"divider", content:"Humidity"},
-				{
-					name:"humidityGraph",
-					classes:"group",
-					kind:"cumulus.Graph",
-					keys:["humidity"],
-					min:0, max:1,
-					fillColor:"rgba(255,255,255,0.25)",
-					strokeColor:"rgba(255,255,255,0.75)"
-				},
 				{classes:"divider", content:"Conditions"},
 				{name: "conditionRepeater", kind: "DataRepeater", selection: false, classes: "group", components: [
 					{classes:'row condition nice-padding', components:[
@@ -130,13 +117,11 @@ enyo.kind({
 		var animator = this.$.animator;
 		this.$.popGraph.setAnimator(animator);
 		this.$.tempGraph.setAnimator(animator);
-		this.$.humidityGraph.setAnimator(animator);
 	},
 
 	drawGraphs:function() {
 		this.$.popGraph.drawGraph();
 		this.$.tempGraph.drawGraph();
-		this.$.humidityGraph.drawGraph();
 	},
 
 	modelChanged: function(old, model) {
