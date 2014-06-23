@@ -29,9 +29,11 @@ enyo.kind({
 	},
 
 	bindings:[
-		{from:'.forecast.daily', to: '.$.dayRepeater.collection'},
-		{from:'.forecast.currently', to: '.$.currentConditions.model'},
-		{from: '.api', to: '.$.minutelyForecast.api'}
+		{from: '.forecast.daily', to: '.$.dayRepeater.collection'},
+		{from: '.forecast.currently', to: '.$.currentConditions.model'},
+		{from: '.api', to: '.$.minutelyForecast.api'},
+		{from: '.store', to: '.$.minutelyForecast.store'},
+		{from: '.forecast', to: '.$.minutelyForecast.forecast'}
 	],
 
 	components: [
@@ -56,14 +58,9 @@ enyo.kind({
 		{name: "loadingPopup", kind: "cumulus.LoadingPopup"}
 	],
 
-	apiChanged: function() {
-		if(this.getPlace())
-			this.refresh();
-	},
-
 	toggleMinutely: function() {
-		if(!this.$.minutelyForecastDrawer.getOpen())
-			this.$.minutelyForecast.refresh();
+//		if(!this.$.minutelyForecastDrawer.getOpen())
+//			this.$.minutelyForecast.refresh();
 		this.$.minutelyForecastDrawer.setOpen(!this.$.minutelyForecastDrawer.getOpen());
 	},
 

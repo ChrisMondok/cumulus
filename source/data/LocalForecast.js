@@ -53,6 +53,7 @@
 			coords: null,
 			currently: null,
 			daily: null,
+			minutely: null,
 			alerts: null,
 			latlng: null
 		},
@@ -64,6 +65,14 @@
 				delete data.hourly;
 			}
 			data.daily = this.store.createCollection(cumulus.collections.Daily, data.daily && data.daily.data || []);
+
+			var summary = data.minutely && data.minutely.summary || undefined;
+
+			data.minutely = this.store.createCollection(cumulus.collections.Minutely, data.minutely && data.minutely.data || []);
+
+			if(summary)
+				data.minutely.set('summary', summary);
+
 			return data;
 		}
 	});

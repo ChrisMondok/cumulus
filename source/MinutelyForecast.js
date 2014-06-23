@@ -3,17 +3,12 @@ enyo.kind({
 	classes:"minutely-forecast",
 
 	published:{
-		api:null,
-		place:null,
-		minutely:null,
+		forecast: null,
 		graphFillStyle:"rgba(35,91,134,0.5)",
 		graphStrokeStyle:"rgba(35,91,134,1)",
 		graphLineStyle:"rgba(0,0,0,0.5)",
-		graphMinuteStyle:"rgba(0,0,0,1)"
-	},
-
-	handlers:{
-		onApiCreated:"getApiFromEvent"
+		graphMinuteStyle:"rgba(0,0,0,1)",
+		_data: null
 	},
 
 	_ctx:null,
@@ -22,38 +17,31 @@ enyo.kind({
 	_gutterWidth:48,
 	_oldData: null,
 
+	bindings:[
+		{from: '.forecast.minutely', to: '.minutely'},
+		{from: '.minutely.summary', to: '.$.summary.content'}
+	],
+
 	components:[
 		{name:"summary", content:$L("Hang on a second...")},
 		{name:"graph", tag:"canvas", attributes:{height:"300px"}, style:"height:300px; width:100%;"},
-		{name:"animator", kind:"Animator", onStep:"drawGraph", start:0, end:1},
+		{name:"animator", kind:"Animator", onStep:"drawGraph", start:0, end:1, value: 0, duration: 1000},
 		{name:"loadingOverlay", tag:"div", classes:"loading-overlay"}
 	],
-
-	getApiFromEvent:function(event) {
-		this.setApi(event.api);
-	},
 
 	rendered:function() {
 		if(this.$.graph.hasNode()) {
 			this._ctx = this.$.graph.node.getContext('2d');
 		}
 	},
-
-	refresh:function() {
-		var api = this.getApi(),
-			place = this.getPlace();
-
-		if(api && place) {
-			this.$.loadingOverlay.show();
-			api.getMinutelyForecast(this.getPlace())
-				.response(this,"gotMinutelyForecast")
-				.response(this.$.loadingOverlay,this.$.loadingOverlay.hide);
-		}
-	},
-
+	
 	resizeHandler:function() {
 		this.inherited(arguments);
 		this.drawGraph();
+	},
+
+	showingChangedHandler: function(sender, inEvent) {
+		this.$.animator.play({start: 0, end: inEvent.showing ? 1 : 0});
 	},
 
 	drawGraphLines: function() {
@@ -75,7 +63,7 @@ enyo.kind({
 	},
 
 	drawMinutes:function() {
-		var data = this.getData(),
+		var data = this.get('_data') || [],
 			ctx = this._ctx,
 			now = new Date(),
 			bounds = this.$.graph.getBounds(),
@@ -121,9 +109,9 @@ enyo.kind({
 
 		var ctx = this._ctx,
 			bounds = this.$.graph.getBounds(),
-			data = this.getData(),
+			data = this.get('_data') || [],
 			animValue = this.$.animator.value;
-			canAnimateData = this._oldData && this._oldData.data.length == data.length;
+			canAnimateData = this._oldData && this._oldData.length == data.length;
 
 		ctx.clearRect(0,0,bounds.width,bounds.height);
 
@@ -135,7 +123,6 @@ enyo.kind({
 		
 		ctx.beginPath();
 		
-
 		for(var i = 0; i < data.length; i++) {
 			var intensity = animValue * data[i].precipIntensity + (1-animValue) * (canAnimateData ? this._oldData.data[i].precipIntensity : 0);
 
@@ -155,35 +142,26 @@ enyo.kind({
 		this.$.graph.setAttribute("width",this.getBounds().width+"px");
 	},
 
-	gotMinutelyForecast:function(request, response) {
-		this.setMinutely(response);
+	minutelyChanged: function(old, minutely) {
+		this.set('_oldData', this.get('_data'));
+		if(minutely) {
+			this.set('_data', minutely.raw());
+
+			this.adjustGraphLines();
+		}
 	},
 
-	minutelyChanged:function(old, minutely) {
-		this._oldData = old;
-		this.$.summary.setContent(minutely ? minutely.summary : $L("Hang on a second..."));
-
-		var data = this.getData();
-
-		var maxPrecipIntensity = data.reduce(
-			function(max,item){return Math.max(max,item.precipIntensity);},0
-		);
-
+	adjustGraphLines: function() {
+		var intensities = this.get('_data').map(function(x) {return x.precipIntensity;});
+		var maxPrecipIntensity = intensities.length ? Math.max.apply(Math,intensities) : 0;
 
 		if (maxPrecipIntensity < 0.5)
-			this._graphLineIncrement = 0.25;
+			this.set('_graphLineIncrement', 0.25);
 		else if (maxPrecipIntensity < 1)
-			this._graphLineIncrement = 0.5;
+			this.set('_graphLineIncrement', 0.5);
 		else
-			this._graphLineIncrement = 1;
+			this.set('_graphLineIncrement', 1);
 
-		this._graphUpperBound = Math.max(Math.ceil(maxPrecipIntensity/this._graphLineIncrement),2)*this._graphLineIncrement;
-
-		this.$.animator.play({duration:data && data.length ? 1000 : 1});
-
-	},
-
-	getData:function() {
-		return (this.getMinutely() || {data:[]}).data;
+		this.set('_graphUpperBound', Math.max(Math.ceil(maxPrecipIntensity/this._graphLineIncrement),2)*this._graphLineIncrement);
 	}
 });

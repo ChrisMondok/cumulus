@@ -21,3 +21,9 @@ enyo.kind({
 	kind: 'cumulus.collections.Base',
 	model: 'cumulus.models.Condition'
 });
+
+enyo.kind({
+	name: 'cumulus.collections.Minutely',
+	kind: 'cumulus.collections.Base',
+	model: 'cumulus.models.Minutely'
+});

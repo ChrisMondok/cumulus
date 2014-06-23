@@ -16,11 +16,7 @@ enyo.kind({
 		{from: '.store', to: '.$.detail.store'},
 		{from: '.app.preferredLocation', to: '.place'},
 		{from: '.app.preferredLocation', to: '.$.locationErrorPopup.showing', transform: function(g) {return g === null;}},
-		{from: '.app.geolocationError', to: '.$.locationErrorReason.content', transform: function(e) {return e ? e.reason : '';}},
-
-		//TODO: delete these
-		{from: '.api', to:'.$.outlook.$.minutelyForecast.api'},
-		{from: '.place', to:'.$.outlook.$.minutelyForecast.place'}
+		{from: '.app.geolocationError', to: '.$.locationErrorReason.content', transform: function(e) {return e ? e.reason : '';}}
 	],
 
 
@@ -96,8 +92,6 @@ enyo.kind({
 
 	create: function() {
 		this.inherited(arguments);
-
-		this.setApi(new cumulus.api.ForecastIO);
 
 		window.INSTANCE = this;
 
