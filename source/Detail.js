@@ -46,6 +46,9 @@ enyo.kind({
 				], bindings:[
 					{from: '.model.timeString', to: '.$.day.content'},
 					{from: '.owner.showing', to: '.$.marquee.active'},
+					{from: '.owner.$.dayCarousel.model', to: '.$.marquee.active', transform: function(model, direction, binding) {
+						return this.model == model;
+					}},
 					{from: '.model.summary', to: '.$.summary.content'}
 				]}
 			]}
