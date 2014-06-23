@@ -26,8 +26,8 @@
 		},
 
 		_valuesChanged:function(old, array) {
-			this.inherited(arguments);
 			this.calculateMinAndMax();
+			this.inherited(arguments);
 		},
 
 		calculateMinAndMax: function() {

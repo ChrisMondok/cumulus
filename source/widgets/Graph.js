@@ -17,9 +17,7 @@ enyo.kind({
 		max:100,
 		nowColor:"#f79a42",
 
-		showLabels:false,
-
-		animator:null
+		showLabels:false
 	},
 
 	_ctx:null,
@@ -29,7 +27,8 @@ enyo.kind({
 	components:[
 		{name:"max", style:"position:absolute; left:0px; top:0px;"},
 		{name:"min", style:"position:absolute; left:0px; bottom:0px;"},
-		{name:"canvas", style:"width:100%; height:100%", tag:"canvas"}
+		{name:"canvas", style:"width:100%; height:100%", tag:"canvas"},
+		{name:"animator", kind:"Animator", onStep:"drawGraph", easingFunction: enyo.easing.quadInOut, duration:750}
 	],
 
 	bindings:[
@@ -60,12 +59,8 @@ enyo.kind({
 		return this._values[0].length != this._oldValues[0].length;
 	},
 
-	getAnimStep: function() {
-		return this.animator ? this.animator.value : 1;
-	},
-
 	drawValues:function(key) {
-		var animStep = this.getAnimStep();	
+		var animStep = this.$.animator.value;	
 		var values = this._values[key];
 		var ctx = this._ctx;
 		var bounds = this._canvasBounds;
@@ -95,7 +90,7 @@ enyo.kind({
 			return;
 
 		var ctx = this._ctx;
-		var animStep = this.getAnimStep();
+		var animStep = this.$.animator.value;
 
 		ctx.clearRect(0,0,this._canvasBounds.width,this._canvasBounds.height);
 
@@ -115,7 +110,7 @@ enyo.kind({
 
 	drawNow: function() {
 		var ctx = this._ctx;
-		var animStep = this.getAnimStep();
+		var animStep = this.$.animator.value;
 		var bounds = this._canvasBounds;
 
 		if(this._currentPosition !== undefined) {
@@ -219,12 +214,12 @@ enyo.kind({
 	},
 
 	valueToY:function(value) {
-		var step = this.animator ? this.animator.value : 1;
+		var step = this.$.animator.value;
 
 		return this._canvasBounds.height * (1 - (value-this.min)/(this.max-this.min));
 	},
 
-	_valuesChanged:function(old, array) {
+	_valuesChanged:function(old, values) {
 		if(old)
 			this._oldValues = old;
 		else {
@@ -235,7 +230,8 @@ enyo.kind({
 
 		this.calculateCurrentPosition();
 
-		this.drawGraph();
+		if(this.hasValues())
+			this.$.animator.play();
 	},
 
 	resizeHandler:function() {
@@ -256,6 +252,5 @@ enyo.kind({
 		this.inherited(arguments);
 		this._ctx = this.$.canvas.hasNode().getContext('2d');
 		this.sizeCanvas();
-	},
-
+	}
 });

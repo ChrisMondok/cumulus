@@ -86,9 +86,7 @@ enyo.kind({
 						{from: '.model.timespan', to: '.$.timespan.content'}
 					]}
 				]},
-				{name:"normals",  kind:"cumulus.Normals"},
-
-				{name:"animator", kind:"Animator", onStep:"drawGraphs", easingFunction: enyo.easing.quadInOut, duration:750}
+				{name:"normals",  kind:"cumulus.Normals"}
 			]}
 		]}
 	],
@@ -115,18 +113,9 @@ enyo.kind({
 		window.DETAIL = this;
 
 		var animator = this.$.animator;
-		this.$.popGraph.setAnimator(animator);
-		this.$.tempGraph.setAnimator(animator);
-	},
-
-	drawGraphs:function() {
-		this.$.popGraph.drawGraph();
-		this.$.tempGraph.drawGraph();
 	},
 
 	modelChanged: function(old, model) {
-		this.$.animator.play();
-		window.M = model;
 		if(model instanceof cumulus.models.Base)
 			this.set('conditions', this.calculateConditions());
 	},
