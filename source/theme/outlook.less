@@ -21,6 +21,10 @@
 	text-transform:lowercase;
 }
 
+.outlook .forecast:not(.primary) .text-box {
+	margin-left: 64px;
+}
+
 .outlook .advisory:first-letter {
 	text-transform:capitalize;
 }
@@ -43,10 +47,9 @@
 	animation: advisories 1s linear infinite;
 }
 
-.outlook .light .icon-container {
-	float:left;
-	margin-right:1ex;
-	margin-left:0;
+.outlook .forecast:not(.primary) .icon-box {
+	position:absolute;
+	margin:0;
 }
 
 .outlook .minutely-forecast-drawer {
