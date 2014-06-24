@@ -31,6 +31,8 @@ enyo.kind({
 	_selectedPct: null,
 	_selectedIndex: 0,
 
+	_canBeSeen: true,
+
 	components:[
 		{name: "max", style: "position:absolute; left:0px; top:0px;"},
 		{name: "min", style: "position:absolute; left:0px; bottom:0px;"},
@@ -44,6 +46,10 @@ enyo.kind({
 			]}
 		]}
 	],
+
+	observers:{
+		conditionallyAnimateGraph: ['_values', '_canBeSeen']
+	},
 
 	bindings:[
 		{from: ".showLabels", to: ".$.max.showing"},
@@ -61,6 +67,13 @@ enyo.kind({
 			return keys.length;
 		}}
 	],
+
+	conditionallyAnimateGraph: function() {
+		if(this.hasValues() && this._canBeSeen) {
+			console.log("PLAY ANIMATION");
+			this.$.animator.play();
+		}
+	},
 
 	graphTouched: function(inSender, inEvent) {
 		this.$.detail.show();
@@ -305,8 +318,9 @@ enyo.kind({
 
 	showingChangedHandler: function(inSender, inEvent) {
 		this.sizeCanvas();
-		if(inEvent.showing && this.hasValues())
-			this.$.animator.play();
+		if(!inEvent.showing)
+			this._oldValues = this.keys.map(function(k) { return []; });
+		this.set('_canBeSeen', inEvent.showing);
 	},
 
 	resizeHandler:function() {
