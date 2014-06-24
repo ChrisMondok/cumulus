@@ -87,7 +87,7 @@
 		kind: 'cumulus.models.Base',
 
 		timeString: function() {
-			return $L("TIMESTRING");
+			return cumulus.Utils.formatTime(this.get('time'));
 		}
 	});
 

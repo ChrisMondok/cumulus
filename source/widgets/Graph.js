@@ -1,7 +1,9 @@
 enyo.kind({
-	name:"cumulus.Graph",
+	name: "cumulus.Graph",
 
-	style:"position:relative; height:4em;",
+	style: "",
+
+	classes: "graph",
 
 	published:{
 		collection: null,
@@ -10,12 +12,14 @@ enyo.kind({
 
 		fillColors:["rgba(255,255,255,0.25)"],
 		strokeColors:["rgba(255,255,255,1)"],
-		graphColor:"rgba(0,0,0,0.25)",
-		nightColor:"rgba(0,0,0,0.2)",
-		keys:"",
+		graphColor: "rgba(0,0,0,0.25)",
+		nightColor: "rgba(0,0,0,0.2)",
+		keys: "",
+		friendlyKeys: null,
+		friendlyValueTransforms: null,
 		min:0,
 		max:100,
-		nowColor:"#f79a42",
+		nowColor: "#f79a42",
 
 		showLabels:false
 	},
@@ -24,26 +28,79 @@ enyo.kind({
 
 	_currentPosition: null,
 
+	_selectedPct: null,
+	_selectedIndex: 0,
+
 	components:[
-		{name:"max", style:"position:absolute; left:0px; top:0px;"},
-		{name:"min", style:"position:absolute; left:0px; bottom:0px;"},
-		{name:"canvas", style:"width:100%; height:100%", tag:"canvas"},
-		{name:"animator", kind:"Animator", onStep:"drawGraph", easingFunction: enyo.easing.quadInOut, duration:750}
+		{name: "max", style: "position:absolute; left:0px; top:0px;"},
+		{name: "min", style: "position:absolute; left:0px; bottom:0px;"},
+		{name: "canvas", style: "width:100%; height:100%", tag: "canvas", ondown: "graphTouched", ondrag:"graphTouched", onup:"closeDetail", onleave:"closeDetail"},
+		{name: "animator", kind: "Animator", onStep: "drawGraph", easingFunction: enyo.easing.quadInOut, duration:750},
+		{name: "detail", ontap: "_closeDetail", showing: false, classes: "graph-detail", components:[
+			{name: "selectedTimeDisplay", tag: "time"},
+			{name: "detailRepeater", tag: "dl", kind: "enyo.Repeater", onSetupItem: "setupDetailItem", components:[
+				{tag: "dt", classes: "label", name: "label"},
+				{tag: "dd", classes: "value", name: "value"}
+			]}
+		]}
 	],
 
 	bindings:[
-		{from: '.showLabels', to: '.$.max.showing'},
-		{from: '.showLabels', to: '.$.min.showing'},
-		{from: '.collection', to: '._values', transform: function(collection) {
+		{from: ".showLabels", to: ".$.max.showing"},
+		{from: ".showLabels", to: ".$.min.showing"},
+		{from: ".collection", to: "._values", transform: function(collection) {
 			var raw = collection ? collection.raw() : [];
-			var keys = this.get('keys');
+			var keys = this.get("keys");
 			return keys.map(function(k) {
 				return raw.map(function(d) {return d[k];} );
 			});
 		}},
-		{from: '.min', to: '.$.min.content'},
-		{from: '.max', to: '.$.max.content'}
+		{from: ".min", to: ".$.min.content"},
+		{from: ".max", to: ".$.max.content"},
+		{from: ".keys", to: ".$.detailRepeater.count", transform: function(keys) {
+			return keys.length;
+		}}
 	],
+
+	graphTouched: function(inSender, inEvent) {
+		this.$.detail.show();
+		this._selectedPct = Math.max(0, Math.min(1,
+			(inEvent.clientX - this.getBounds().left) / this.getBounds().width
+		));
+		this.drawGraph();
+		this.set('_selectedIndex', Math.round((this._values[0].length - 1)* this._selectedPct));
+		this.stopJob('closeDetail');
+	},
+
+	closeDetail: function(inSender, inEvent) {
+		if(this.$.detail.showing)
+			this.startJob('closeDetail', '_closeDetail', 2000);
+	},
+
+	_closeDetail: function() {
+		this.stopJob('closeDetail');
+		this.$.detail.hide();
+		this._selectedPct = null;
+		this.drawGraph();
+	},
+
+	_selectedIndexChanged: function(old, x) {
+		this.$.selectedTimeDisplay.setContent(this.get('collection').at(x).get('timeString'));
+		this.$.detailRepeater.build();
+	},
+
+	setupDetailItem: function(inSender, inEvent) {
+		var key = this.keys[inEvent.index];
+		var friendlyKey = this.friendlyKeys && this.friendlyKeys[inEvent.index] || key;
+		inEvent.item.$.label.setContent(friendlyKey);
+
+		var value = this._values[inEvent.index][this._selectedIndex];
+		var friendlyValue = this.friendlyValueTransforms && this.friendlyValueTransforms[inEvent.index] ? 
+			this.friendlyValueTransforms[inEvent.index].call(this, value)
+			: String(value);
+
+		inEvent.item.$.value.setContent(friendlyValue);
+	},
 
 	hasValues: function() {
 		return this.keys && this._values && Boolean(this._values[0].length);
@@ -104,8 +161,20 @@ enyo.kind({
 			for(var i = 0; i < this._values.length; i++)
 				this.drawValues(i, !i);
 
+			if(this._selectedPct !== null)
+				this.drawSelectedPct();
 			this.drawNow();
 		}
+	},
+
+	drawSelectedPct: function() {
+		var ctx = this._ctx;
+		var bounds = this._canvasBounds;
+		ctx.strokeStyle = "white";
+		ctx.beginPath();
+		ctx.moveTo(this._selectedPct * bounds.width, 0);
+		ctx.lineTo(this._selectedPct * bounds.width, bounds.height);
+		ctx.stroke();
 	},
 
 	drawNow: function() {
@@ -178,8 +247,8 @@ enyo.kind({
 		var x = undefined;
 
 		if(collection && collection.length) {
-			var first = collection.at(0).get('time'),
-				last = collection.at(collection.length - 1).get('time');
+			var first = collection.at(0).get("time"),
+				last = collection.at(collection.length - 1).get("time");
 
 			x = (time - first) / (last - first);
 		}
@@ -200,12 +269,12 @@ enyo.kind({
 	},
 	
 	getY:function(key, i) {
-		var y = this.valueToY(this.get('_values')[key][i]);
+		var y = this.valueToY(this.get("_values")[key][i]);
 		return y;
 	},
 
 	getOldY:function(key, i) {
-		var array = this.get('_values')[key][i];
+		var array = this.get("_values")[key][i];
 
 		if(this.numberOfValuesHasChanged())
 			return this.valueToY(this.getMin());
@@ -234,6 +303,12 @@ enyo.kind({
 			this.$.animator.play();
 	},
 
+	showingChangedHandler: function(inSender, inEvent) {
+		this.sizeCanvas();
+		if(inEvent.showing && this.hasValues())
+			this.$.animator.play();
+	},
+
 	resizeHandler:function() {
 		this.inherited(arguments);
 		this.sizeCanvas();
@@ -250,7 +325,7 @@ enyo.kind({
 
 	rendered:function() {
 		this.inherited(arguments);
-		this._ctx = this.$.canvas.hasNode().getContext('2d');
+		this._ctx = this.$.canvas.hasNode().getContext("2d");
 		this.sizeCanvas();
 	}
 });

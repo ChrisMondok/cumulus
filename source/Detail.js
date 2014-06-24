@@ -27,7 +27,7 @@ enyo.kind({
 		{from: '.model.sunriseTime', to: '.$.tempGraph.sunriseTime'},
 		{from: '.model.sunsetTime', to: '.$.tempGraph.sunsetTime'},
 
-		{from: '.model.precipProbability', to: '.$.popDrawer.open', transform: function(p){return p > 0.1;}},
+		{from: '.model.precipProbability', to: '.$.popGraphSection.showing', transform: function(p){return p > 0.1;}},
 		{from: '.model', to: '.$.normals.model'},
 		{from: '.conditions', to: '.$.conditionRepeater.collection'}
 	],
@@ -62,16 +62,26 @@ enyo.kind({
 					classes:"group",
 					kind:"cumulus.TemperatureGraph",
 					keys:["temperature","apparentTemperature"],
+					friendlyKeys:["Temperature", "Feels Like"],
+					friendlyValueTransforms: [function(v) {
+						return v+"°F";
+					}, function(v) {
+						return v+"°F";
+					}],
 					fillColors:["rgba(255,0,0,0.25)", null],
 					strokeColors:["rgba(255,0,0,1)","rgba(255,128,128,1)"]
 				},
-				{name:"popDrawer", animated: false, kind:"Drawer", components:[
+				{name:"popGraphSection", components:[
 					{classes:"divider", content:"Chance of precipitation"},
 					{
 						name:"popGraph",
 						kind:"cumulus.Graph",
 						classes:"group",
 						keys:["precipProbability"],
+						friendlyKeys:["Chance of Precip."],
+						friendlyValueTransforms: [function(v) {
+							return Math.floor(100*v)+"%";
+						}],
 						min:0, max:1,
 						fillColors:["rgba(132,167,193,0.5)"],
 						strokeColors:["rgba(132,167,193,1)"]
