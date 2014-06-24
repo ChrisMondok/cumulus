@@ -25,8 +25,7 @@ enyo.kind({
 	components:[
 		{name:"summary", content:$L("Hang on a second...")},
 		{name:"graph", tag:"canvas", attributes:{height:"300px"}, style:"height:300px; width:100%;"},
-		{name:"animator", kind:"Animator", onStep:"drawGraph", start:0, end:1, value: 0, duration: 1000},
-		{name:"loadingOverlay", tag:"div", classes:"loading-overlay"}
+		{name:"animator", kind:"Animator", onStep:"drawGraph", start:0, end:1, value: 0, duration: 1000}
 	],
 
 	rendered:function() {
