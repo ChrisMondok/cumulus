@@ -22,7 +22,10 @@ enyo.kind({
 		{from: '.model.apparentTempIsInteresting', to: '.$.feelsLikeContainer.showing'},
 		{from: '.model.apparentTemperature', to: '.$.feelsLike.content', transform: cumulus.Utils.formatNumber},
 
-		{from: '.model.timeString', to: '.$.day.content'}
+		{from: '.model.timeString', to: '.$.day.content'},
+		{from: '.model.precipType', to: '.$.popLabel.content', transform: function(value) {
+			return "% chance of "+(value || "precipitation");
+		}}
 	],
 
 	components: [
@@ -48,7 +51,7 @@ enyo.kind({
 			]},
 			{name: "popRow", showing: false, components: [
 				{tag: "span", name: "pop"},
-				{tag: "span", classes: "label", content: "% chance of precipitation"}
+				{name: "popLabel", tag: "span", classes: "label", content: "% chance of precipitation"}
 			]},
 			{name: "humidityRow", showing: false, components: [
 				{tag: "span", name: "humidity"},
